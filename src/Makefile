@@ -56,7 +56,7 @@ sub-dirs:
 
 test_dl.dylib: test_dl.$(OBJ)
 	@echo Linking $@
-	@$(DYLIB)$@ $(LD_FLAGS) test_dl.$(OBJ)
+	@$(DYLIB)$@ test_dl.$(OBJ)
 
 testlib.exe: testlib.$(OBJ) $(LIBRARIES)
 	@echo Linking $@
