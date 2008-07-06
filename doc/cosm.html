@@ -1,0 +1,541 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<html>
+  <head>
+    <title>
+      Cosm API - Main Include and Self-tests - cosm.h
+    </title>
+    <style type="text/css"><!-- a {text-decoration: none} --></style>
+  </head>
+  <body background="images/docbg.jpg" bgcolor="#000000" text="#cccccc"
+    link="#9999ff" vlink="#9999ff" alink="#ffcc66">
+
+  <table border="0" cellspacing="0" cellpadding="0">
+    <tr valign="top">
+      <td width="30"></td>
+      <td width="570">
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <p align="center">
+      <img src="images/cosmlogo.gif" alt="[Cosm Logo]"
+        width="357" height="123" border="0"><br>
+    </p>
+
+<!-- 678901234567890123456789012345678901234567890123456789012345678901234 -->
+
+    <h2 align="center">
+      Main Include and Self-tests
+    </h2>
+
+    <p>
+      <strong>Build Setup, Porting, and Debugging Tools</strong>
+    </p>
+    <ul>
+      <li><a href="#Defines">Required Defines</a>
+      <li><a href="#Optional">Optional Defines</a>
+    </ul>
+    <p>
+      <strong>Data Types and Predefined Strings</strong>
+    </p>
+    <ul>
+      <li><a href="#DataTypes">Data Types</a>
+      <li><a href="#Strings">Defined Strings and Things</a>
+    </ul>
+    <p>
+      <strong>Macros</strong>
+    </p>
+    <ul>
+      <li><a href="#COSMSET">_COSM_SET</a>
+      <li><a href="#COSMEQ">_COSM_EQ</a>
+    </ul>
+    <p>
+      <strong>Self Tests</strong>
+    </p>
+    <ul>
+      <li><a href="#CosmTest">CosmTest</a>
+    </ul>
+
+    <hr>
+
+    <a name="Defines"></a>
+    <h3>
+      Required Defines
+    </h3>
+
+    <p>
+      The required defines are: CPU bits, CPU type, and OS type.
+      You will find a TEMPLATE file in the make/ directory of
+      the source. Unless you are porting the libraries to a new platform,
+      these will already be set and usable with the `build` script.
+    </p>
+
+    <p>
+      <strong>CPU_64BIT or CPU_32BIT - CPU bitness</strong>
+    </p>
+    <p>
+      Either CPU_32BIT or CPU_64BIT must be defined, not both.
+    </p>
+
+    <p>
+      <strong>CPU_TYPE - CPU type</strong>
+    </p>
+    <p>
+      The CPU type is set by defining <em>CPU_TYPE</em> to be one of the
+      following. Note that valid values of <em>CPU_TYPE</em> are from 0 to
+      COSM_CPU_TYPE_MAX inclusive. The array COSM_CPU_TYPES of CPU names will
+      also be of use to programmers, see <a href="#Strings">below</a>.
+    </p>
+    <ul>
+      <li>CPU_UNKNOWN
+      <li>CPU_X86
+      <li>CPU_PPC
+      <li>CPU_PPC64
+      <li>CPU_MIPS
+      <li>CPU_MIPS64
+      <li>CPU_ALPHA
+      <li>CPU_68K
+      <li>CPU_SPARC
+      <li>CPU_SPARC64
+      <li>CPU_IA64
+      <li>CPU_ARM
+      <li>CPU_AMD64
+    </ul>
+
+    <p>
+      <strong>OS_TYPE - OS type</strong>
+    </p>
+    <p>
+      The OS is set by defining <em>OS_TYPE</em> to be one of the following.
+      Note that valid values of <em>OS_TYPE</em> are from 0 to
+      COSM_OS_TYPE_MAX inclusive. The array COSM_OS_TYPES of OS names will
+      also be of use to programmers, see <a href="#Strings">below</a>.
+    </p>
+    <ul>
+      <li>OS_UNKNOWN
+      <li>OS_WIN32
+      <li>OS_WIN64
+      <li>OS_MACOSX
+      <li>OS_LINUX
+      <li>OS_NETBSD
+      <li>OS_FREEBSD
+      <li>OS_OPENBSD
+      <li>OS_IRIX
+      <li>OS_IRIX64
+      <li>OS_SUNOS
+      <li>OS_SOLARIS
+      <li>OS_QNX
+      <li>OS_TRU64
+    </ul>
+
+    <hr>
+
+    <a name="Optional"></a>
+    <h3>
+      Optional Defines
+    </h3>
+
+    <dl>
+      <dt>NO_FLOATING_POINT
+      <dd>Compile Cosm libraries without floating point support.
+      <dt>NO_NETWORKING
+      <dd>Compile Cosm libraries without support for network functions.
+      <dt>NO_CRYPTO
+      <dd>Compile Cosm libraries without support for non-hash cryptographic
+        functions, this allows for worldwide product export from the US.
+        Products with crypto should involve one or more people outside
+        the US.
+      <dt>ALLOW_UNSAFE_C
+      <dd>cosm.h will redefine dangerous or replaced functions from the
+        standard C library. To use the replaced functions you must use this
+        define. If you do use these functions, your code will NOT be
+        portable and you will not be warned about DANGEROUS functions.
+      <dt>MEM_LEAK_FIND
+      <dd>Enable CosmMemDumpLeaks and related functionality for doing memory
+        leak hunting.
+      <dt>NET_LOG_PACKETS
+      <dd>Enable packet logging to files. This can generate VERY large log
+        files quickly, but is extremely useful for debugging.
+    </dl>
+
+    <hr>
+
+    <a name="DataTypes"></a>
+    <h3>
+      Data Types
+    </h3>
+
+    <p>
+      Cosm defines the following portable data types:
+    </p>
+    <p>
+      Note that the 32, 16, and 8-bit types can be used normally, however the
+      64-bit and 128-bit types must use special functions
+      (<a href="os_math.html">os_math</a>) for math, and special macros
+      (<a href="#COSMSET">_COSM_SET</a> and <a href="#COSMEQ">_COSM_EQ</a>) for
+      setting constants to maintain portability.
+    </p>
+
+    <p>
+      <strong>Integer Types</strong>
+    </p>
+</font>
+<pre>
+  u8    Unsigned 8-bit integer.
+  s8    Signed 8-bit integer.
+  u16   Unsigned 16-bit integer.
+  s16   Signed 16-bit integer.
+  u32   Unsigned 32-bit integer.
+  s32   Signed 32-bit integer.
+  u64   Unsigned 64-bit integer.
+  s64   Signed 64-bit integer.
+  u128  Unsigned 128-bit integer.
+  s128  Signed 128-bit integer.
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <p>
+      <strong>Floating Point Types</strong>
+    </p>
+</font>
+<pre>
+  f32   32-bit floating point value, ~7 significant digits.
+  f64   64-bit floating point value, ~16 significant digits.
+  f128  Longest floating point value available up to 128-bits.
+        ~16-34 significant digits depending on the system.
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+    <p>
+    </p>
+      Make no assumptions about the size of f128. Not only the CPU, but the
+      compiler and the system libraries must support f128 types for it to
+      work at all. This is for hardcore math, those who need it know what
+      it is, and if you don't then you probably only need to use f32.
+    <p>
+      <strong>Text Types</strong>
+    </p>
+</font>
+<pre>
+  ascii     ASCII type. Cosm apps never use char, not even in CPU/OS.
+  utf8      Unicode UTF-8 type for strings. For user interaction.
+  utf8char  Single Unicode codepoint, 32-bit.
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+    <p>
+      Since UTF-8 is fully compatable with ASCII, you can feed any utf8
+      function a normal ascii string with a simple typecast to eliminate
+      the compiler warning.
+    </p>
+    <p>
+      It's very important to understand that "utf8 string[128];" is 128 bytes
+      for storing UTF-8, not 128 unicode characters. Some reading about
+      Unicode and UTF-8 is required before using many of the functions in
+      os_io and interfacing with your operating syetem's GUI API.
+    </p>
+
+    <p>
+      <strong>Time Type</strong>
+    </p>
+</font>
+<pre>
+  cosmtime  Time value.
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+    <p>
+      Times are signed s128's of type cosmtime, 64b.64b format based
+      0 = 00:00:00 UTC, Jan 1, 2000 AD. This gives a Range of +/- 2.923E11
+      years and a resolution of 5.421E-20 seconds. This allows times from
+      bang to crunch - assuming a closed universe (if it's not closed, we
+      have bigger problems). It's also useful for timing the half lives of
+      particles like neutral sigma baryons.
+    </p>
+    <p>
+      For all math on cosmtime values, CosmS128* functions must be used.
+      If all you need is the seconds for timestamps, that is always a s64 in
+      cosmtime.hi, and the fraction of a second is a u64 in cosmtime.lo - both
+      still then require CosmSave to be used. You should never be stuffing data
+      back into a cosmtime except with CosmU128Load, since once you discard the
+      precision it is gone.
+    </p>
+
+    <hr>
+
+    <a name="Strings"></a>
+    <h3>
+      Defined Strings and Things
+    </h3>
+
+    <h4>Strings</h4>
+    <p>
+      cputypes.h defines the string arrays COSM_CPU_TYPES and COSM_OS_TYPES.
+      These are mostly for debugging output, since the CPU and OS are not
+      relivant in most cases.
+    </p>
+
+    <p>
+      <strong>Example</strong>
+    </p>
+</font>
+<pre>
+  const ascii * cpu_types[] = COSM_CPU_TYPES;
+  const ascii * os_types[] = COSM_OS_TYPES;
+
+  CosmPrint( "CPU = %.20s, OS = %.20s\n",
+    cpu_types[( CPU_TYPE > COSM_CPU_TYPE_MAX ) ? 0 : CPU_TYPE],
+    os_types[( OS_TYPE > COSM_OS_TYPE_MAX ) ? 0 : OS_TYPE] );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Endian</h4>
+    <p>
+      COSM_ENDIAN_CURRENT, COSM_ENDIAN_BIG, and COSM_ENDIAN_LITTLE are defined.
+      COSM_ENDIAN_CURRENT is whichever one the machine is running in at the
+      time. This allows you to check the endian at compile time or at
+      run time. In almost all cases compile time checking leads to faster
+      code, but for statistics/reporting you will need the run time value.
+    </p>
+
+    <p>
+      <strong>Example</strong>
+    </p>
+</font>
+<pre>
+  /* Compile time checking */
+
+  #if ( COSM_ENDIAN_CURRENT == COSM_ENDIAN_BIG )
+    /* do the big thing */
+  #else
+    /* do the little thing */
+  #endif
+
+  /* Runtime checking */
+
+  if ( COSM_ENDIAN_CURRENT == COSM_ENDIAN_BIG )
+  {
+    /* do the big thing */
+  }
+  else
+  {
+    /* do the little thing */
+  }
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Misc</h4>
+    <p>
+      COSM_PASS, COSM_FAIL, and NULL are defined.
+    </p>
+    <p>
+      On a CPU_32BIT system the compiler directly provides a fake 64-bit
+      type. This will generally be faster then using C code for 64-bit
+      operations. But for specific code you may get better performance
+      by #ifdef testing CPU_32BIT or CPU_64BIT and writing specific code
+      for each.
+    </p>
+
+    <hr>
+
+    <a name="COSMSET"></a>
+    <h3>
+      _COSM_SET
+    </h3>
+
+    <h4>Description</h4>
+    <p>
+      Sets or initializes a 64-bit or 128-bit integer (signed or unsigned)
+      to a constant value.
+    </p>
+
+    <p>
+      <strong>64-bit Types</strong>
+    </p>
+    <p>
+      The first argument is the variable to be set, followed by the value in
+      hex (without the '0x' prefix), in groups of 32 bits, 2 groups total.
+    </p>
+
+    <h4>Example</h4>
+</font>
+<pre>
+  u64 a;
+  s64 b;
+
+  a = 0x4FF4642312345678LL;
+  /* a is now 0x4FF4642312345678 */
+
+  b = 0x49FDC23887654321LL;
+  /* b is now 0x49FDC23887654321 */
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <p>
+      <strong>128-bit Types</strong>
+    </p>
+    <p>
+      The first argument is the variable to be set, followed by the value in
+      hex (without the '0x' prefix), in groups of 32 bits, 4 groups total.
+    </p>
+
+    <h4>Example</h4>
+</font>
+<pre>
+  u128 a;
+  s128 b;
+
+  _COSM_SET128( a, 0123456789ABCDEF, FEDCBA9876543210 );
+  /* a is now 0x0123456789ABCDEFFEDCBA9876543210 */
+
+  _COSM_SET128( b, 32507DFFDAF85A34, 7AF51C3445A54391 );
+  /* b is now 0x32507DFFDAF85A347AF51C3445A54391 */
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <hr>
+
+    <a name="COSMEQ"></a>
+    <h3>
+      _COSM_EQ
+    </h3>
+
+    <h4>Description</h4>
+    <p>
+      Compares a 64-bit or 128-bit integer (signed or unsigned) variable to
+      a constant. Returns non-zero if equal, and 0 if unequal.
+    </p>
+
+    <p>
+      <strong>64-bit Types</strong>
+    </p>
+    <p>
+      The first argument is the variable to be compared to a constant,
+      followed by the constant to compare it to in hex (without the
+      '0x' prefix), in groups of 32 bits, 2 groups total.
+    </p>
+
+    <h4>Example</h4>
+</font>
+<pre>
+  u64 a;
+  s64 b;
+
+  a = 0x4FF4642312345678LL;
+  if ( ( a == 0x4FF4642312345678LL ) )
+  {
+    /* equal */
+  }
+
+  b = 0x49FDC23887654321LL;
+  if ( ( b == 0x49FDC23887654321LL ) )
+  {
+    /* equal */
+  }
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <p>
+      <strong>128-bit Types</strong>
+    </p>
+    <p>
+      The first argument is the variable to be compared to a constant,
+      followed by the constant to compare it to in hex (without the
+      '0x' prefix), in groups of 32 bits, 4 groups total.
+    </p>
+
+    <h4>Example</h4>
+</font>
+<pre>
+  u128 a;
+  s128 b;
+
+  _COSM_SET128( a, 0123456789ABCDEF, FEDCBA9876543210 );
+  if ( _COSM_EQ128( a, 0123456789ABCDEF, FEDCBA9876543210 ) )
+  {
+    /* equal */
+  }
+
+  _COSM_SET128( b, 32507DFFDAF85A34, 7AF51C3445A54391 );
+  if ( _COSM_EQ128( a, 32507DFFDAF85A34, 7AF51C3445A54391 ) )
+  {
+    /* equal */
+  }
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+<hr>
+
+    <a name="CosmTest"></a>
+    <h3>
+      CosmTest
+    </h3>
+
+    <h4>Syntax</h4>
+</font>
+<pre>
+#include "cosm.h"
+s32 CosmTest( s32 * failed_module, s32 * failed_test, s32 module_num );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Description</h4>
+    <p>
+      If <em>module_num</em> is 0, then test all Cosm functions and return a
+      negative number corresponding to the module that failed.
+      <em>failed_module</em> and <em>failed_test</em> will be set to the
+      corresponding failed functions. Otherwise test only the module
+      <em>module_num</em>.
+    </p>
+
+    <p>
+      See example below for useable of COSM_TEST_MODULE_MAX and
+      __cosm_test_modules, defined in cosm.h.
+    </p>
+
+    <h4>Return Values</h4>
+    <p>
+      COSM_PASS on success, or a negative number corresponding to the
+      module that failed.
+    </p>
+
+    <h4>Errors</h4>
+    <p>
+      A negative number will be returned corresponding to the module/test
+      that failed.
+    </p>
+
+    <h4>Example</h4>
+</font>
+<pre>
+  s32 error;
+  s32 error2;
+
+  CosmPrint( "\nRunning system tests... " );
+  if ( CosmTest( &amp;error, &amp;error2, 0 ) != COSM_PASS )
+  {
+    CosmPrint( "Test failure in module %.16s %i.\n",
+      __cosm_test_modules[( -error > COSM_TEST_MODULE_MAX ) ?
+      0 : -error].name, error2 );
+    CosmProcessEnd( error );
+  }
+  CosmPrint( "all passed.\n" );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+<hr>
+
+</font>
+<font face="Verdana,Arial,Helvetica" size="-2" color="#6666cc">
+  <p>
+    &copy; Copyright Mithral Communications &amp; Design Inc.
+    <!--#config timefmt="%Y" -->
+    1995-<!--#echo var="LAST_MODIFIED" -->.
+    All rights reserved.
+    Mithral&reg; and Cosm&reg; are trademarks of
+    Mithral Communications &amp; Design Inc.
+    <br>
+    <!--#config timefmt="%b %d, %Y" -->
+    Document last modified: <!--#echo var="LAST_MODIFIED" -->
+  </p>
+</font>
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>

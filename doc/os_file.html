@@ -1,0 +1,1090 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<html>
+  <head>
+    <title>
+      Cosm API - File and Directory Functions
+    </title>
+    <style type="text/css"><!-- a {text-decoration: none} --></style>
+  </head>
+  <body background="images/docbg.jpg" bgcolor="#000000" text="#cccccc"
+    link="#9999ff" vlink="#9999ff" alink="#ffcc66">
+
+  <table border="0" cellspacing="0" cellpadding="0">
+    <tr valign="top">
+      <td width="30"></td>
+      <td width="570">
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <p align="center">
+      <img src="images/cosmlogo.gif" alt="[Cosm Logo]"
+        width="357" height="123" border="0"><br>
+    </p>
+
+<!-- 678901234567890123456789012345678901234567890123456789012345678901234 -->
+
+    <h2 align="center">
+      File and Directory Functions
+    </h2>
+
+    <ul>
+      <li><a href="#CosmFileOpen">CosmFileOpen</a>
+      <li><a href="#CosmFileRead">CosmFileRead</a>
+      <li><a href="#CosmFileWrite">CosmFileWrite</a>
+      <li><a href="#CosmFileSeek">CosmFileSeek</a>
+      <li><a href="#CosmFileTell">CosmFileTell</a>
+      <li><a href="#CosmFileEOF">CosmFileEOF</a>
+      <li><a href="#CosmFileLength">CosmFileLength</a>
+      <li><a href="#CosmFileTruncate">CosmFileTruncate</a>
+      <li><a href="#CosmFileClose">CosmFileClose</a>
+      <li><a href="#CosmFileDelete">CosmFileDelete</a>
+      <li><a href="#CosmFileInfo">CosmFileInfo</a>
+      <li><a href="#CosmDirOpen">CosmDirOpen</a>
+      <li><a href="#CosmDirRead">CosmDirRead</a>
+      <li><a href="#CosmDirDelete">CosmDirDelete</a>
+      <li><a href="#CosmDirClose">CosmDirClose</a>
+      <li>CosmDirGet</a>
+      <li>CosmDirSet</a>
+      <li><a href="#CosmLoad">CosmLoad</a>
+      <li><a href="#CosmSave">CosmSave</a>
+    </ul>
+
+    <hr>
+
+    <a name="CosmFileOpen"></a>
+    <h3>
+      CosmFileOpen
+    </h3>
+
+    <h4>Syntax</h4>
+</font>
+<pre>
+#include "cosm/os_file.h"
+s32 CosmFileOpen( cosm_FILE * file, const ascii * filename,
+  u32 mode, u32 lock );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Description</h4>
+    <p>
+      Attempt to open the <em>filename</em> in the <em>mode</em> with the
+      <em>lock</em>.
+    </p>
+    <p>
+      Paths are always in the Cosm "native|/path/path2/filename" format. This
+      is important for the system because any platform that can will do a
+      chroot() before running, non-chroot systems will tack addition path on
+      the front at runtime. The 'other' slash is translated on the fly if
+      needed, but internally, it's all stored in the same format. The native
+      portion of the path (everything before and including the '|') is
+      platform specific for devices/nodes on wierd OSes. e.g.
+      "e:|/temp/a.txt"(win32), or "//4|/tmp/a.txt" (qnx). If paths are ever
+      sent over the net, this native portion will be stripped.
+    </p>
+    <p>
+      <strong>File Modes:</strong>
+    </p>
+    <dl>
+      <dt>COSM_FILE_MODE_EXIST
+      <dd>Test for file existence only.
+      <dt>COSM_FILE_MODE_READ
+      <dd>Open for reading.
+      <dt>COSM_FILE_MODE_WRITE
+      <dd>Open for writing.
+      <dt>COSM_FILE_MODE_APPEND
+      <dd>Open at end of file, write only.
+      <dt>COSM_FILE_MODE_CREATE
+      <dd>Create the file if it doesn't exist.
+      <dt>COSM_FILE_MODE_TRUNCATE
+      <dd>Truncate an existing file on open.
+      <dt>COSM_FILE_MODE_SYNC
+      <dd>Write data to disk before return.
+      <dt>COSM_FILE_MODE_NOBUFFER
+      <dd>No read/write buffering. This will have performance negative
+        consequences in most cases. It also requires sector and memory
+        aligned read/writes on some platforms.
+    </dl>
+    <p>
+      <strong>Files Locks:</strong>
+    </p>
+    <dl>
+      <dt>COSM_FILE_LOCK_NONE
+      <dd>No file locking is needed, but other locks must be observed.
+      <dt>COSM_FILE_LOCK_READ
+      <dd>Lock the file with a read lock. This means that other processes can
+        read the file, even add other read locks, but none will be allowed
+        to open the file for writing.
+      <dt>COSM_FILE_LOCK_WRITE
+      <dd>Lock the file with a write lock. No other readers or writers will
+        be allowed access to the file when this lock is set.
+    </dl>
+
+    <h4>Return Values</h4>
+    <p>
+      COSM_PASS on success, or an error code on failure.
+    </p>
+
+    <h4>Errors</h4>
+    <dl>
+      <dt>COSM_FILE_ERROR_DENIED
+      <dd>Access denied.
+      <dt>COSM_FILE_ERROR_NOTFOUND
+      <dd>File/Handle not found.
+      <dt>COSM_FILE_ERROR_WRITEMODE
+      <dd>Write access denied.
+      <dt>COSM_FILE_ERROR_CLOSED
+      <dd>File is closed.
+      <dt>COSM_FILE_ERROR_NAME
+      <dd>Invalid file name.
+      <dt>COSM_FILE_ERROR_MODE
+      <dd>Open flags conflict.
+    </dl>
+
+    <h4>Example</h4>
+</font>
+<pre>
+  cosm_FILE * file;
+  s32 result;
+
+  file = CosmMemAlloc( sizeof( cosm_FILE ) );
+
+  result = CosmFileOpen( file, "/etc/fstab", COSM_FILE_MODE_READ,
+    COSM_FILE_LOCK_NONE );
+
+  if ( result == COSM_PASS )
+    CosmPrint( "/etc/fstab open for reading.\n" );
+  else
+    CosmPrint( "Unable to open /etc/fstab for reading.\n" );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <hr>
+
+    <a name="CosmFileRead"></a>
+    <h3>
+      CosmFileRead
+    </h3>
+
+    <h4>Syntax</h4>
+</font>
+<pre>
+#include "cosm/os_file.h"
+s32 CosmFileRead( void * buffer, u64 * bytes_read, cosm_FILE * file,
+  u64 length );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Description</h4>
+    <p>
+      Read <em>length</em> bytes from the <em>file</em> into the
+      <em>buffer</em>. <em>bytes_read</em> is set to the number
+      of bytes actually read.
+    </p>
+
+    <h4>Return Values</h4>
+    <p>
+      COSM_PASS on success, or an error code on failure.
+    </p>
+
+    <h4>Errors</h4>
+    <p>
+      Upon failure <em>last_error</em> of <em>file</em> will be set to one of
+      the following:
+    </p>
+    <dl>
+      <dt>COSM_FILE_ERROR_DENIED
+      <dd>Access denied.
+      <dt>COSM_FILE_ERROR_NOTFOUND
+      <dd>File/Handle not found.
+      <dt>COSM_FILE_ERROR_CLOSED
+      <dd>File is closed.
+    </dl>
+
+    <h4>Example</h4>
+</font>
+<pre>
+  cosm_FILE * file;
+  char getbuff[31];
+  u64 bytesread;
+  s32 error;
+
+  /* ... */
+
+  error = CosmFileRead( getbuff, &amp;bytesread, file, 30LL );
+
+  if ( error != COSM_PASS )
+  {
+    CosmPrint( "We weren't able to read from the file.\n" );
+  }
+  else
+  {
+    *( (u8 *) CosmMemOffset( getbuff, bytesread ) ) = 0;
+    CosmPrint( "We read %u bytes: %.30s\n",
+      bytesread, getbuff );
+  }
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <hr>
+
+    <a name="CosmFileWrite"></a>
+    <h3>
+      CosmFileWrite
+    </h3>
+
+    <h4>Syntax</h4>
+</font>
+<pre>
+#include "cosm/os_file.h"
+s32 CosmFileWrite( cosm_FILE * file, u64 * bytes_written,
+  const void * const buffer, u64 length );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Description</h4>
+    <p>
+      Write <em>length</em> bytes to the <em>file</em> from the
+      <em>buffer</em>. <em>bytes_written</em> is set to the number of
+      bytes actually written.
+    </p>
+
+    <h4>Return Values</h4>
+    <p>
+      COSM_PASS on success, or an error code on failure.
+    </p>
+
+    <h4>Errors</h4>
+    <p>
+      Upon failure <em>last_error</em> of <em>file</em> will be set to one of
+      the following:
+    </p>
+    <dl>
+      <dt>COSM_FILE_ERROR_DENIED
+      <dd>Access denied.
+      <dt>COSM_FILE_ERROR_NOTFOUND
+      <dd>File/Handle not found.
+      <dt>COSM_FILE_ERROR_CLOSED
+      <dd>File is closed.
+    </dl>
+
+    <h4>Example</h4>
+</font>
+<pre>
+  utf8 to_write[30];
+  cosm_FILE * file;
+  u64 written;
+  u64 length;
+  s32 error;
+
+  /* ... */
+
+  CosmStrCopy( to_write, "Hello World!\n", 30LL );
+  length = CosmStrBytes( to_write );
+
+  error = CosmFileWrite( file, &amp;written, to_write, length );
+
+  if ( ( length == written ) )
+  {
+    CosmPrint( "Success! %v bytes written.\n", written );
+  }
+  else
+  {
+    /* do stuff with error */
+    /* ... */
+    CosmPrint( "Wrote only %v bytes (of %v)\n", written,
+      length );
+  }
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <hr>
+
+    <a name="CosmFileSeek"></a>
+    <h3>
+      CosmFileSeek
+    </h3>
+
+    <h4>Syntax</h4>
+</font>
+<pre>
+#include "cosm/os_file.h"
+s32 CosmFileSeek( cosm_FILE * file, u64 offset );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Description</h4>
+    <p>
+      Move the current file offset (in bytes). If the file is open in mode
+      COSM_FILE_MODE_APPEND, you can't seek.
+    </p>
+
+    <h4>Return Values</h4>
+    <p>
+      COSM_PASS on success, or an error code on failure.
+    </p>
+
+    <h4>Errors</h4>
+    <dl>
+      <dt>COSM_FILE_ERROR_CLOSED
+      <dd>File is closed.
+      <dt>COSM_FILE_ERROR_SEEK
+      <dd>Seek error.
+      <dt>COSM_FILE_ERROR_DENIED
+      <dd>Access Denied.
+      <dt>COSM_FILE_ERROR_NOTFOUND
+      <dd>File/Handle not found.
+    </dl>
+
+    <h4>Example</h4>
+</font>
+<pre>
+  cosm_FILE * file;
+  s32 result;
+
+  /* ... */
+
+  result = CosmFileSeek( file, 4096LL );
+
+  if ( result == COSM_PASS )
+    CosmPrint( "Now at byte position 4096 in the file.\n" );
+  else
+    CosmPrint( "Seek failed.\n" );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <hr>
+
+    <a name="CosmFileTell"></a>
+    <h3>
+      CosmFileTell
+    </h3>
+
+    <h4>Syntax</h4>
+</font>
+<pre>
+#include "cosm/os_file.h"
+s32 CosmFileTell( u64 * offset, cosm_FILE * file );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Description</h4>
+    <p>
+      Get the current file offset.
+    </p>
+
+    <h4>Return Values</h4>
+    <p>
+      COSM_PASS on success, or an error code on failure.
+    </p>
+
+    <h4>Errors</h4>
+    <dl>
+      <dt>COSM_FILE_ERROR_CLOSED
+      <dd>File is closed.
+      <dt>COSM_FILE_ERROR_NOTFOUND
+      <dd>File/Handle not found.
+      <dt>COSM_FILE_ERROR_TELL
+      <dd>Tell error.
+    </dl>
+
+    <h4>Example</h4>
+</font>
+<pre>
+  cosm_FILE * file;
+  u64 offset;
+  s32 result;
+
+  /* ... */
+
+  result = CosmFileTell( &amp;offset, file );
+
+  if ( result == COSM_PASS )
+    CosmPrint( "Currently at byte offset %v in the file.\n",
+      offset );
+  else
+    CosmPrint( "Unable to read position in file.\n" );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <hr>
+
+    <a name="CosmFileEOF"></a>
+    <h3>
+      CosmFileEOF
+    </h3>
+
+    <h4>Syntax</h4>
+</font>
+<pre>
+#include "cosm/os_file.h"
+s32 CosmFileEOF( cosm_FILE * file );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Description</h4>
+    <p>
+      Test EOF (End Of File) state.
+    </p>
+
+    <h4>Return Values</h4>
+    <p>
+      COSM_PASS if there is more to read, COSM_FILE_ERROR_EOF if EOF, or an
+      error code on failure.
+    </p>
+
+    <h4>Errors</h4>
+    <dl>
+      <dt>COSM_FILE_ERROR_EOF
+      <dd>End of file.
+      <dt>COSM_FILE_ERROR_CLOSED
+      <dd>File is closed.
+      <dt>COSM_FILE_ERROR_TELL
+      <dd>Tell error.
+      <dt>COSM_FILE_ERROR_LENGTH
+      <dd>Unable to discover file length.
+    </dl>
+
+    <h4>Example</h4>
+</font>
+<pre>
+  cosm_FILE * file;
+
+  /* ... */
+
+  if ( !CosmFileEOF( file ) )
+    CosmPrint( "There is more data to read.\n" );
+  else
+  {
+    CosmPrint( "No more data to be read.\n" );
+    return 0;
+  }
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <hr>
+
+    <a name="CosmFileLength"></a>
+    <h3>
+      CosmFileLength
+    </h3>
+
+    <h4>Syntax</h4>
+</font>
+<pre>
+#include "cosm/os_file.h"
+s32 CosmFileLength( u64 * length, cosm_FILE * file );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Description</h4>
+    <p>
+      Set <em>length</em> to the length of the open <em>file</em>.
+    </p>
+
+    <h4>Return Values</h4>
+    <p>
+      COSM_PASS on success, or an error code on failure.
+    </p>
+
+    <h4>Errors</h4>
+    <dl>
+      <dt>COSM_FILE_ERROR_CLOSED
+      <dd>File is closed.
+      <dt>COSM_FILE_ERROR_LENGTH
+      <dd>Unable to discover file length.
+    </dl>
+
+    <h4>Example</h4>
+</font>
+<pre>
+  cosm_FILE * file;
+  u64 length;
+  s32 result;
+
+  /* ... */
+
+  result = CosmFileLength( &amp;length, file );
+
+  if ( result == COSM_PASS )
+    CosmPrint( "The length of the file is %v bytes.\n",
+      length);
+  else if ( result == COSM_FILE_ERROR_CLOSED )
+    CosmPrint(
+      "The file is closed. Can not read length.\n" );
+  else
+    CosmPrint( "Error. Unable to read file length.\n" );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <hr>
+
+    <a name="CosmFileTruncate"></a>
+    <h3>
+      CosmFileTruncate
+    </h3>
+
+    <h4>Syntax</h4>
+</font>
+<pre>
+#include "cosm/os_file.h"
+s32 CosmFileTruncate( cosm_FILE * file, u64 length );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Description</h4>
+    <p>
+      Truncate the <em>file</em> at <em>length</em> bytes. Current offset
+      will be moved to the end of the <em>file</em>.
+    </p>
+
+    <h4>Return Values</h4>
+    <p>
+      COSM_PASS on success, or an error code on failure.
+    </p>
+
+    <h4>Errors</h4>
+    <dl>
+      <dt>COSM_FILE_ERROR_DENIED
+      <dd>Access denied.
+      <dt>COSM_FILE_ERROR_NOTFOUND
+      <dd>File/Handle not found.
+      <dt>COSM_FILE_ERROR_WRITEMODE
+      <dd>Write access denied.
+      <dt>COSM_FILE_ERROR_CLOSED
+      <dd>File is closed.
+    </dl>
+
+    <h4>Example</h4>
+</font>
+<pre>
+  cosm_FILE * file;
+  s32 result;
+
+  /* ... */
+
+  result = CosmFileTruncate( file, 10000LL );
+
+  if ( result == COSM_PASS )
+    CosmPrint( "File truncated to exactly 10000 bytes in length.\n" );
+  else
+    CosmPrint( "Could not truncate file.\n" );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <hr>
+
+    <a name="CosmFileClose"></a>
+    <h3>
+      CosmFileClose
+    </h3>
+
+    <h4>Syntax</h4>
+</font>
+<pre>
+#include "cosm/os_file.h"
+s32 CosmFileClose( cosm_FILE * file );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Description</h4>
+    <p>
+      Close the <em>file</em>.
+    </p>
+
+    <h4>Return Values</h4>
+    <p>
+      COSM_PASS on success, or an error code on failure.
+    </p>
+
+    <h4>Errors</h4>
+    <dl>
+      <dt>COSM_FILE_ERROR_NOTFOUND
+      <dd>File/Handle not found.
+      <dt>COSM_FILE_ERROR_CLOSED
+      <dd>File is closed.
+    </dl>
+
+    <h4>Example</h4>
+</font>
+<pre>
+  cosm_FILE * file;
+
+  /* ... */
+
+  CosmFileClose( file );
+  CosmProcessEnd( 0 );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <hr>
+
+    <a name="CosmFileDelete"></a>
+    <h3>
+      CosmFileDelete
+    </h3>
+
+    <h4>Syntax</h4>
+</font>
+<pre>
+#include "cosm/os_file.h"
+s32 CosmFileDelete( const ascii * filename );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Description</h4>
+    <p>
+      Attempt to delete the file specified by <em>filename</em>. See
+      <a href="#CosmFileOpen">CosmFileOpen</a> for how to specify the path and
+      file name. Deletion will involve a full wipe of the file data.
+    </p>
+
+    <h4>Return Values</h4>
+    <p>
+      COSM_PASS on success, or an error code on failure.
+    </p>
+
+    <h4>Errors</h4>
+    <dl>
+      <dt>COSM_FILE_ERROR_DENIED
+      <dd>Access denied.
+      <dt>COSM_FILE_ERROR_NOTFOUND
+      <dd>File/Handle not found.
+      <dt>COSM_FILE_ERROR_NAME
+      <dd>Invalid file name.
+    </dl>
+
+    <h4>Example</h4>
+</font>
+<pre>
+  s32 result;
+
+  result = CosmFileDelete( "/tmp/file" );
+  if ( result == COSM_PASS )
+    CosmPrint( "File /tmp/file was successfully removed.\n" );
+  else
+  {
+    if ( result == COSM_FILE_ERROR_DENIED )
+      CosmPrint(
+        "Unable to delete /tmp/file: Access denied.\n" );
+    else
+      CosmPrint(
+        "Unable to delete /tmp/file: File doesn't exist.\n" );
+  }
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <hr>
+
+    <a name="CosmFileInfo"></a>
+    <h3>
+      CosmFileInfo
+    </h3>
+
+    <h4>Syntax</h4>
+</font>
+<pre>
+#include "cosm/os_file.h"
+s32 CosmFileInfo( cosm_FILE_INFO * info, const ascii * filename );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Description</h4>
+    <p>
+      Get Information about a file. The cosm_FILE_INFO struct has the
+      following structure.
+    </p>
+</font>
+<pre>
+typedef struct cosm_FILE_INFO
+{
+  u64 length;
+  u32 type;
+  u32 rights;
+  cosmtime create;
+  cosmtime modify;
+  cosmtime access;
+} cosm_FILE_INFO;
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Return Values</h4>
+    <p>
+      COSM_PASS on success, or an error code on failure.
+    </p>
+
+    <h4>Errors</h4>
+    <dl>
+      <dt>
+      <dd>
+    </dl>
+
+    <h4>Example</h4>
+</font>
+<pre>
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <hr>
+
+    <a name="CosmDirOpen"></a>
+    <h3>
+      CosmDirOpen
+    </h3>
+
+    <h4>Syntax</h4>
+</font>
+<pre>
+#include "cosm/os_file.h"
+s32 CosmDirOpen( cosm_DIR * dir, const ascii * dirname, u32 mode );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Description</h4>
+    <p>
+      Attempt to open the <em>dirname</em> in the specified <em>mode</em>.
+      See <a href="os_file.html#CosmFileOpen">CosmFileOpen</a> for how to
+      specify the path.
+    </p>
+    <p>
+      <strong>Directory Modes:</strong>
+    </p>
+    <dl>
+      <dt>COSM_DIR_MODE_EXIST
+      <dd>Test for directory existence only and return.
+      <dt>COSM_DIR_MODE_CREATE
+      <dd>Create the directory if it doesn't exist and return.
+        Parent directories will be created if needed.
+
+    </dl>
+
+    <h4>Return Values</h4>
+    <p>
+      COSM_PASS on success, or an error code on failure.
+    </p>
+
+    <h4>Errors</h4>
+    <dl>
+      <dt>COSM_DIR_ERROR_DENIED
+      <dd>Access denied.
+      <dt>COSM_DIR_ERROR_NOTFOUND
+      <dd>Directory not found.
+      <dt>COSM_DIR_ERROR_CREATE
+      <dd>Unable to create new directory.
+      <dt>COSM_DIR_ERROR_MODE
+      <dd>Open flags conflict.
+      <dt>COSM_DIR_ERROR_CLOSED
+      <dd>Attempted to reopen an already open directory.
+      <dt>COSM_DIR_ERROR_NAME
+      <dd>Invalid directory name.
+    </dl>
+
+    <h4>Example</h4>
+</font>
+<pre>
+  cosm_DIR * dir;
+  s32 result;
+
+  dir = CosmMemAlloc( sizeof( cosm_DIR ) );
+
+  result = CosmDirOpen( dir, "/var/", COSM_DIR_MODE_READ );
+  if ( result == COSM_PASS )
+    CosmPrint(
+      "Call to CosmDirOpen passed. /var is open.\n" );
+  else {
+    CosmPrint( "Call to CosmDirOpen failed. Dying.\n" );
+    return 1;
+  }
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <hr>
+
+    <a name="CosmDirRead"></a>
+    <h3>
+      CosmDirRead
+    </h3>
+
+    <h4>Syntax</h4>
+</font>
+<pre>
+#include "cosm/os_file.h"
+s32 CosmDirRead( cosm_FILENAME * buffer, u64 * names_read, u64 length,
+  cosm_DIR * dir );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Description</h4>
+    <p>
+      Read <em>length</em> file names from the <em>dir</em> into the
+      <em>buffer</em>. Set <em>names_read</em> to the number of
+      filenames read, zero on error.
+    </p>
+
+    <h4>Return Values</h4>
+    <p>
+      COSM_PASS on success, or an error code on failure.
+    </p>
+
+    <h4>Errors</h4>
+    <p>
+      Upon failure <em>last_error</em> of <em>dir</em> will be set to one of
+      the following:
+    </p>
+    <dl>
+      <dt>COSM_DIR_ERROR_NOTFOUND
+      <dd>Directory not found.
+      <dt>COSM_DIR_ERROR_EOF
+      <dd>End of directory.
+      <dt>COSM_DIR_ERROR_CLOSED
+      <dd>Attempted to reopen an already open directory.
+      <dt>COSM_DIR_ERROR_NAME
+      <dd>Invalid directory name.
+    </dl>
+
+    <h4>Example</h4>
+</font>
+<pre>
+  cosm_DIR * dir;
+  cosm_FILENAME getbuff;
+  u64 count;
+
+  /* ... */
+
+  while ( CosmDirRead( &getbuff, &amp;count, (u64) 1, dir ) )
+    == COSM_PASS )
+  {
+    CosmPrint( "File: %.256s\n", getbuff );
+  }
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <hr>
+
+    <a name="CosmDirDelete"></a>
+    <h3>
+      CosmDirDelete
+    </h3>
+
+    <h4>Syntax</h4>
+</font>
+<pre>
+#include "cosm/os_file.h"
+s32 CosmDirDelete( const ascii * dirname );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Description</h4>
+    <p>
+      Attempt to delete the directory specified by <em>dirname</em>. Will
+      only work if the directory is empty. See
+      <a href="os_file.html#CosmFileOpen">CosmFileOpen</a> for how to specify
+      the path.
+    </p>
+
+    <h4>Return Values</h4>
+    <p>
+      COSM_PASS on success, or an error code on failure.
+    </p>
+
+    <h4>Errors</h4>
+    <dl>
+      <dt>COSM_DIR_ERROR_DENIED
+      <dd>Access denied.
+      <dt>COSM_DIR_ERROR_NOTFOUND
+      <dd>Directory not found.
+      <dt>COSM_DIR_ERROR_NOTEMPTY
+      <dd>Directory is not empty (no delete).
+      <dt>COSM_DIR_ERROR_NAME
+      <dd>Invalid directory name.
+    </dl>
+
+    <h4>Example</h4>
+</font>
+<pre>
+  s32 result;
+
+  result = CosmDirDelete( "/tmp/dir" );
+
+  if ( result == COSM_PASS )
+    CosmPrint( "/tmp/dir was successfully deleted.\n" );
+  else
+  {
+    if ( result == COSM_DIR_ERROR_NOTFOUND )
+      CosmPrint( "/tmp/dir doesn't exist.\n" );
+    else
+      CosmPrint( "/tmp/dir cannot be deleted.\n" );
+  }
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <hr>
+
+    <a name="CosmDirClose"></a>
+    <h3>
+      CosmDirClose
+    </h3>
+
+    <h4>Syntax</h4>
+</font>
+<pre>
+#include "cosm/os_file.h"
+s32 CosmDirClose( cosm_DIR * dir );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Description</h4>
+    <p>
+       Close the directory.
+    </p>
+
+    <h4>Return Values</h4>
+    <p>
+      COSM_PASS on success, or an error code on failure.
+    </p>
+
+    <h4>Errors</h4>
+    <dl>
+      <dt>COSM_DIR_ERROR_NOTFOUND
+      <dd>Directory not found.
+      <dt>COSM_DIR_ERROR_CLOSED
+      <dd>Attempted to reopen an already open directory.
+    </dl>
+
+    <h4>Example</h4>
+</font>
+<pre>
+  cosm_DIR * dir;
+  s32 result;
+
+  /* ... */
+
+  result = CosmDirClose( dir );
+
+  if ( result == COSM_PASS )
+    CosmPrint( "The directory was closed.\n" );
+  else
+    CosmPrint(
+      "The directory was not open or doesn't exist.\n" );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <hr>
+
+    <a name="CosmLoad"></a>
+    <h3>
+      CosmLoad
+    </h3>
+
+    <h4>Syntax</h4>
+</font>
+<pre>
+#include "cosm/os_file.h"
+void CosmU16Load( u16 * num, void * bytes );
+void CosmU32Load( u32 * num, void * bytes );
+void CosmU64Load( u64 * num, void * bytes );
+void CosmU128Load( u128 * num, void * bytes );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Description</h4>
+    <p>
+      Load the big endian <em>bytes</em> of specified type into the native
+      <em>num</em>.
+    </p>
+
+    <h4>Return Values</h4>
+    <p>
+      None.
+    </p>
+
+    <h4>Errors</h4>
+    <p>
+      None. Note that if <em>bytes</em> or <em>num</em> is NULL, no action
+      will be performed.
+    </p>
+
+    <h4>Example</h4>
+</font>
+<pre>
+  u8 * bytes;
+  u128 num;
+
+  bytes = CosmMemAlloc( 16LL );
+
+  /* ...'bytes' gets read from a file or from the net... */
+
+  CosmU128Load( &amp;num, bytes );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <hr>
+
+    <a name="CosmSave"></a>
+    <h3>
+      CosmSave
+    </h3>
+
+    <h4>Syntax</h4>
+</font>
+<pre>
+#include "cosm/os_file.h"
+void CosmU16Save( void * bytes, u16 * num );
+void CosmU32Save( void * bytes, u32 * num );
+void CosmU64Save( void * bytes, u64 * num );
+void CosmU128Save( void * bytes, u128 * num );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Description</h4>
+    <p>
+      Save the native <em>num</em> of specified type into big endian
+      <em>bytes</em>.
+    </p>
+
+    <h4>Return Values</h4>
+    <p>
+      None.
+    </p>
+
+    <h4>Errors</h4>
+    <p>
+      None. Note that if <em>bytes</em> or <em>num</em> is NULL, no action
+      will be performed.
+    </p>
+
+    <h4>Example</h4>
+</font>
+<pre>
+  u8 * bytes;
+  u128 num;
+
+  bytes = CosmMemAlloc( 16LL );
+
+  /* ... */
+
+  CosmU128Save( bytes, &amp;num );
+
+  /* 'bytes' is now safe to send to a file or over the net */
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+<hr>
+
+</font>
+<font face="Verdana,Arial,Helvetica" size="-2" color="#6666cc">
+  <p>
+    &copy; Copyright Mithral Communications &amp; Design Inc.
+    <!--#config timefmt="%Y" -->
+    1995-<!--#echo var="LAST_MODIFIED" -->.
+    All rights reserved.
+    Mithral&reg; and Cosm&reg; are trademarks of
+    Mithral Communications &amp; Design Inc.
+    <br>
+    <!--#config timefmt="%b %d, %Y" -->
+    Document last modified: <!--#echo var="LAST_MODIFIED" -->
+  </p>
+</font>
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>

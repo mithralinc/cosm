@@ -1,0 +1,580 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<html>
+  <head>
+    <title>
+      Cosm API - Memory Functions
+    </title>
+    <style type="text/css"><!-- a {text-decoration: none} --></style>
+  </head>
+  <body background="images/docbg.jpg" bgcolor="#000000" text="#cccccc"
+    link="#9999ff" vlink="#9999ff" alink="#ffcc66">
+
+  <table border="0" cellspacing="0" cellpadding="0">
+    <tr valign="top">
+      <td width="30"></td>
+      <td width="570">
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <p align="center">
+      <img src="images/cosmlogo.gif" alt="[Cosm Logo]"
+        width="357" height="123" border="0"><br>
+    </p>
+
+<!-- 678901234567890123456789012345678901234567890123456789012345678901234 -->
+
+    <h2 align="center">
+      Memory Functions
+    </h2>
+
+    <ul>
+      <li><a href="#CosmMemAlloc">CosmMemAlloc</a>
+      <li><a href="#CosmMemRealloc">CosmMemRealloc</a>
+      <li><a href="#CosmMemCopy">CosmMemCopy</a>
+      <li><a href="#CosmMemSet">CosmMemSet</a>
+      <li><a href="#CosmMemCmp">CosmMemCmp</a>
+      <li><a href="#CosmMemOffset">CosmMemOffset</a>
+      <li><a href="#CosmMemFree">CosmMemFree</a>
+      <li><a href="#CosmMemSystem">CosmMemSystem</a>
+      <li><a href="#CosmMemWarning">CosmMemWarning</a>
+      <li><a href="#CosmMemDumpLeaks">CosmMemDumpLeaks</a>
+    </ul>
+
+    <hr>
+
+    <a name="CosmMemAlloc"></a>
+    <h3>
+      CosmMemAlloc
+    </h3>
+
+    <h4>Syntax</h4>
+</font>
+<pre>
+#include "cosm/os_mem.h"
+void * CosmMemAlloc( u64 bytes, u32 secure );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Description</h4>
+    <p>
+      Allocate a block of zeroed memory. Will allocate
+      16*floor((<em>bytes</em>+15)/16)) bytes, i.e. blocks of 16 bytes, and
+      only on 16 byte boundaries.
+    </p>
+    <p>
+      If <em>secure</em> is COSM_MEM_NORMAL no special requirements are needed.
+    </p>
+    <p>
+      If <em>secure</em> is COSM_MEM_SECURE the program will expect the
+      following:
+    </p>
+    <ul>
+      <li>The memory will be protected from read or write from any other
+        process including supervisor run programs or other processes owned
+        by the same user, unless explicitly given access.
+      <li>The memory will not be swapped or otherwise copied out of live RAM
+        including during a crash triggered dump by the process.
+      <li>The memory will not cross CPU boundaries.
+      <li>The parts of the kernel in supervisor space will not be modified
+        after boot.
+    </ul>
+    <p>
+      If the <em>secure</em> flag cannot be enforced,
+      <a href="#CosmMemWarning">CosmMemWarning</a> will be called and the
+      function will return NULL. The user will then be warned any time that
+      the system is insecure and the program attempts to do secure operations.
+    </p>
+
+    <h4>Return Values</h4>
+    <p>
+      An aligned pointer to the RAM block, or NULL on failure.
+    </p>
+
+    <h4>Errors</h4>
+    <p>
+      None.
+    </p>
+
+    <h4>Example</h4>
+</font>
+<pre>
+  u64 size;
+  void * mem;
+
+  size = 0x0000000000000400LL;
+  mem = CosmMemAlloc( size );
+  if ( mem == NULL )
+  {
+    /* Error */
+    return COSM_FAIL;
+  }
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <hr>
+
+    <a name="CosmMemRealloc"></a>
+    <h3>
+      CosmMemRealloc
+    </h3>
+
+    <h4>Syntax</h4>
+</font>
+<pre>
+#include "cosm/os_mem.h"
+void * CosmMemRealloc( void * memory, u64 bytes, u32 secure );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Description</h4>
+    <p>
+      Adjust the size of the ram block <em>memory</em> to <em>bytes</em>
+      length, copying any old data. If <em>memory</em> is NULL, this
+      function acts like <a href="#CosmMemAlloc">CosmMemAlloc</a>.
+      The <em>secure</em> flag will be treated as it is in
+      <a href="#CosmMemAlloc">CosmMemAlloc</a>. If <em>bytes</em> is zero,
+      then free the <em>memory</em>, and return NULL.
+    </p>
+    <p>
+      Any expanded memory space will have unknown values.
+    </p>
+
+    <h4>Return Values</h4>
+    <p>
+      A pointer to the new memory space on success, or NULL if unable to
+      change the size - leaving the old memory unmodified.
+    </p>
+
+    <h4>Errors</h4>
+    <p>
+      None.
+    </p>
+
+    <h4>Example</h4>
+</font>
+<pre>
+  u64 size;
+  void * mem;
+  void * small;
+
+  size = 0x0000000000000400LL;
+  mem = CosmMemAlloc( size );
+  if ( mem == NULL )
+  {
+    /* Error */
+    return COSM_FAIL;
+  }
+
+  size = 0x0000000000000200LL;
+  small = CosmMemRealloc( mem, size, 0 );
+  if ( small == NULL )
+  {
+    /* Error */
+    return COSM_FAIL;
+  }
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <hr>
+
+    <a name="CosmMemCopy"></a>
+    <h3>
+      CosmMemCopy
+    </h3>
+
+    <h4>Syntax</h4>
+</font>
+<pre>
+#include "cosm/os_mem.h"
+s32 CosmMemCopy( void * dest, const void * src, u64 length );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Description</h4>
+    <p>
+      Copy <em>length</em> bytes of memory from <em>src</em> to <em>dest</em>.
+    </p>
+
+    <h4>Return Values</h4>
+    <p>
+      COSM_PASS on success, or COSM_FAIL on failure.
+    </p>
+
+    <h4>Errors</h4>
+    <p>
+      None.
+    </p>
+
+    <h4>Example</h4>
+</font>
+<pre>
+  void * old;
+  void * new;
+  u64 size;
+
+  size = 0x0000000000000400LL;
+  old = CosmMemAlloc( size );
+  if ( old == NULL )
+  {
+    /* Error */
+    return COSM_FAIL;
+  }
+
+  new = CosmMemAlloc( size );
+  if ( new == NULL )
+  {
+    /* Error */
+    return COSM_FAIL;
+  }
+
+  if ( CosmMemCopy( new, mem, size ) == COSM_FAIL )
+  {
+    /* Error */
+    return COSM_FAIL;
+  }
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <hr>
+
+    <a name="CosmMemSet"></a>
+    <h3>
+      CosmMemSet
+    </h3>
+
+    <h4>Syntax</h4>
+</font>
+<pre>
+#include "cosm/os_mem.h"
+s32 CosmMemSet( void * memory, u64 length, u8 value );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Description</h4>
+    <p>
+      Set <em>length</em> bytes of <em>memory</em> to <em>value</em>.
+    </p>
+
+    <h4>Return Values</h4>
+    <p>
+      COSM_PASS on success, or COSM_FAIL on failure.
+    </p>
+
+    <h4>Errors</h4>
+    <p>
+      Passing a NULL parameter or wrapping around the top of memory.
+    </p>
+
+    <h4>Example</h4>
+</font>
+<pre>
+  u64 size;
+  void * mem;
+  void * small;
+
+  size = 0x0000000000000400LL;
+  mem = CosmMemAlloc( size );
+  if ( mem == NULL )
+  {
+    /* Error */
+    return COSM_FAIL;
+  }
+
+  if ( CosmMemSet( mem, size, 0xFF ) == COSM_FAIL )
+  {
+    /* Error */
+    return COSM_FAIL;
+  }
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <hr>
+
+    <a name="CosmMemCmp"></a>
+    <h3>
+      CosmMemCmp
+    </h3>
+
+    <h4>Syntax</h4>
+</font>
+<pre>
+#include "cosm/os_mem.h"
+s32 CosmMemCmp( const void * blockA, const void * blockB,
+  u64 max_bytes );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Description</h4>
+    <p>
+      Compare the memory blocks <em>blockA</em> and <em>blockB</em>,
+      up to <em>max_bytes</em> will be compared.
+    </p>
+
+    <h4>Return Values</h4>
+    <p>
+      0 if the blocks are identical. If they are different then a positive
+      or negative based on blockA[x] - blockB[x]. Due to endian issues
+      the +/- result may or may not be relivant. If any parameter is NULL/0
+      then it returns -1 unless <em>blockA</em> == <em>blockB</em>.
+    </p>
+
+    <h4>Errors</h4>
+    <p>
+      None.
+    </p>
+
+    <h4>Example</h4>
+</font>
+<pre>
+  u64 size;
+  void memA[256];
+  void memB[256];
+  s32 diff;
+
+  size = 0x0000000000000100LL;
+  if ( ( diff = CosmMemCmp( memA, memB, size ) ) == 0 )
+  {
+    /* memory blocks are the same */
+  }
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <hr>
+
+    <a name="CosmMemOffset"></a>
+    <h3>
+      CosmMemOffset
+    </h3>
+
+    <h4>Syntax</h4>
+</font>
+<pre>
+#include "cosm/os_mem.h"
+void * CosmMemOffset( const void * memory, u64 offset );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Description</h4>
+    <p>
+      Calculates the address of <em>memory</em> + <em>offset</em>.
+    </p>
+
+    <h4>Return Values</h4>
+    <p>
+      A pointer to the data location, or NULL if address space is exceeded.
+    </p>
+
+    <h4>Errors</h4>
+    <p>
+      None.
+    </p>
+
+    <h4>Example</h4>
+</font>
+<pre>
+  u64 offset;
+  void * memory;
+  void * ptr;
+
+  offset = 0x0000000000000100LL;
+
+  ptr = CosmMemOffset( memory, offset );
+  /* ptr is a pointer to 256 bytes past memory */
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <hr>
+
+    <a name="CosmMemFree"></a>
+    <h3>
+      CosmMemFree
+    </h3>
+
+    <h4>Syntax</h4>
+</font>
+<pre>
+#include "cosm/os_mem.h"
+void CosmMemFree( void * memory );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Description</h4>
+    <p>
+      Free the requested memory block <em>memory</em>.
+      <em>memory</em> may safely be NULL.
+    </p>
+
+    <h4>Return Values</h4>
+    <p>
+      None.
+    </p>
+
+    <h4>Errors</h4>
+    <p>
+      None.
+    </p>
+
+    <h4>Example</h4>
+</font>
+<pre>
+  u64 size;
+  void * mem;
+
+  size = 0x0000000000000400LL;
+  mem = CosmMemAlloc( size );
+  if ( mem == NULL )
+  {
+    /* Error */
+    return COSM_FAIL;
+  }
+
+  CosmMemFree( mem );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <hr>
+
+    <a name="CosmMemSystem"></a>
+    <h3>
+      CosmMemSystem
+    </h3>
+
+    <h4>Syntax</h4>
+</font>
+<pre>
+#include "cosm/os_mem.h"
+s32 CosmMemSystem( u64 * amount );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Description</h4>
+    <p>
+      Set <em>amount</em> to the number of bytes of physical RAM
+      in the system.
+    </p>
+
+    <h4>Return Values</h4>
+    <p>
+      COSM_PASS on success, or COSM_FAIL on failure.
+    </p>
+
+    <h4>Errors</h4>
+    <p>
+      Possible causes of an failure:
+    </p>
+    <ul>
+      <li>This function is not supported correctly by all operating systems.
+        Linux < 2.3.23 will not correctly report more then 4GiB of RAM.
+    </ul>
+
+    <h4>Example</h4>
+</font>
+<pre>
+  u64 memory_size;
+  void * mem;
+
+  if ( CosmMemSystem( &amp;memory_size ) != COSM_PASS )
+  {
+    /* couldn't get memory total */
+  }
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <hr>
+
+    <a name="CosmMemWarning"></a>
+    <h3>
+      CosmMemWarning
+    </h3>
+
+    <h4>Syntax</h4>
+</font>
+<pre>
+#include "cosm/os_mem.h"
+void * CosmMemWarning( void );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Description</h4>
+    <p>
+      Force display of a warning message to the user, when secure memory
+      is requested but not available.
+    </p>
+
+    <h4>Return Values</h4>
+    <p>
+      None.
+    </p>
+
+    <h4>Errors</h4>
+    <p>
+      None.
+    </p>
+
+    <h4>Example</h4>
+</font>
+<pre>
+  CosmMemWarning();
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <hr>
+
+    <a name="CosmMemDumpLeaks"></a>
+    <h3>
+      CosmMemDumpLeaks
+    </h3>
+
+    <h4>Syntax</h4>
+</font>
+<pre>
+#include "cosm/os_mem.h"
+s32 CosmMemDumpLeaks( const ascii * filename );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Description</h4>
+    <p>
+      Write out a list of memory that has not been CosmMemFeee'd yet
+      to <em>filename</em>. Due to the overhead of this function you
+      must define MEM_LEAK_FIND when compiling the cosm libraries and
+      your code, otherwise it will not exist.
+    </p>
+
+    <h4>Return Values</h4>
+    <p>
+      COSM_PASS on success, or COSM_FAIL on failure.
+    </p>
+
+    <h4>Errors</h4>
+    <p>
+      Any errors will be related to opening the file..
+    </p>
+
+    <h4>Example</h4>
+</font>
+<pre>
+  CosmMemDumpLeaks( "leaks.txt" );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+<hr>
+
+</font>
+<font face="Verdana,Arial,Helvetica" size="-2" color="#6666cc">
+  <p>
+    &copy; Copyright Mithral Communications &amp; Design Inc.
+    <!--#config timefmt="%Y" -->
+    1995-<!--#echo var="LAST_MODIFIED" -->.
+    All rights reserved.
+    Mithral&reg; and Cosm&reg; are trademarks of
+    Mithral Communications &amp; Design Inc.
+    <br>
+    <!--#config timefmt="%b %d, %Y" -->
+    Document last modified: <!--#echo var="LAST_MODIFIED" -->
+  </p>
+</font>
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>

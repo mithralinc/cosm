@@ -1,0 +1,4 @@
+all:
+	@echo ; echo 'Use the "build" command (shell script) to make.'
+	@echo 'Type "build help" for details on how it works.' ; echo
+

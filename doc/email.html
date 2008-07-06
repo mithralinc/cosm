@@ -1,0 +1,128 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<html>
+  <head>
+    <title>
+      Cosm API - Email Functions
+    </title>
+    <style type="text/css"><!-- a {text-decoration: none} --></style>
+  </head>
+  <body background="images/docbg.jpg" bgcolor="#000000" text="#cccccc"
+    link="#9999ff" vlink="#9999ff" alink="#ffcc66">
+
+  <table border="0" cellspacing="0" cellpadding="0">
+    <tr valign="top">
+      <td width="30"></td>
+      <td width="570">
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <p align="center">
+      <img src="images/cosmlogo.gif" alt="[Cosm Logo]"
+        width="357" height="123" border="0"><br>
+    </p>
+
+<!-- 678901234567890123456789012345678901234567890123456789012345678901234 -->
+
+    <h2 align="center">
+      Email Functions
+    </h2>
+
+    <ul>
+      <li><a href="#CosmEmailSMTP">CosmEmailSMTP</a>
+    </ul>
+
+    <hr>
+
+    <a name="CosmEmailSMTP"></a>
+    <h3>
+      CosmEmailSMTP
+    </h3>
+
+    <h4>Syntax</h4>
+</font>
+<pre>
+#include "cosm/email.h"
+s32 CosmEmailSMTP( const cosm_NET_ADDR smtp_server, const u16 port,
+  const ascii * to, const ascii * from, const ascii * subject,
+  const ascii * message, u32 length );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Description</h4>
+    <p>
+      Send SMTP email <em>message</em> of length <em>length</em> with
+      <em>subject</em> using the given <em>smtp_server</em> host and
+      <em>port</em>. The To: and From: fields will be set to <em>to</em>
+      and <em>from</em>. SMTP is a 7-bit protocol so only plain text
+      can be sent.
+    </p>
+
+    <h4>Return Values</h4>
+    <p>
+      COSM_PASS on success, or an error code on failure.
+    </p>
+
+    <h4>Errors</h4>
+    <dl>
+      <dt>COSM_EMAIL_ERROR_TO
+      <dd>The TO address was rejected by the SMTP server.
+      <dt>COSM_EMAIL_ERROR_FROM
+      <dd>The FROM address was rejected by the SMTP server.
+      <dt>COSM_EMAIL_ERROR_HOST
+      <dd>The SMTP server specified was invalid.
+      <dt>COSM_EMAIL_ERROR_MESSAGE
+      <dd>Message length is nonzero, but message is NULL.
+      <dt>COSM_EMAIL_ERROR_NORELAY
+      <dd>The SMTP server specified does not permit relaying.
+      <dt>COSM_EMAIL_ERROR_ABORTED
+      <dd>Unable to complete transmission.
+    </dl>
+
+    <h4>Example</h4>
+</font>
+<pre>
+  cosm_NET_ADDR smtp_server;
+  ascii * server = "127.0.0.1";
+  ascii * to = "foo@bar.com";
+  ascii * from = "cosm@bar.com";
+  ascii * subject = "Testing";
+  ascii * message = "This is a test";
+  u32 length;
+  s32 error;
+
+  length = CosmStrBytes( message );
+
+  if ( CosmNetDNS( &amp;smtp_server, 1, server ) == 1 )
+  {
+    error = CosmEmailSMTP( smtp_server, 25, to, from, subject,
+      message, length );
+    CosmPrint( "Email%.4s sent!\n",
+      ( ( error == COSM_PASS ) ? "" : " NOT" ) );
+  }
+  else
+  {
+    CosmPrint( "DNS lookup error!\n" );
+  }
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+<hr>
+
+</font>
+<font face="Verdana,Arial,Helvetica" size="-2" color="#6666cc">
+  <p>
+    &copy; Copyright Mithral Communications &amp; Design Inc.
+    <!--#config timefmt="%Y" -->
+    1995-<!--#echo var="LAST_MODIFIED" -->.
+    All rights reserved.
+    Mithral&reg; and Cosm&reg; are trademarks of
+    Mithral Communications &amp; Design Inc.
+    <br>
+    <!--#config timefmt="%b %d, %Y" -->
+    Document last modified: <!--#echo var="LAST_MODIFIED" -->
+  </p>
+</font>
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>

@@ -1,0 +1,321 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<html>
+  <head>
+    <title>Cosm API - Encoder Functions
+    </title>
+    <style type="text/css"><!-- a {text-decoration: none}
+	-->
+	</style>
+  </head>
+  <body background="images/docbg.jpg" bgcolor="#000000" text="#cccccc"
+    link="#9999ff" vlink="#9999ff" alink="#ffcc66">
+
+  <table border="0" cellspacing="0" cellpadding="0">
+    <tr valign="top">
+      <td width="30"></td>
+      <td width="570">
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <p align="center">
+      <img src="images/cosmlogo.gif" alt="[Cosm Logo]"
+        width="357" height="123" border="0"><br>
+    </p>
+
+<!-- 678901234567890123456789012345678901234567890123456789012345678901234 -->
+
+    <h2 align="center">
+      Encoder Functions
+    </h2>
+
+    <ul>
+      <li><a href="#CosmTransformInit">CosmTransformInit</a>
+      <li><a href="#CosmTransform">CosmTransform</a>
+      <li><a href="#CosmTransformEnd">CosmTransformEnd</a>
+      <li><a href="#CosmTransformEndAll">CosmTransformEndAll</a>
+    </ul>
+
+    <hr>
+
+    <a name="CosmTransformInit"></a>
+    <h3>
+      CosmTransformInit
+    </h3>
+
+    <h4>Syntax</h4>
+</font>
+<pre>
+#include "cosm/transform.h"
+s32 CosmTransformInit( cosm_TRANSFORM * transform,
+  s32 (*init)( cosm_TRANSFORM *, va_list ),
+  s32 (*encode)( cosm_TRANSFORM *, const void * const, u64 ),
+  s32 (*end)( cosm_TRANSFORM * ),
+  cosm_TRANSFORM * next_transform, ... );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Description</h4>
+    <p>
+      Setup and initialize the transform. <em>...</em> depends on the
+      transform and are fed to the transform's <em>init</em>, which is called
+      by this function. If <em>next_transform</em> is non-NULL, then the
+      output is fed to that transform, and many transforms will require this.
+      See the documentation for the transform functions, which are usually
+      provided as a single define, for more information.
+    </p>
+    <p>
+      <em>init</em>  must process and copy any needed params to a
+      struct allocated totransform-&gt;tmp_data, or if a single pointer is enough just
+      set tmp_data. <em>encode</em> must process the input data and minimally
+      pass it to the <em>next_transform</em> if there is one. <em>end</em>
+      must finish any processing writing to the output/params and free any
+      temprary data. See the common transforms or security functions for uses
+      and minimal functionality of transforms.
+    </p>
+    <p>
+      You should always define a macro for the 3 callback functions.
+    </p>
+
+    <h4>Return Values</h4>
+    <p>
+      COSM_PASS on success, or a transform error code on failure.
+    </p>
+
+    <h4>Errors</h4>
+    <dl>
+      <dt>COSM_TRANSFORM_ERROR_PARAM
+      <dd>Invalid parameter.
+      <dt>COSM_TRANSFORM_ERROR_STATE
+      <dd>Invalid state or functions called in the wrong order.
+      <dt>COSM_TRANSFORM_ERROR_MEMORY
+      <dd>Out of memory problem.
+      <dt>COSM_TRANSFORM_ERROR_FATAL
+      <dd>Fatal algorithm error, call ...End().
+      <dt>COSM_TRANSFORM_ERROR_NEXT
+      <dd>Invalid mode or params sent to algorithm.</dd>
+    </dl>
+
+    <h4>Predefined transforms</h4>
+    <dl>
+      <dt>COSM_BASE64_ENCODE
+      <dd>params = none. Output to required next_encoder is base64 encoded
+        data, 76 columns per line.
+      <dt>COSM_BASE64_DECODE
+      <dd>params = none. Output to required next_encoder is the data decoded
+        from base64 text input.
+      <dt>COSM_TRANSFORM_TO_MEMORY
+      <dd>params = (void *) to the start of a memory range to copy to.
+        Output to optional next_encoder is the same as input.
+      <dt>COSM_TRANSFORM_TO_FILE
+      <dd>params = (cosm_FILE *) to an already open file to write to.
+        Output to optional next_encoder is the same as input.
+      <dt>COSM_TRANSFORM_TO_NET
+      <dd>(cosm_NET *) to an already open netowrk connection.
+        Output to optional next_encoder is the same as input.
+      <dt>COSM_TRANSFORM_TO_BUFFER
+      <dd>params = (cosm_BUFFER *) to an already
+        initialized buffer, which must be a queue not a stack. Output to
+        optional next_encoder is the same as input.</dd>
+    </dl>
+
+    <h4>Example</h4>
+</font>
+<pre>
+  cosm_BUFFER buf;
+  cosm_TRANSFORM tmp;
+
+  CosmMemSet( &amp;buf, sizeof( cosm_BUFFER ), 0 );
+  CosmMemSet( &amp;tmp, sizeof( cosm_TRANSFORM ), 0 );
+
+  if ( CosmTransformInit( &tmp, COSM_TRANSFORM_TO_BUFFER,
+    NULL, &amp;buf ) != COSM_PASS )
+  {
+    return -1;
+  }
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <hr>
+
+    <a name="CosmTransform"></a>
+    <h3>
+      CosmTransform
+    </h3>
+
+    <h4>Syntax</h4>
+</font>
+<pre>
+#include "cosm/transform.h"
+s32 CosmTransform( cosm_BUFFER * output, cosm_TRANSFORM * tmp,
+  const void * const data, u64 length );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Description</h4>
+    <p>
+      Feed <em>length</em> bytes of <em>data</em> into the encoding
+      routines. Any encoded data will be placed into the <em>output</em>
+      buffer but may not be put into the <em>output</em> buffer after every
+      call for some algorithms.
+    </p>
+    <p>
+      Make sure your <em>data</em> has been CosmSave'd before using this.
+    </p>
+
+    <h4>Return Values</h4>
+    <p>
+      COSM_PASS on success, or a transform error code on failure.
+    </p>
+
+    <h4>Errors</h4>
+    <dl>
+      <dt>COSM_TRANSFORM_ERROR_PARAM
+      <dd>Invalid parameter.
+      <dt>COSM_TRANSFORM_ERROR_STATE
+      <dd>Invalid state or functions called in the wrong order.
+      <dt>COSM_TRANSFORM_ERROR_MEMORY
+      <dd>Out of memory problem.
+      <dt>COSM_TRANSFORM_ERROR_FATAL
+      <dd>Fatal algorithm error, call ...End().</dd>
+    </dl>
+
+    <h4>Example</h4>
+</font>
+<pre>
+  cosm_BUFFER buf;
+  cosm_TRANSFORM tmp;
+  u8 data[8] = { 0, 1, 2, 3, 3, 3, 3, 4 };
+
+  /* ... */
+
+  if ( CosmTransform( &amp;tmp, data, 8LL ) != COSM_PASS )
+  {
+    return -2;
+  }
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <hr>
+
+    <a name="CosmTransformEnd"></a>
+    <h3>
+      CosmTransformEnd
+    </h3>
+
+    <h4>Syntax</h4>
+</font>
+<pre>
+#include "cosm/transform.h"
+s32 CosmTransformEnd( cosm_BUFFER * output, cosm_TRANSFORM * tmp );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Description</h4>
+    <p>
+      Clear any temporary data and put the last of the encoded data into
+      the buffer. Make sure to empty and
+      <a href="buffer.html#CosmBufferFree">CosmBufferFree</a> the output buffer
+      of your data after calling this function.
+    </p>
+    <p>
+      If this function fails, you must call it again. This second call
+      will always succeed and clean up any mess.
+    </p>
+
+    <h4>Return Values</h4>
+    <p>
+      COSM_PASS on success, or a transform error code on failure.
+    </p>
+
+    <h4>Errors</h4>
+    <dl>
+      <dt>COSM_TRANSFORM_ERROR_PARAM
+      <dd>Invalid parameter.
+      <dt>COSM_TRANSFORM_ERROR_STATE
+      <dd>Invalid state or functions called in the wrong order.
+      <dt>COSM_TRANSFORM_ERROR_FATAL
+      <dd>Fatal algorithm error, call ...End().</dd>
+    </dl>
+
+    <h4>Example</h4>
+</font>
+<pre>
+  cosm_BUFFER buf;
+  cosm_TRANSFORM tmp;
+
+  /* ... use the transform */
+
+  if ( CosmTransformEnd( &amp;tmp ) != COSM_PASS )
+  {
+    /* something bad happened, but we're all cleaned up */
+
+    return -3;
+  }
+
+  /* empty out the buffer */
+
+  /* then dont forget to free it */
+  CosmBufferFree( &amp;buf );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+<hr>
+
+    <a name="CosmTransformEndAll"></a>
+    <h3>
+      CosmTransformEndAll
+    </h3>
+
+    <h4>Syntax</h4>
+</font>
+<pre>
+#include "cosm/transform.h"
+s32 CosmTransformEndAll( cosm_TRANSFORM * transform );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Description</h4>
+    <p>
+      Ends the transform and all transforms following it.
+    </p>
+
+    <h4>Return Values</h4>
+    <p>
+      COSM_PASS on success, or a transform error code on failure.
+      Error returned will be the first error in the chain if there is one.
+    </p>
+
+    <h4>Errors</h4>
+    <dl>
+      <dt>COSM_TRANSFORM_ERROR_STATE
+      <dd>Invalid state or functions called in the wrong order.
+      <dt>COSM_TRANSFORM_ERROR_FATAL
+      <dd>Fatal algorithm error.
+    </dl>
+
+    <h4>Example</h4>
+</font>
+<pre>
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+<hr>
+
+</font>
+<font face="Verdana,Arial,Helvetica" size="-2" color="#6666cc">
+  <p>
+    © Copyright Mithral Communications &amp; Design
+      Inc.
+    <!--#config timefmt="%Y" -->1995-<!--#echo var="LAST_MODIFIED" -->.
+    All rights reserved.
+    Mithral® and Cosm® are trademarks of
+    Mithral Communications &amp; Design Inc.
+    <br>
+    <!--#config timefmt="%b %d, %Y" -->Document
+      last modified: <!--#echo var="LAST_MODIFIED" -->
+  </p>
+</font>
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>

@@ -1,0 +1,876 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<html>
+  <head>
+    <title>
+      Cosm API - Big Number Functions
+    </title>
+    <style type="text/css"><!-- a {text-decoration: none} --></style>
+  </head>
+  <body background="images/docbg.jpg" bgcolor="#000000" text="#cccccc"
+    link="#9999ff" vlink="#9999ff" alink="#ffcc66">
+
+  <table border="0" cellspacing="0" cellpadding="0">
+    <tr valign="top">
+      <td width="30"></td>
+      <td width="570">
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <p align="center">
+      <img src="images/cosmlogo.gif" alt="[Cosm Logo]"
+        width="357" height="123" border="0"><br>
+    </p>
+
+<!-- 678901234567890123456789012345678901234567890123456789012345678901234 -->
+
+    <h2 align="center">
+      Big Number Functions
+    </h2>
+
+    <ul>
+      <li><a href="#CosmBNInit">CosmBNInit</a>
+      <li><a href="#CosmBNSet">CosmBNSet</a>
+      <li><a href="#CosmBNSets32">CosmBNSets32</a>
+      <li><a href="#CosmBNGets32">CosmBNGets32</a>
+      <li><a href="#CosmBNCmp">CosmBNCmp</a>
+      <li><a href="#CosmBNOdd">CosmBNOdd</a>
+      <li><a href="#CosmBNZero">CosmBNZero</a>
+      <li><a href="#CosmBNBits">CosmBNBits</a>
+      <li><a href="#CosmBNAdd">CosmBNAdd</a>
+      <li><a href="#CosmBNSub">CosmBNSub</a>
+      <li><a href="#CosmBNMul">CosmBNMul</a>
+      <li><a href="#CosmBNDiv">CosmBNDiv</a>
+      <li><a href="#CosmBNMod">CosmBNMod</a>
+      <li><a href="#CosmBNModExp">CosmBNModExp</a>
+      <li><a href="#CosmBNModInv">CosmBNModInv</a>
+      <li><a href="#CosmBNGCD">CosmBNGCD</a>
+      <li>CosmBNPrimeRM
+      <li>CosmBNPrimeGen
+      <li><a href="#CosmBNStr">CosmBNStr</a>
+      <li><a href="#CosmBNPrint">CosmBNPrint</a>
+      <li><a href="#CosmBNFree">CosmBNFree</a>
+      <li><a href="#CosmBNLoad">CosmBNLoad</a>
+      <li><a href="#CosmBNSave">CosmBNSave</a>
+    </ul>
+
+    <hr>
+
+    <a name="CosmBNInit"></a>
+    <h3>
+      CosmBNInit
+    </h3>
+
+    <h4>Syntax</h4>
+</font>
+<pre>
+#include "cosm/bignum.h"
+s32 CosmBNInit( cosm_BN * x );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Description</h4>
+    <p>
+      Initialize the bignum to 0. This isn't neccesary if you have allocated
+      the cosm_BN with CosmMemAlloc. The library will handle numbers up to
+      2^31 - 64 bits in length or the limit of memory.
+    </p>
+
+    <h4>Return Values</h4>
+    <p>
+      COSM_PASS or COSM_FAIL on an error.
+    </p>
+
+    <h4>Errors</h4>
+    <dl>
+      <dt>
+      <dd>
+    </dl>
+
+    <h4>Example</h4>
+</font>
+<pre>
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+<hr>
+
+    <a name="CosmBNSet"></a>
+    <h3>
+      CosmBNSet
+    </h3>
+
+    <h4>Syntax</h4>
+</font>
+<pre>
+#include "cosm/bignum.h"
+s32 CosmBNSet( cosm_BN * x, const cosm_BN * a );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Description</h4>
+    <p>
+      x = a.
+    </p>
+
+    <h4>Return Values</h4>
+    <p>
+      COSM_PASS or COSM_FAIL on an error.
+    </p>
+
+    <h4>Errors</h4>
+    <dl>
+      <dt>
+      <dd>
+    </dl>
+
+    <h4>Example</h4>
+</font>
+<pre>
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+<hr>
+
+    <a name="CosmBNSets32"></a>
+    <h3>
+      CosmBNSets32
+    </h3>
+
+    <h4>Syntax</h4>
+</font>
+<pre>
+#include "cosm/bignum.h"
+s32 CosmBNSets32( cosm_BN * x, const s32 a );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Description</h4>
+    <p>
+      x = (s32) a.
+    </p>
+
+    <h4>Return Values</h4>
+    <p>
+      COSM_PASS or COSM_FAIL on an error.
+    </p>
+
+    <h4>Errors</h4>
+    <dl>
+      <dt>
+      <dd>
+    </dl>
+
+    <h4>Example</h4>
+</font>
+<pre>
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+<hr>
+
+    <a name="CosmBNGets32"></a>
+    <h3>
+      CosmBNGets32
+    </h3>
+
+    <h4>Syntax</h4>
+</font>
+<pre>
+#include "cosm/bignum.h"
+s32 CosmBNGets32( s32 * x, const cosm_BN * a );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Description</h4>
+    <p>
+      x = (s32) a. Nasty truncation will occur if the number is more then
+      31 bits long.
+    </p>
+
+    <h4>Return Values</h4>
+    <p>
+      COSM_PASS or COSM_FAIL on an error.
+    </p>
+
+    <h4>Errors</h4>
+    <dl>
+      <dt>
+      <dd>
+    </dl>
+
+    <h4>Example</h4>
+</font>
+<pre>
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+<hr>
+
+    <a name="CosmBNCmp"></a>
+    <h3>
+      CosmBNCmp
+    </h3>
+
+    <h4>Syntax</h4>
+</font>
+<pre>
+#include "cosm/bignum.h"
+s32 CosmBNCmp( const cosm_BN * a, const cosm_BN * b );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Description</h4>
+    <p>
+      Compare the numbers a and b.
+    </p>
+
+    <h4>Return Values</h4>
+    <p>
+      -1 if a &lt; b, 0 if a == b, 1 if a &gt; b.
+    </p>
+
+    <h4>Errors</h4>
+    <dl>
+      <dt>
+      <dd>
+    </dl>
+
+    <h4>Example</h4>
+</font>
+<pre>
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+<hr>
+
+    <a name="CosmBNOdd"></a>
+    <h3>
+      CosmBNOdd
+    </h3>
+
+    <h4>Syntax</h4>
+</font>
+<pre>
+#include "cosm/bignum.h"
+s32 CosmBNOdd( const cosm_BN * x );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Description</h4>
+    <p>
+      Is x odd?
+    </p>
+
+    <h4>Return Values</h4>
+    <p>
+      1 if x is odd, 0 if even.
+    </p>
+
+    <h4>Errors</h4>
+    <dl>
+      <dt>
+      <dd>
+    </dl>
+
+    <h4>Example</h4>
+</font>
+<pre>
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+<hr>
+
+    <a name="CosmBNZero"></a>
+    <h3>
+      CosmBNZero
+    </h3>
+
+    <h4>Syntax</h4>
+</font>
+<pre>
+#include "cosm/bignum.h"
+s32 CosmBNZero( const cosm_BN * x );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Description</h4>
+    <p>
+      Is x zero?
+    </p>
+
+    <h4>Return Values</h4>
+    <p>
+      1 if x is zero, 0 otherwise.
+    </p>
+
+    <h4>Errors</h4>
+    <dl>
+      <dt>
+      <dd>
+    </dl>
+
+    <h4>Example</h4>
+</font>
+<pre>
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+<hr>
+
+    <a name="CosmBNBits"></a>
+    <h3>
+      CosmBNBits
+    </h3>
+
+    <h4>Syntax</h4>
+</font>
+<pre>
+#include "cosm/bignum.h"
+s32 CosmBNBits( u32 * x, const cosm_BN * a );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Description</h4>
+    <p>
+      x = bits in a, could be 0.
+    </p>
+
+    <h4>Return Values</h4>
+    <p>
+      COSM_PASS or COSM_FAIL on an error.
+    </p>
+
+    <h4>Errors</h4>
+    <dl>
+      <dt>
+      <dd>
+    </dl>
+
+    <h4>Example</h4>
+</font>
+<pre>
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+<hr>
+
+    <a name="CosmBNAdd"></a>
+    <h3>
+      CosmBNAdd
+    </h3>
+
+    <h4>Syntax</h4>
+</font>
+<pre>
+#include "cosm/bignum.h"
+s32 CosmBNAdd( cosm_BN * x, const cosm_BN * a, const cosm_BN * b );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Description</h4>
+    <p>
+      x = a + b.
+    </p>
+
+    <h4>Return Values</h4>
+    <p>
+      COSM_PASS or COSM_FAIL on an error.
+    </p>
+
+    <h4>Errors</h4>
+    <dl>
+      <dt>
+      <dd>
+    </dl>
+
+    <h4>Example</h4>
+</font>
+<pre>
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+<hr>
+
+    <a name="CosmBNSub"></a>
+    <h3>
+      CosmBNSub
+    </h3>
+
+    <h4>Syntax</h4>
+</font>
+<pre>
+#include "cosm/bignum.h"
+s32 CosmBNSub( cosm_BN * x, const cosm_BN * a, const cosm_BN * b );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Description</h4>
+    <p>
+      x = a - b.
+    </p>
+
+    <h4>Return Values</h4>
+    <p>
+      COSM_PASS or COSM_FAIL on an error.
+    </p>
+
+    <h4>Errors</h4>
+    <dl>
+      <dt>
+      <dd>
+    </dl>
+
+    <h4>Example</h4>
+</font>
+<pre>
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+<hr>
+
+    <a name="CosmBNMul"></a>
+    <h3>
+      CosmBNMul
+    </h3>
+
+    <h4>Syntax</h4>
+</font>
+<pre>
+#include "cosm/bignum.h"
+s32 CosmBNMul( cosm_BN * x, const cosm_BN * a, const cosm_BN * b );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Description</h4>
+    <p>
+      x = a * b.
+    </p>
+
+    <h4>Return Values</h4>
+    <p>
+      COSM_PASS or COSM_FAIL on an error.
+    </p>
+
+    <h4>Errors</h4>
+    <dl>
+      <dt>
+      <dd>
+    </dl>
+
+    <h4>Example</h4>
+</font>
+<pre>
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+<hr>
+
+    <a name="CosmBNDiv"></a>
+    <h3>
+      CosmBNDiv
+    </h3>
+
+    <h4>Syntax</h4>
+</font>
+<pre>
+#include "cosm/bignum.h"
+s32 CosmBNDiv( cosm_BN * x, const cosm_BN * a, const cosm_BN * b );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Description</h4>
+    <p>
+      x = a / b.
+    </p>
+
+    <h4>Return Values</h4>
+    <p>
+      COSM_PASS or COSM_FAIL on an error.
+    </p>
+
+    <h4>Errors</h4>
+    <dl>
+      <dt>
+      <dd>
+    </dl>
+
+    <h4>Example</h4>
+</font>
+<pre>
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+<hr>
+
+    <a name="CosmBNMod"></a>
+    <h3>
+      CosmBNMod
+    </h3>
+
+    <h4>Syntax</h4>
+</font>
+<pre>
+#include "cosm/bignum.h"
+s32 CosmBNMod( cosm_BN * x, const cosm_BN * a, const cosm_BN * b );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Description</h4>
+    <p>
+      x = a % b.
+    </p>
+
+    <h4>Return Values</h4>
+    <p>
+      COSM_PASS or COSM_FAIL on an error.
+    </p>
+
+    <h4>Errors</h4>
+    <dl>
+      <dt>
+      <dd>
+    </dl>
+
+    <h4>Example</h4>
+</font>
+<pre>
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+<hr>
+
+    <a name="CosmBNModExp"></a>
+    <h3>
+      CosmBNModExp
+    </h3>
+
+    <h4>Syntax</h4>
+</font>
+<pre>
+#include "cosm/bignum.h"
+s32 CosmBNModExp( cosm_BN * x, const cosm_BN * a, const cosm_BN * e,
+  const cosm_BN * m );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Description</h4>
+    <p>
+      x = a to the e-th power modulo m.
+    </p>
+
+    <h4>Return Values</h4>
+    <p>
+      COSM_PASS or COSM_FAIL on an error.
+    </p>
+
+    <h4>Errors</h4>
+    <dl>
+      <dt>
+      <dd>
+    </dl>
+
+    <h4>Example</h4>
+</font>
+<pre>
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+<hr>
+
+    <a name="CosmBNModInv"></a>
+    <h3>
+      CosmBNModInv
+    </h3>
+
+    <h4>Syntax</h4>
+</font>
+<pre>
+#include "cosm/bignum.h"
+s32 CosmBNModInv( cosm_BN * x, const cosm_BN * a, const cosm_BN * m );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Description</h4>
+    <p>
+      x = Inverse of a modulo m.
+    </p>
+
+    <h4>Return Values</h4>
+    <p>
+      COSM_PASS or COSM_FAIL on an error.
+    </p>
+
+    <h4>Errors</h4>
+    <dl>
+      <dt>
+      <dd>
+    </dl>
+
+    <h4>Example</h4>
+</font>
+<pre>
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+<hr>
+
+    <a name="CosmBNGCD"></a>
+    <h3>
+      CosmBNGCD
+    </h3>
+
+    <h4>Syntax</h4>
+</font>
+<pre>
+#include "cosm/bignum.h"
+s32 CosmBNGCD( cosm_BN * x, const cosm_BN * a, const cosm_BN * b );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Description</h4>
+    <p>
+      x = Greatest Common Divisor (GCD) of a and b. 1 if a and b are
+      relatively prime.
+    </p>
+
+    <h4>Return Values</h4>
+    <p>
+      COSM_PASS or COSM_FAIL on an error.
+    </p>
+
+    <h4>Errors</h4>
+    <dl>
+      <dt>
+      <dd>
+    </dl>
+
+    <h4>Example</h4>
+</font>
+<pre>
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+<hr>
+
+    <a name="CosmBNStr"></a>
+    <h3>
+      CosmBNStr
+    </h3>
+
+    <h4>Syntax</h4>
+</font>
+<pre>
+#include "cosm/bignum.h"
+s32 CosmBNStr( cosm_BN * x, void ** end, const void * string, u32 radix );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Description</h4>
+    <p>
+      Convert the string written in radix to the bignum x.
+      Numbers are of the form: [space*][+|-][0|0x|0X]{0-9a-zA-Z}+
+      radix must be 2-36 or 0. If radix is 0, numbers starting with 0x|0X
+      will be read as base 16, numbers starting with 0 will be interpreted
+      as base 8, and all others will be base 10. If end is not NULL, it will
+      be set to the character after the last character used in the number.
+      Note that use of radixes other then 2, 8, 10, or 16 are generally
+      useless.
+    </p>
+
+    <h4>Return Values</h4>
+    <p>
+      Sets result to number and returns COSM_PASS on success, or sets
+      result to 0 and returns COSM_FAIL on failure.
+    </p>
+
+    <h4>Errors</h4>
+    <dl>
+      <dt>
+      <dd>
+    </dl>
+
+    <h4>Example</h4>
+</font>
+<pre>
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+<hr>
+
+    <a name="CosmBNPrint"></a>
+    <h3>
+      CosmBNPrint
+    </h3>
+
+    <h4>Syntax</h4>
+</font>
+<pre>
+#include "cosm/bignum.h"
+u32 CosmBNPrint( cosm_FILE * file, utf8 * string, u32 max_bytes,
+  u32 radix, cosm_BN * x );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Description</h4>
+    <p>
+      Prints x to the string in the radix. No more than max_bytes-1
+      characters will be written to the string. radix must be from 2 and 16.
+    </p>
+
+    <h4>Return Values</h4>
+    <p>
+      Number of characters written to string, or -1 if truncated due
+      to max_bytes.
+    </p>
+
+    <h4>Errors</h4>
+    <dl>
+      <dt>
+      <dd>
+    </dl>
+
+    <h4>Example</h4>
+</font>
+<pre>
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+<hr>
+
+    <a name="CosmBNFree"></a>
+    <h3>
+      CosmBNFree
+    </h3>
+
+    <h4>Syntax</h4>
+</font>
+<pre>
+#include "cosm/bignum.h"
+void CosmBNFree( cosm_BN * x );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Description</h4>
+    <p>
+      Free the bignum internals.
+    </p>
+
+    <h4>Return Values</h4>
+    <p>
+      COSM_PASS or COSM_FAIL on an error.
+    </p>
+
+    <h4>Errors</h4>
+    <dl>
+      <dt>
+      <dd>
+    </dl>
+
+    <h4>Example</h4>
+</font>
+<pre>
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+<hr>
+
+    <a name="CosmBNLoad"></a>
+    <h3>
+      CosmBNLoad
+    </h3>
+
+    <h4>Syntax</h4>
+</font>
+<pre>
+#include "cosm/bignum.h"
+s32 CosmBNLoad( cosm_BN * x, const u8 * bytes, u32 bits );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Description</h4>
+    <p>
+      Load bits bits of big endian bytes into x. bits must be a multiple of
+      8. The largest number you can load is 2^31 - 64 bits long
+      (COSM_BN_MAXBITS). Do not load more bits the number originally had when
+      saved.
+    </p>
+
+    <h4>Return Values</h4>
+    <p>
+      COSM_PASS or COSM_FAIL on an error.
+    </p>
+
+    <h4>Errors</h4>
+    <dl>
+      <dt>
+      <dd>
+    </dl>
+
+    <h4>Example</h4>
+</font>
+<pre>
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+<hr>
+
+    <a name="CosmBNSave"></a>
+    <h3>
+      CosmBNSave
+    </h3>
+
+    <h4>Syntax</h4>
+</font>
+<pre>
+#include "cosm/bignum.h"
+s32 CosmBNSave( u8 * bytes, const cosm_BN * x, u32 max_bits,
+  u32 min_bits );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Description</h4>
+    <p>
+      Save x into bytes in big endian order. If the number is more then
+      max_bits long the function will fail and no bytes will be saved.
+      The largest number you can save is 2^31 - 64 bits long (COSM_BN_MAXBITS).
+      Care should be taken to record how many bits were in the number for
+      later loading.
+    </p>
+
+    <h4>Return Values</h4>
+    <p>
+      COSM_PASS or COSM_FAIL on an error.
+    </p>
+
+    <h4>Errors</h4>
+    <dl>
+      <dt>
+      <dd>
+    </dl>
+
+    <h4>Example</h4>
+</font>
+<pre>
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+<hr>
+
+</font>
+<font face="Verdana,Arial,Helvetica" size="-2" color="#6666cc">
+  <p>
+    &copy; Copyright Mithral Communications &amp; Design Inc.
+    <!--#config timefmt="%Y" -->
+    1995-<!--#echo var="LAST_MODIFIED" -->.
+    All rights reserved.
+    Mithral&reg; and Cosm&reg; are trademarks of
+    Mithral Communications &amp; Design Inc.
+    <br>
+    <!--#config timefmt="%b %d, %Y" -->
+    Document last modified: <!--#echo var="LAST_MODIFIED" -->
+  </p>
+</font>
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>

@@ -1,0 +1,534 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<html>
+  <head>
+    <title>
+      Cosm API - Memory Buffer Functions
+    </title>
+    <style type="text/css"><!-- a {text-decoration: none} --></style>
+  </head>
+  <body background="images/docbg.jpg" bgcolor="#000000" text="#cccccc"
+    link="#9999ff" vlink="#9999ff" alink="#ffcc66">
+
+  <table border="0" cellspacing="0" cellpadding="0">
+    <tr valign="top">
+      <td width="30"></td>
+      <td width="570">
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <p align="center">
+      <img src="images/cosmlogo.gif" alt="[Cosm Logo]"
+        width="357" height="123" border="0"><br>
+    </p>
+
+<!-- 678901234567890123456789012345678901234567890123456789012345678901234 -->
+
+    <h2 align="center">
+      Memory Buffer Functions
+    </h2>
+
+    <ul>
+      <li><a href="#CosmBufferInit">CosmBufferInit</a>
+      <li><a href="#CosmBufferLength">CosmBufferLength</a>
+      <li><a href="#CosmBufferClear">CosmBufferClear</a>
+      <li><a href="#CosmBufferPut">CosmBufferPut</a>
+      <li><a href="#CosmBufferGet">CosmBufferGet</a>
+      <li><a href="#CosmBufferUnget">CosmBufferUnget</a>
+      <li><a href="#CosmBufferFree">CosmBufferFree</a>
+    </ul>
+
+    <hr>
+
+    <a name="CosmBufferInit"></a>
+    <h3>
+      CosmBufferInit
+    </h3>
+
+    <h4>Syntax</h4>
+</font>
+<pre>
+#include "cosm/buffer.h"
+s32 CosmBufferInit( cosm_BUFFER * buffer, u64 size, u32 mode,
+  u64 grow, const void * data, u64 length );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Description</h4>
+    <p>
+      Create a new buffer in <em>buffer</em>, initially assigning
+      <em>size</em> bytes to its memory buffer. Once the buffer fills up it
+      will allocate more memory in chunks of <em>grow</em> bytes. If
+      <em>grow</em> is zero the buffer will never grow and may become full.
+      If <em>data</em> is not NULL then <em>length</em> bytes will be copied
+      from <em>data</em> and into the new buffer. <em>mode</em> determines
+      which kind of buffer should be created. If you intend to access a
+      buffer from more then one thread, be sure to wrap any calls in a mutex.
+    </p>
+    <h4>Modes</h4>
+    <dl>
+      <dt>COSM_BUFFER_MODE_QUEUE
+      <dd>Creates the buffer as a queue. A queue is a FIFO (first in, first
+        out), this means that the first item to be added to the buffer will
+        also be first item retrieved from the buffer.
+      <dt>COSM_BUFFER_MODE_STACK
+      <dd>Creates the buffer as a stack. A stack is a LIFO (last in, first
+        out), this means that the last item to be added to the buffer will be
+        the first item retrieved from the buffer. The analogy for this is a
+        stack of trays where you always take a new tray from the top.
+    </dl>
+
+    <h4>Return Values</h4>
+    <p>
+      COSM_PASS on success, or an error code on failure.
+    </p>
+
+    <h4>Errors</h4>
+    <dl>
+      <dt>COSM_BUFFER_ERROR_MEMORY
+      <dd>Not enough memory left.
+      <dt>COSM_BUFFER_ERROR_MODE
+      <dd>Unknown mode.
+      <dt>COSM_BUFFER_ERROR_FULL
+      <dd>Buffer already created or not zeroed.
+    </dl>
+
+    <h4>Example</h4>
+</font>
+<pre>
+  cosm_BUFFER * buf;
+  u64 size, grow;
+
+  if ( ( buf = CosmMemAlloc( sizeof( cosm_BUFFER ) ) ) == NULL )
+  {
+    /* Error in memory allocation. */
+    return COSM_FAIL;
+  }
+
+  size = 0x0000000000000400LL;
+  grow = 0x0000000000000200LL;
+
+  if ( CosmBufferInit( buf, size, COSM_BUFFER_MODE_QUEUE, grow, NULL,
+    0 ) == COSM_FAIL )
+  {
+    /* Failed */
+    return COSM_FAIL;
+  }
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <hr>
+
+    <a name="CosmBufferLength"></a>
+    <h3>
+      CosmBufferLength
+    </h3>
+
+    <h4>Syntax</h4>
+</font>
+<pre>
+#include "cosm/buffer.h"
+u64 CosmBufferLength( cosm_BUFFER * buffer );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Description</h4>
+    <p>
+      Gives the length of the data currently in <em>buffer</em>.
+    </p>
+
+    <h4>Return Values</h4>
+    <p>
+      The length of the data currently in <em>buffer</em>.
+    </p>
+
+    <h4>Errors</h4>
+    <p>
+      None.
+    </p>
+
+    <h4>Example</h4>
+</font>
+<pre>
+  cosm_BUFFER * buf;
+  u64 size, grow;
+  u64 length;
+
+  if ( ( buf = CosmMemAlloc( sizeof( cosm_BUFFER ) ) ) == NULL )
+  {
+    /* Error in memory allocation. */
+    return COSM_FAIL;
+  }
+
+  size = 0x0000000000000400LL;
+  grow = 0x0000000000000200LL;
+
+  if ( CosmBufferInit( buf, size, COSM_BUFFER_MODE_QUEUE, grow, NULL,
+    0 ) == COSM_FAIL )
+  {
+    /* Failed */
+    return COSM_FAIL;
+  }
+
+  length = CosmBufferLength( buf ); /* Should be zero. */
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <hr>
+
+    <a name="CosmBufferClear"></a>
+    <h3>
+      CosmBufferClear
+    </h3>
+
+    <h4>Syntax</h4>
+</font>
+<pre>
+#include "cosm/buffer.h"
+s32 CosmBufferClear( cosm_BUFFER * buffer );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Description</h4>
+    <p>
+      Sets the length of the <em>buffer</em> to 0 without freeing it.
+    </p>
+
+    <h4>Return Values</h4>
+    <p>
+      COSM_PASS on success, or an error code on failure.
+    </p>
+
+    <h4>Errors</h4>
+    <dl>
+      <dt>COSM_BUFFER_ERROR_MEMORY
+      <dd>Invalid buffer parameter.
+    </dl>
+
+    <h4>Example</h4>
+</font>
+<pre>
+  cosm_BUFFER * buf;
+  u64 length;
+
+  /* ... */
+
+  CosmBufferClear( buf );
+  length = CosmBufferLength( buf ); /* Should be zero. */
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <hr>
+
+    <a name="CosmBufferPut"></a>
+    <h3>
+      CosmBufferPut
+    </h3>
+
+    <h4>Syntax</h4>
+</font>
+<pre>
+#include "cosm/buffer.h"
+s32 CosmBufferPut( cosm_BUFFER * buffer, const void * data, u64 length );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Description</h4>
+    <p>
+      Inserts <em>length</em> bytes of <em>data</em> into <em>buffer</em>.
+    </p>
+
+    <h4>Return Values</h4>
+    <p>
+      COSM_PASS on success, or an error code on failure.
+    </p>
+
+    <h4>Errors</h4>
+    <dl>
+      <dt>COSM_BUFFER_ERROR_MEMORY
+      <dd>Not enough memory left.
+      <dt>COSM_BUFFER_ERROR_FULL
+      <dd>The buffer is full, this will only happen if grow was 0 in
+        <a href="buffer.html#CosmBufferInit">CosmBufferInit</a>.
+    </dl>
+
+    <h4>Example</h4>
+</font>
+<pre>
+  cosm_BUFFER * buf;
+  u64 size, grow;
+  u32 data, counter, data;
+
+  if ( ( buf = CosmMemAlloc( sizeof( cosm_BUFFER ) ) ) == NULL )
+  {
+    /* Error in memory allocation. */
+    return COSM_FAIL;
+  }
+
+  size = 0x0000000000000400LL;
+  grow = 0x0000000000000200LL;
+
+  if ( CosmBufferInit( buf, size, COSM_BUFFER_MODE_QUEUE, grow, NULL,
+    0 ) == COSM_FAIL )
+  {
+    /* Failed */
+    return COSM_FAIL;
+  }
+
+  /* Lets insert some u32's into the buffer.
+     They are 4 bytes each. */
+  for ( counter = 0; counter < 20; counter++ )
+  {
+    data = counter * counter;
+    if ( CosmBufferPut( buf, &amp;data, sizeof( u32 ) ) != COSM_PASS )
+    {
+      /* Error. */
+      return COSM_FAIL;
+    }
+  }
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <hr>
+
+    <a name="CosmBufferGet"></a>
+    <h3>
+      CosmBufferGet
+    </h3>
+
+    <h4>Syntax</h4>
+</font>
+<pre>
+#include "cosm/buffer.h"
+u64 CosmBufferGet( void * data, u64 length, cosm_BUFFER * buffer );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Description</h4>
+    <p>
+      Gets as many bytes as possible, up to a maximum of <em>length</em> from
+      <em>buffer</em> placing them into <em>data</em>. Note that while a stack
+      will return your data-items in reverse order it will consider the
+      size of a data-item to be <em>length</em> bytes and keep the internal
+      byte-order.
+    </p>
+
+    <h4>Return Values</h4>
+    <p>
+      <em>length</em> on success, otherwise bytes read out of the
+      <em>buffer</em>.
+    </p>
+
+    <h4>Errors</h4>
+    <p>
+      None.
+    </p>
+
+    <h4>Example</h4>
+</font>
+<pre>
+  cosm_BUFFER * buf;
+  u64 size, grow;
+  u32 data, counter, data;
+
+  if ( ( buf = CosmMemAlloc( sizeof( cosm_BUFFER ) ) ) == NULL )
+  {
+    /* Error in memory allocation. */
+    return COSM_FAIL;
+  }
+
+  size = 0x0000000000000400LL;
+  grow = 0x0000000000000200LL;
+
+  if ( CosmBufferInit( buf, size, COSM_BUFFER_MODE_STACK, grow, NULL,
+    0 ) == COSM_FAIL )
+  {
+    /* Failed */
+    return COSM_FAIL;
+  }
+
+  /* Lets insert some u32's into the buffer.
+     They are four bytes each. */
+  for ( counter = 0; counter < 20; counter++ )
+  {
+    data = counter * counter;
+    if ( CosmBufferPut( buf, &amp;data, sizeof(u32) ) != COSM_PASS )
+    {
+      /* Error. */
+      return COSM_FAIL;
+    }
+  }
+
+  /*
+    Lets retrieve the data. We should be getting the squares
+     of the numbers from 0 to 19 in reverse order.
+  */
+  for ( counter = 0; counter < 20; counter ++ )
+  {
+    if ( CosmBufferGet( &amp;data, sizeof( u32 ), buf ) != sizeof( u32 ) )
+    {
+      /* An error.*/
+      return COSM_FAIL;
+    }
+    /* do something with data. */
+  }
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <hr>
+
+    <a name="CosmBufferUnget"></a>
+    <h3>
+      CosmBufferUnget
+    </h3>
+
+    <h4>Syntax</h4>
+</font>
+<pre>
+#include "cosm/buffer.h"
+s32 CosmBufferUnget( cosm_BUFFER * buffer, const void * data, u64 length );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Description</h4>
+    <p>
+      Inserts <em>length</em> bytes of data into <em>buffer</em>. The
+      difference from <a href="#CosmBufferPut">CosmBufferPut</a> is that the
+      data is placed so it will be the first data retrieved by a
+      <a href="#CosmBufferGet">CosmBufferGet.</a> Note: be careful when using
+      this function in a multithreaded environment.
+    </p>
+
+    <h4>Return Values</h4>
+    <p>
+      COSM_PASS on success, or an error code on failure.
+    </p>
+
+    <h4>Errors</h4>
+    <dl>
+      <dt>COSM_BUFFER_ERROR_MEMORY
+      <dd>Not enough memory left.
+      <dt>COSM_BUFFER_ERROR_FULL
+      <dd>The buffer is full, this will only happen if grow was 0 in
+        <a href="buffer.html#CosmBufferInit">CosmBufferInit</a>.
+      <dt>COSM_BUFFER_ERROR_MODE
+      <dd>Unknown mode.
+    </dl>
+
+    <h4>Example</h4>
+</font>
+<pre>
+  cosm_BUFFER * buf;
+  u64 size, grow;
+  u32 data, counter, data;
+
+  if ( ( buf = CosmMemAlloc( sizeof( cosm_BUFFER ) ) ) == NULL )
+  {
+    /* Error in memory allocation. */
+    return COSM_FAIL;
+  }
+
+  size = 0x0000000000000400LL;
+  grow = 0x0000000000000200LL;
+
+  if ( CosmBufferInit( buf, size, COSM_BUFFER_MODE_STACK, grow, NULL,
+    0 ) == COSM_FAIL )
+  {
+    /* Failed */
+    return COSM_FAIL;
+  }
+
+  /* Lets insert some u32's into the buffer.
+     They are four bytes each. */
+  for ( counter = 0; counter < 20; counter++ )
+  {
+    data = counter * counter;
+    if ( CosmBufferPut( buf, &amp;data, sizeof( u32 ) ) != COSM_PASS )
+    {
+      /* Error. */
+      return COSM_FAIL;
+    }
+  }
+
+  /* Lets retrieve the data. */
+  for ( counter = 0; counter < 20; counter ++ )
+  {
+    if ( CosmBufferGet( &amp;data, sizeof( u32 ), buf ) != sizeof( u32 ) )
+    {
+      /* An error.*/
+      return COSM_FAIL;
+    }
+    /*
+      We keep pushing the data back on the stack, this means we will
+      be getting the same data each time
+    */
+    if ( CosmBufferUnget( buf, &amp;data, sizeof( u32 ) ) != COSM_PASS )
+    {
+      /* An error. */
+      return COSM_FAIL;
+    }
+  }
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <hr>
+
+    <a name="CosmBufferFree"></a>
+    <h3>
+      CosmBufferFree
+    </h3>
+
+    <h4>Syntax</h4>
+</font>
+<pre>
+#include "cosm/buffer.h"
+void CosmBufferFree( cosm_BUFFER * buffer);
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Description</h4>
+    <p>
+      Free all data in the <em>buffer</em> and return it to an
+      uninitialized state.
+    </p>
+
+    <h4>Return Values</h4>
+    <p>
+      None.
+    </p>
+
+    <h4>Errors</h4>
+    <p>
+      None.
+    </p>
+
+    <h4>Example</h4>
+</font>
+<pre>
+  cosm_BUFFER * buf;
+
+  /* Use of the buffer...*/
+
+  CosmBufferFree( buf );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <hr>
+
+</font>
+<font face="Verdana,Arial,Helvetica" size="-2" color="#6666cc">
+  <p>
+    &copy; Copyright Mithral Communications &amp; Design Inc.
+    <!--#config timefmt="%Y" -->
+    1995-<!--#echo var="LAST_MODIFIED" -->.
+    All rights reserved.
+    Mithral&reg; and Cosm&reg; are trademarks of
+    Mithral Communications &amp; Design Inc.
+    <br>
+    <!--#config timefmt="%b %d, %Y" -->
+    Document last modified: <!--#echo var="LAST_MODIFIED" -->
+  </p>
+</font>
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>

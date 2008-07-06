@@ -1,0 +1,382 @@
+|-- 5678901234567890123456789012345678901234567890123456789012345678901234 --|
+
+========================================================================
+Phase 2 To Do List
+========================================================================
+
+This is a fine grained list of coding and documenting tasks that need
+to be - Feel free to update once you have done something :)
+
+Notes:
+  * Any file that doesn't still need a format audit should only be edited
+    with care (as is always the case). Be sure not to break the formatting.
+  * "-" = Done barring bugs and porting, all functionality is implemented.
+  * Any "!!!" in the code denotes a problem or unfinished section.
+
+------
+CODING
+------
+
+!!! MITHRAL LICENSE A/B !!! Fix code templates
+
+Can safely reinit after a free/end without memset? check all functions?
+Review #define/switch standard method?
+Fix indent.pro
+Unicode throughout? DNS + ...
+Change all send/recv type functions to be 64b length?
+Propogate the on left of comparisons throughout code, doc, examples.
+
+src/
+  header audit - not all system headers may be needed
+  struct alignment audit - may cause MAJOR problems on 64bit compilers
+  audit for threadsafe and reentrant violations
+  gets()-like functions for file and net?
+
+src/cosm.h
+  Expand the list of unsafe ANSI functions
+    todo: stdio, stdlib, string
+      ref: http://www.infosys.utas.edu.au/info/documentation/C/CStdLib.html
+
+apps/p2update.pl
+  remove
+  CosmU64U32\({[^()]+}\)
+  and 32 64
+  CosmU64U32\({.*sizeof\(.*\).*}\)
+
+2nd Party/
+  bzip2 1.0.2 -> 1.0.5 - security vulnerability
+
+-- CPU/OS layer --
+
+src/cputypes
+  -
+
+src/os_file
+  Memory mapped file tests
+  Remove special file prefix processing - Add CosmDirSpecial.
+  Make file whipe optional.
+  Issue - Set file permissions and date...
+  Add buffered I/O?
+  CosmDirGet - translating paths missing!!!
+  make a helper function for mkdir stuff, DirOpen is a mess
+  Win32 - CreateDirectory, any other Win32 API's?
+  FileMove()
+  file lock issues
+    error handling in FileClose
+    verify file locks are checked even if not currently locking
+    generic file lock system
+  CosmFileTruncate and all lock tests need to be added
+  format and code audit (tests memory leak, not always freed)
+
+src/os_io
+  %-n. not working for strings
+  StrStr, make sure that it cant run off either string...
+  check: proper +127 to -128 ranges on numbers.
+  Make CosmPrint work on chars, not bytes.
+  CRITICAL: force scientific notation for big numbers.
+            f128 has only 34 sig-figs. u128 has 39.
+  BROKEN: \b needs to not get encoded
+  return codes for CosmStr functions are seldom checked elsewhere.
+  Fix API/return values to be consistent with pass/fail
+  CosmInput code, test in testlib
+  tighten up error cases in Cosm_ParseFloat
+  tests
+    CosmStr*
+    Finish test setups and loops for  %u/v/w, %i/j/k, %X/Y/Z, %f/g/%F/%G,
+      and move them to testlib.c - far too much overhead to be in the lib.
+    Implement %c, %p, %s, %b tests
+  test audit
+
+src/os_math
+  Add/Fix Mod functions with DivMod. In C99 "%" is remainder!
+  CosmFloatInf/NaN tests
+
+src/os_mem
+  Shared memory tests in testlib Parent/Child
+  mmap64?
+  CosmMemAllocSecure - implement tracking and wipe.
+    Win32: SecureZeroMemory()
+
+src/os_net
+  Add CosmNetStrAddr( utf8 string[40], cosm_NET_ADDR * addr )
+  Fix ACL functions
+    add an init, locking, need way to save/load ACLs
+    add support for IPv6 addresses
+    should work reguardless of NO_NETWORKING
+  Muticast sockets
+  IPv6 ( c = code, "-" = none needed )
+      c CosmNetOpen
+      - CosmNetSend
+      - CosmNetRecv
+      c CosmNetSendUDP
+    CosmNetRecvUDP
+      c CosmNetListen
+    CosmNetAccept
+      - CosmNetClose
+      c CosmNetDNS
+      c CosmNetRevDNS
+      c CosmNetMyIP
+  self tests take too long, this is the only slow selftest
+  error checking for NULL ADDR parameters
+  CosmNet*DNS() return more errors?
+  CosmNetAccept( errors for socket errors in block/nonblock setting )
+    does not always have to change block/nonblocking - just if changed
+  test audit
+    IPv6
+    ACL function tests, my_host/my_port tests
+    UDP tests
+
+src/os_task
+  Semaphore tests in testlib Parent/Child
+  Semaphores need to allow for nameless as well?
+  Affinity needs to be per thread.
+    Win32 SetThreadAffinityMask().
+    NPTL requires 2.4.20 (2002) more to require 2.6 from 2003.
+    NPTL 2.3.3+ of glibc
+  Redo Mutex tests
+  Add condition variables for barriers?
+  Create a blocking CosmProcessWait function? (vs. Spawn)
+  startThread etc should allow null for id?
+  fix POSIX violation with SIGCHLD ping/wait - fixable?
+  SystemClock needs to use a divide for accuracy.
+  find a place to test:
+    CosmThreadPriority, CosmProcessPriority in testlib
+  test audit
+
+-- Utility layer --
+
+src/bignum
+  Fix the x/yz/ api for div/mod to div mod (fix all API names)
+  DivMod shouldnt be a non-public function
+  CosmBNA rename to BNStr
+  add separator localization to the CosmBNPrint
+  CosmBNPrint's _COSM_BN_CHECKMAX is broken once we localize
+  Implement Montgomery Multiplication
+  lots of error catching needs to be done
+  code audit
+  test audit
+
+src/buffer
+  code audit
+  test audit
+
+src/config
+  code audit
+
+src/crypto
+  Fix RSA signing padding - http://tools.ietf.org/html/rfc3447
+  Use montgomery math - setup when loading keys, so batch operations are fast
+  code audit
+  more tests for correctness and speed - pki-app/testlib
+
+src/email
+  This needs looking over, it's many years old.
+  Change to CosmSMTPSend, fix parameters to ascii hostname, assume port 25
+  -
+
+src/hashtable
+  expand primes table to 64bit machines
+  tests (completely untested currently)
+  *
+
+src/http
+  Re-test
+  SECURITY: Cosm_HTTPDParseRequest
+    path decoder can run off beyond input
+    first line may not be long enough for the tmp[4] etc.
+  match full "HTTP/1.1\r\n", full "POST "?
+  accept IPv6 URI - http://[::FFFF:129.144.52.38]:80/index.html
+  future proof version detection? (probably not relivant)
+
+src/language
+  *
+
+src/log
+  high-volumn mode?
+  fix file error checking in CosmLog
+  self-test seems to be here AND in testlib.c
+  test audit
+
+src/security
+  CosmPRNG - replace with Mersenne Twister.
+  CosmPKIPassCheck() - checks that passphrase is enterable ascii only.
+  CosmEntropy, Cosm_SystemEntropy (in os_task)
+  format audit
+  code audit
+
+src/time
+  CosmTimeSet code (cannot be done until packets are defined)
+  CosmTimeUnits/CosmTimeDigest code for years before xxx?
+  CosmTimeCorrectionLoad/Save, mutex issues
+  Add simple "stopwatch" functions
+  A simple benchmark function to do timing on a provided function.
+  tests
+  format audit
+  code audit
+
+src/transform
+  add a very simple/fast RLE encoder
+  code and test audit
+
+-- Cosm layer --
+
+src/cosmtest
+  -
+
+-------------
+DOCUMENTATION
+-------------
+
+doc/
+  Fix function index files.
+  format/code audit of examples
+  update lists of errors returned by functions
+  check that all the public defines are doc'd where they belong
+  structs that users need
+  move to HTML 4.0 with CSS, Wiki?
+  add comment about defined() being prefered over ifdef in prog guide?
+  talk about using static functions to hide them.
+  EXPORT
+  Document stuctures as needed
+  
+doc/html2man.pl
+  Make this more general, for libraries, etc
+
+doc/cosm.h
+  redocument the CosmTest defines/declarations.
+
+doc/programmers-guide.html
+  Major edit and reorganization needed.
+
+doc/functions.html
+  Needs update
+
+-- CPU/OS layer --
+
+doc/os_file
+  the signed save/load
+  DirGet
+  DirSet
+  checking
+
+doc/os_io
+  examples!
+  checking
+
+doc/os_math
+  -
+
+doc/os_mem
+  sort Cosm_MemDumpLeaks output
+  Shared memory, warnings about OS settings
+  Fix docs for API
+  CosmMemAllocSecure(), implement wiping and anything else possible
+
+doc/os_net
+  Redocument CosmNetOpen and ....Socks; parameter names, etc
+  CosmNetStrIP
+  new error codes for all functions
+  examples for CosmNetSendUDP and CosmNetRecvUDP
+  CosmNetACL* errors and examples
+  checking
+
+doc/os_task
+  Spawn will now use the path.
+  Semaphores and Locks.
+  CosmMutexFree example
+  Doc that relocking or unlocking another thread undefined.
+  checking
+  Doc the DynamicLib functions.
+
+-- Utility layer --
+
+doc/bignum
+  *
+
+doc/buffer
+  checking
+
+doc/config
+  fix configOpen docs, remove unneeded comments about format
+  errors
+  checking
+
+doc/email
+  -
+
+doc/hashtable
+  *
+
+doc/http
+  error codes and examples
+  COSM_HTTPOPEN doc fix
+  checking
+
+doc/language
+  *
+
+doc/log
+  -
+
+doc/security
+  Doc AES params
+  Doc Hash params
+  New transform API changes, and docs
+  CosmPRNG() errors and examples
+  checking
+
+doc/time
+  examples
+  checking
+
+doc/transform
+  -
+
+-- Cosm layer --
+
+
+-------
+Porting
+-------
+
+MacOS X
+  NetMyIP() has issues
+
+Win32
+  Network socket reuse options?
+  Native filenames need to be turned to unicode
+  Win32 port dirs, Info, Nativepaths, Delete
+  GetSystemTime() in CosmSystemClock resolution is terrible, find better.
+  replace mkdir() with Win32 API function
+  CosmFileEOF doesn't work over shared drives (probably not fixable)
+  CosmFileInfo access flags
+
+Solaris/SunOS
+  CPULock for solaris is buggy
+
+Unix
+  echo in CosmInput* for other Unix (done for Linux, FreeBSD, IRIX, OSF)
+
+------------
+OPTIMIZATION
+------------
+
+Optimizations are the _lowest_ priority tasks, and should only be done
+after all other code is done, tested, and audited. But below is a list
+of known non-optimial code.
+
+CPU/OS
+------
+src/
+  optimize functions with a u64 loop for 32 bit machines?
+src/os_io:
+  CosmStrStr needs rewriting for speed
+  Cosm_PrintChar needs a length added for speed (and probably rename)
+  Cosm_ParseFloat/Int isn't very optimized.
+src/os_math
+  Div and Mul functions
+
+UTIL
+----
+src/
+  ...

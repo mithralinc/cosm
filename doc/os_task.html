@@ -1,0 +1,1084 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<html>
+  <head>
+    <title>
+      Cosm API - Process, Thread, CPU, and Mutex Functions
+    </title>
+    <style type="text/css"><!-- a {text-decoration: none} --></style>
+  </head>
+  <body background="images/docbg.jpg" bgcolor="#000000" text="#cccccc"
+    link="#9999ff" vlink="#9999ff" alink="#ffcc66">
+
+  <table border="0" cellspacing="0" cellpadding="0">
+    <tr valign="top">
+      <td width="30"></td>
+      <td width="570">
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <p align="center">
+      <img src="images/cosmlogo.gif" alt="[Cosm Logo]"
+        width="357" height="123" border="0"><br>
+    </p>
+
+<!-- 678901234567890123456789012345678901234567890123456789012345678901234 -->
+
+    <h2 align="center">
+      Process, Thread, CPU, and Mutex Functions
+    </h2>
+
+    <ul>
+      <li><a href="#CosmProcessID">CosmProcessID</a>
+      <li><a href="#CosmProcessPriority">CosmProcessPriority</a>
+      <li><a href="#CosmProcessSpawn">CosmProcessSpawn</a>
+      <li><a href="#CosmProcessEnd">CosmProcessEnd</a>
+      <li><a href="#CosmCPUCount">CosmCPUCount</a>
+      <li><a href="#CosmCPULock">CosmCPULock</a>
+      <li><a href="#CosmCPUUnlock">CosmCPUUnlock</a>
+      <li><a href="#CosmThreadBegin">CosmThreadBegin</a>
+      <li><a href="#CosmThreadID">CosmThreadID</a>
+      <li><a href="#CosmThreadPriority">CosmThreadPriority</a>
+      <li><a href="#CosmThreadEnd">CosmThreadEnd</a>
+      <li><a href="#CosmMutexLock">CosmMutexLock</a>
+      <li><a href="#CosmMutexUnlock">CosmMutexUnlock</a>
+      <li><a href="#CosmMutexFree">CosmMutexFree</a>
+      <li><a href="#CosmSleep">CosmSleep</a>
+      <li><a href="#CosmYield">CosmYield</a>
+      <li><a href="#CosmSignal">CosmSignal</a>
+      <li><a href="#CosmSignalRegister">CosmSignalRegister</a>
+      <li><a href="#CosmSystemClock">CosmSystemClock</a>
+    </ul>
+
+    <hr>
+
+    <a name="CosmProcessID"></a>
+    <h3>
+      CosmProcessID
+    </h3>
+
+    <h4>Syntax</h4>
+</font>
+<pre>
+#include "cosm/os_task.h"
+u64 CosmProcessID( void );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Description</h4>
+    <p>
+      Gets the ID of the current process.
+    </p>
+
+    <h4>Return Values</h4>
+    <p>
+      The ID of the current process, 0 indicates failure.
+    </p>
+
+    <h4>Errors</h4>
+    <p>
+      Possible causes of failure:
+    </p>
+    <ul>
+      <li>OS does not have processes.
+    </ul>
+
+    <h4>Example</h4>
+</font>
+<pre>
+  u64 pid;
+
+  pid = CosmProcessID();
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <hr>
+
+    <a name="CosmProcessPriority"></a>
+    <h3>
+      CosmProcessPriority
+    </h3>
+
+    <h4>Syntax</h4>
+</font>
+<pre>
+#include "cosm/os_task.h"
+u8 CosmProcessPriority( u8 priority );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Description</h4>
+    <p>
+      Get or try and set the current process priority.
+    </p>
+    <p>
+      If <em>priority</em> is 0 no change is made. Otherwise
+      the priority is set to <em>priority</em>.
+    </p>
+    <p>
+      Priorities are mapped within the range 1-255. You cannot
+      increase the priority above the default normal priority
+      (255) for the OS. Not all OSs will let you return to a higher
+      priority after you reduce it.
+    </p>
+
+    <h4>Return Values</h4>
+    <p>
+      Process priority (mapped to 1-255 scale) after call is completed, 0
+      indicates failure.
+    </p>
+
+    <h4>Errors</h4>
+    <p>
+      Possible causes of failure:
+    </p>
+    <ul>
+      <li>OS does not support this function.
+      <li>OS does not allow return to a higher priority after being set
+        to a low priority.
+    </ul>
+
+    <h4>Example</h4>
+</font>
+<pre>
+  u8 priority;
+  u8 new_priority;
+
+  priority = CosmProcessPriority( (u8) 0 );
+  if ( priority < 100 )
+  {
+    priority =+ 40;
+  }
+
+  new_priority = CosmProcessPriority( priority );
+  if ( new_priority == 0 )
+  {
+    /* Error */
+  }
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <hr>
+
+    <a name="CosmProcessSpawn"></a>
+    <h3>
+      CosmProcessSpawn
+    </h3>
+
+    <h4>Syntax</h4>
+</font>
+<pre>
+#include "cosm/os_task.h"
+s32 CosmProcessSpawn( u64 * process_id, const ascii * command,
+  const ascii * arguments, ... );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Description</h4>
+    <p>
+      Spawn a new process running <em>command</em>. The <em>command</em>
+      must be a full path in Cosm format to the binary. <em>process_id</em>
+      is set to the process ID of the swawned process. The <em>arguments</em>
+      MUST end with a NULL.
+    </p>
+
+    <h4>Return Values</h4>
+    <p>
+      COSM_PASS on success, or COSM_FAIL on failure.
+    </p>
+
+    <h4>Errors</h4>
+    <p>
+      Possible causes of an failure:
+    </p>
+    <ul>
+      <li>OS does not support this function.
+      <li>Invalid path.
+      <li>System out of processes, memory, etc.
+    </ul>
+
+    <h4>Example</h4>
+</font>
+<pre>
+  u64 child;
+
+  if ( CosmProcessSpawn( &amp;child, "cat", "file.txt",
+    "file2.txt", NULL ) != COSM_PASS )
+  {
+    CosmPrint( "Spawn Failed\n" );
+  }
+  else
+  {
+    CosmPrint( "Child PID = %v\n", child );
+  }
+
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <hr>
+
+    <a name="CosmProcessEnd"></a>
+    <h3>
+      CosmProcessEnd
+    </h3>
+
+    <h4>Syntax</h4>
+</font>
+<pre>
+#include "cosm/os_task.h"
+void CosmProcessEnd( int status );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Description</h4>
+    <p>
+      Ends the current process, and all threads. Uses <em>status</em> as
+      the returning exit code. Programs must always exit this way, or
+      system resources may not be freed on certain operating systems.
+    </p>
+
+    <h4>Return Values</h4>
+    <p>
+      None.
+    </p>
+
+    <h4>Errors</h4>
+    <p>
+      None.
+    </p>
+
+    <h4>Example</h4>
+</font>
+<pre>
+  CosmProcessEnd( 1 );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <hr>
+
+    <a name="CosmCPUCount"></a>
+    <h3>
+      CosmCPUCount
+    </h3>
+
+    <h4>Syntax</h4>
+</font>
+<pre>
+#include "cosm/os_task.h"
+s32 CosmCPUCount( u32 * count );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Description</h4>
+    <p>
+      Sets <em>count</em> to the number of CPUs in the system.
+      Note that <em>count</em> will be set to 1 on failure since machines
+      with zero CPUs do not exist.
+    </p>
+
+    <h4>Return Values</h4>
+    <p>
+      COSM_PASS on success, or COSM_FAIL on failure.
+    </p>
+
+    <h4>Errors</h4>
+    <p>
+      Possible causes of failure:
+    </p>
+    <ul>
+      <li>OS does not support SMP.
+      <li>OS does not provide a system call for the number of CPUs.
+    </ul>
+
+    <h4>Example</h4>
+</font>
+<pre>
+  u32 num_cpus;
+
+  if ( CosmCPUCount( &amp;num_cpus ) == COSM_FAIL )
+  {
+    /* error, but num_cpus is 1 */
+  }
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <hr>
+
+    <a name="CosmCPULock"></a>
+    <h3>
+      CosmCPULock
+    </h3>
+
+    <h4>Syntax</h4>
+</font>
+<pre>
+#include "cosm/os_task.h"
+s32 CosmCPULock( u64 process_id, u32 cpu );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Description</h4>
+    <p>
+      Locks the process <em>process_id</em>, and any threads, to the CPU
+      <em>cpu</em>. This function can be used for a large variety of
+      performance and security reasons.
+    </p>
+
+    <h4>Return Values</h4>
+    <p>
+      COSM_PASS on success, or COSM_FAIL on failure.
+    </p>
+
+    <h4>Errors</h4>
+    <p>
+      Possible causes of failure:
+    </p>
+    <ul>
+      <li>OS does not support SMP.
+    </ul>
+
+    <h4>Example</h4>
+</font>
+<pre>
+  u64 pid;
+  u32 cpunum;
+  s32 result;
+
+  pid = CosmProcessID();
+  if ( pid == 0 )
+  {
+    /* Error */
+  }
+
+  result = CosmCPUGet( &amp;cpunum );
+  if ( result != COSM_PASS )
+  {
+    /* Error */
+  }
+
+  result = CosmCPULock( pid, cpunum );
+  if ( result != COSM_PASS )
+  {
+    /* Error */
+  }
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <hr>
+
+    <a name="CosmCPUUnlock"></a>
+    <h3>
+      CosmCPUUnlock
+    </h3>
+
+    <h4>Syntax</h4>
+</font>
+<pre>
+#include "cosm/os_task.h"
+s32 CosmCPUUnlock( u64 process_id );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Description</h4>
+    <p>
+      Unlocks the process <em>process_id</em> and its threads from a CPU.
+      If you are using any secure memory, calling this function would
+      be a bad idea.
+    </p>
+
+    <h4>Return Values</h4>
+    <p>
+      COSM_PASS on success, or COSM_FAIL on failure.
+    </p>
+
+    <h4>Errors</h4>
+    <p>
+      Possible causes of failure:
+    </p>
+    <ul>
+      <li>OS does not support SMP.
+    </ul>
+
+    <h4>Example</h4>
+</font>
+<pre>
+  u64 pid;
+  u32 cpunum;
+  s32 result;
+
+  pid = CosmProcessID();
+  if ( pid == 0 )
+  {
+    /* Error */
+  }
+
+  result = CosmCPUGet( &amp;cpunum );
+  if ( result != COSM_PASS )
+  {
+    /* Error */
+  }
+
+  result = CosmCPULock( pid, cpunum );
+  if ( result != COSM_PASS )
+  {
+    /* Error */
+  }
+
+  result = CosmCPUUnlock( pid );
+  if ( result != COSM_PASS )
+  {
+    /* Error */
+  }
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <hr>
+
+    <a name="CosmThreadBegin"></a>
+    <h3>
+      CosmThreadBegin
+    </h3>
+
+    <h4>Syntax</h4>
+</font>
+<pre>
+#include "cosm/os_task.h"
+s32 CosmThreadBegin( u64 * thread_id, void (*start)(void *),
+  void * arg, u32 stack_size );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Description</h4>
+    <p>
+      Begin a thread using the function <em>start</em> with argument
+      <em>arg</em> with a stack size of <em>stack_size</em>.
+      <em>thread_id</em> is set to the thread ID of the new thread.
+    </p>
+    <p>
+      Stack size not supported with all OSes.
+    </p>
+
+    <h4>Return Values</h4>
+    <p>
+      COSM_PASS on success, or COSM_FAIL on failure.
+    </p>
+
+    <h4>Errors</h4>
+    <p>
+      Possible causes of failure:
+    </p>
+    <ul>
+      <li>Cosm compiled without threads support.
+      <li>System thread limit.
+      <li>Memory limit.
+    </ul>
+
+    <h4>Example</h4>
+</font>
+<pre>
+  void thread_function( void * arg )
+  {
+    u32 * puppy;
+
+    puppy = (u32 *) arg;
+    /* thread code */
+  }
+
+  /* ... */
+
+  u64 thread_id;
+  u32 data;
+
+  data = 42;
+  if ( CosmThreadBegin( &amp;thread_id, thread_function,
+    (void *) &amp;data, 4096 ) != COSM_PASS )
+  {
+    /* thread failed to start */
+  }
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <hr>
+
+    <a name="CosmThreadID"></a>
+    <h3>
+      CosmThreadID
+    </h3>
+
+    <h4>Syntax</h4>
+</font>
+<pre>
+#include "cosm/os_task.h"
+u64 CosmThreadID( void );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Description</h4>
+    <p>
+      Gets the current thread ID.
+    </p>
+
+    <h4>Return Values</h4>
+    <p>
+      The current thread ID, 0 indicates failure.
+    </p>
+
+    <h4>Errors</h4>
+    <p>
+      Possible causes of failure:
+    </p>
+    <ul>
+      <li>Cosm compiled without threads support.
+    </ul>
+
+    <h4>Example</h4>
+</font>
+<pre>
+  u64 thread_id;
+
+  thread_id = CosmThreadID();
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <hr>
+
+    <a name="CosmThreadPriority"></a>
+    <h3>
+      CosmThreadPriority
+    </h3>
+
+    <h4>Syntax</h4>
+</font>
+<pre>
+#include "cosm/os_task.h"
+u8 CosmThreadPriority( u8 priority );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Description</h4>
+    <p>
+      Get or try and set the current thread priority.
+    </p>
+    <p>
+      If <em>priority</em> is 0 no change is made. Otherwise the priority
+      is set to <em>priority</em>.
+    </p>
+    <p>
+      Priorities are mapped within the range 1-255. You cannot
+      increase the priority above the default normal priority
+      (255) for the OS.
+    </p>
+
+    <h4>Return Values</h4>
+    <p>
+      Thread priority (mapped to 1-255 scale) after call is completed, 0
+      indicates failure.
+    </p>
+
+    <h4>Errors</h4>
+    <p>
+      Possible causes of failure:
+    </p>
+    <ul>
+      <li>OS does not support this function.
+      <li>Cosm is not compiled with threads support.
+    </ul>
+
+    <h4>Example</h4>
+</font>
+<pre>
+  u8 priority;
+  u8 new_priority;
+
+  priority = CosmThreadPriority( (u8) 0 );
+  if ( priority < 100 )
+  {
+    priority =+ 40;
+  }
+
+  new_priority = CosmThreadPriority( priority );
+  if ( new_priority == 0 )
+  {
+    /* Error */
+  }
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <hr>
+
+    <a name="CosmThreadEnd"></a>
+    <h3>
+      CosmThreadEnd
+    </h3>
+
+    <h4>Syntax</h4>
+</font>
+<pre>
+#include "cosm/os_task.h"
+void CosmThreadEnd( void );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Description</h4>
+    <p>
+      Ends the calling thread.
+    </p>
+
+    <h4>Return Values</h4>
+    <p>
+      None.
+    </p>
+
+    <h4>Errors</h4>
+    <p>
+      None.
+    </p>
+
+    <h4>Example</h4>
+</font>
+<pre>
+  CosmThreadEnd();
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <hr>
+
+    <a name="CosmMutexLock"></a>
+    <h3>
+      CosmMutexLock
+    </h3>
+
+    <h4>Syntax</h4>
+</font>
+<pre>
+#include "cosm/os_task.h"
+s32 CosmMutexLock( cosm_MUTEX * mutex, u32 wait );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Description</h4>
+    <p>
+      Set an exclusive lock. You should <b>never</b> have more then one lock
+      alive at a time per thread, as this may result in deadlock. Note that
+      if you create a mutex you MUST free it eventually with
+      <a href="#CosmMutexFree">CosmMutexFree</a>.
+    </p>
+    <p>
+     <strong>Wait Modes:</strong>
+    </p>
+    <dl>
+      <dt>COSM_MUTEX_WAIT
+      <dd>Do not return until the lock is available.
+      <dt>COSM_MUTEX_NOWAIT
+      <dd>Return even if the lock was unavailable.
+    </dl>
+
+    <h4>Return Values</h4>
+    <p>
+      COSM_PASS on success, or COSM_FAIL on failure.
+    </p>
+
+    <h4>Errors</h4>
+    <p>
+      Possible causes of failure:
+    </p>
+    <ul>
+      <li><em>wait</em> is invalid.
+    </ul>
+
+    <h4>Example</h4>
+</font>
+<pre>
+  cosm_MUTEX lock;
+
+  CosmMemSet( &amp;lock, sizeof( cosm_MUTEX ), 0 );
+
+  if ( CosmMutexLock( &amp;lock, COSM_MUTEX_WAIT ) != COSM_PASS )
+  {
+    /* bad error */
+  }
+
+  /* do critical work */
+
+  CosmMutexUnlock( &amp;lock );
+
+  while ( CosmMutexLock( &amp;lock, COSM_MUTEX_NOWAIT ) != COSM_PASS )
+  {
+    /* mutex was already locked, do something */
+  }
+
+  /* do critical work */
+
+  CosmMutexUnlock( &amp;lock );
+
+  CosmMutexFree( &amp;lock );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <hr>
+
+    <a name="CosmMutexUnlock"></a>
+    <h3>
+      CosmMutexUnlock
+    </h3>
+
+    <h4>Syntax</h4>
+</font>
+<pre>
+#include "cosm/os_task.h"
+s32 CosmMutexUnlock( cosm_MUTEX * mutex );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Description</h4>
+    <p>
+      Unset an exclusive lock.
+    </p>
+
+    <h4>Return Values</h4>
+    <p>
+      COSM_PASS on success, or COSM_FAIL on failure.
+    </p>
+
+    <h4>Errors</h4>
+    <p>
+      None.
+    </p>
+
+    <h4>Example</h4>
+</font>
+<pre>
+  cosm_MUTEX lock;
+
+  CosmMemSet( &amp;lock, sizeof( cosm_MUTEX ), 0 );
+
+  if ( CosmMutexLock( &amp;lock, COSM_MUTEX_WAIT ) != COSM_PASS )
+  {
+    /* bad error */
+  }
+
+  /* do critical work */
+
+  CosmMutexUnlock( &amp;lock );
+
+  CosmMutexFree( &amp;lock );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <hr>
+
+    <a name="CosmMutexFree"></a>
+    <h3>
+      CosmMutexFree
+    </h3>
+
+    <h4>Syntax</h4>
+</font>
+<pre>
+#include "cosm/os_task.h"
+void CosmMutexFree( cosm_MUTEX * mutex );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Description</h4>
+    <p>
+      Free the <em>mutex</em> and related system resources. Do not call this
+      unless you are completely done with the mutex, very bad things will
+      happen.
+    </p>
+
+    <h4>Return Values</h4>
+    <p>
+      None.
+    </p>
+
+    <h4>Errors</h4>
+    <p>
+      None.
+    </p>
+
+    <h4>Example</h4>
+</font>
+<pre>
+  cosm_MUTEX lock;
+
+  CosmMemSet( &amp;lock, sizeof( cosm_MUTEX ), 0 );
+
+  if ( CosmMutexLock( &amp;lock, COSM_MUTEX_WAIT ) != COSM_PASS )
+  {
+    /* bad error */
+  }
+
+  /* do critical work */
+
+  CosmMutexUnlock( &amp;lock );
+
+  CosmMutexFree( &amp;lock );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <hr>
+
+    <a name="CosmSleep"></a>
+    <h3>
+      CosmSleep
+    </h3>
+
+    <h4>Syntax</h4>
+</font>
+<pre>
+#include "cosm/os_task.h"
+void CosmSleep( u32 millisec );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Description</h4>
+    <p>
+      Sleep for <em>millisec</em> milliseconds.
+    </p>
+
+    <h4>Return Values</h4>
+    <p>
+      None.
+    </p>
+
+    <h4>Errors</h4>
+    <p>
+      None.
+    </p>
+
+    <h4>Example</h4>
+</font>
+<pre>
+  /* sleep for 10 seconds */
+  CosmSleep( 10000 );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <hr>
+
+    <a name="CosmYield"></a>
+    <h3>
+      CosmYield
+    </h3>
+
+    <h4>Syntax</h4>
+</font>
+<pre>
+#include "cosm/os_task.h"
+void CosmYield( void );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Description</h4>
+    <p>
+      Yield to another thread/process that wants to run.
+    </p>
+
+    <h4>Return Values</h4>
+    <p>
+      None.
+    </p>
+
+    <h4>Errors</h4>
+    <p>
+      None.
+    </p>
+
+    <h4>Example</h4>
+</font>
+<pre>
+  CosmYield();
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <hr>
+
+    <a name="CosmSignal"></a>
+    <h3>
+      CosmSignal
+    </h3>
+
+    <h4>Syntax</h4>
+</font>
+<pre>
+#include "cosm/os_task.h"
+s32 CosmSignal( u64 process_id, u32 signal );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Description</h4>
+    <p>
+      Sends <em>signal</em> to process <em>process_id</em>.
+    </p>
+    <p>
+      <strong>Signals:</strong>
+    </p>
+    <dl>
+      <dt>COSM_SIGNAL_PING
+      <dd>Test for Process Existance
+      <dt>COSM_SIGNAL_INT
+      <dd>Save/Checkpoint.
+      <dt>COSM_SIGNAL_TERM
+      <dd>Save and terminate.
+      <dt>COSM_SIGNAL_KILL
+      <dd>Terminate with extreme prejudice.
+    </dl>
+
+    <h4>Return Values</h4>
+    <p>
+      COSM_PASS on success, or COSM_FAIL on failure.
+    </p>
+
+    <h4>Errors</h4>
+    <p>
+      Possible causes of failure:
+    </p>
+    <ul>
+      <li>Unknown signal.
+    </ul>
+
+    <h4>Example</h4>
+</font>
+<pre>
+  u64 pid;
+  s32 result;
+
+  pid = CosmProcessID();
+
+  result = CosmSignal( pid, COSM_SIGNAL_PING );
+  if ( result != COSM_PASS )
+  {
+    /* Target process didn't exist */
+  }
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <hr>
+
+    <a name="CosmSignalRegister"></a>
+    <h3>
+      CosmSignalRegister
+    </h3>
+
+    <h4>Syntax</h4>
+</font>
+<pre>
+#include "cosm/os_task.h"
+s32 CosmSignalRegister( u32 signal_type, void (*handler)(int) );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Description</h4>
+    <p>
+      Register <em>handler</em> as the handler for <em>signal_type</em>.
+      <em>signal_type</em> must be either COSM_SIGNAL_INT or
+      COSM_SIGNAL_TERM. See <a href="#CosmSignal">CosmSignal</a>
+      for sending signals. Once the handler is triggered the OS will
+      reset the handler, so if you wish to reuse a signal, you must
+      reregister it in the handler. Inside of your signal handler you must
+      be very careful as any thread may end up running the handler at any
+      time. Make your handler as short as possible.
+    </p>
+
+    <h4>Return Values</h4>
+    <p>
+      COSM_PASS on success, or COSM_FAIL on failure.
+    </p>
+
+    <h4>Errors</h4>
+    <p>
+      Possible causes of failure:
+    </p>
+    <ul>
+      <li>Unknown signal.
+      <li>OS does not support this function.
+    </ul>
+
+    <h4>Example</h4>
+</font>
+<pre>
+  void signal_function( int arg )
+  {
+    /* signal code */
+    CosmSignalRegister( COSM_SIGNAL_INT, signal_function );
+    /* set a flag or other handler actions */
+  }
+
+  /* ... */
+
+  if ( CosmSignalRegister( COSM_SIGNAL_INT, signal_function )
+    != COSM_PASS )
+  {
+    /* error */
+  }
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <hr>
+
+    <a name="CosmSystemClock"></a>
+    <h3>
+      CosmSystemClock
+    </h3>
+
+    <h4>Syntax</h4>
+</font>
+<pre>
+#include "cosm/os_task.h"
+s32 CosmSystemClock( cosmtime * local_time );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Description</h4>
+    <p>
+      Get the time from the system clock and set <em>local_time</em>.
+      cosmtime is a signed number (s128) of seconds in 64b.64b fixed point
+      format based on the time 0 = 00:00:00 UTC, Jan 1, 2000 AD.
+    </p>
+
+    <h4>Return Values</h4>
+    <p>
+      COSM_PASS on success, or COSM_FAIL on failure.
+    </p>
+
+    <h4>Errors</h4>
+    <p>
+      Possible causes of failure:
+    </p>
+    <ul>
+      <li>System has no hardware clock.
+    </ul>
+
+    <h4>Example</h4>
+</font>
+<pre>
+  cosmtime clock;
+
+  if ( CosmSystemClock( &amp;clock ) != COSM_PASS )
+  {
+    /* temporal rift */
+  }
+
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+<hr>
+
+</font>
+<font face="Verdana,Arial,Helvetica" size="-2" color="#6666cc">
+  <p>
+    &copy; Copyright Mithral Communications &amp; Design Inc.
+    <!--#config timefmt="%Y" -->
+    1995-<!--#echo var="LAST_MODIFIED" -->.
+    All rights reserved.
+    Mithral&reg; and Cosm&reg; are trademarks of
+    Mithral Communications &amp; Design Inc.
+    <br>
+    <!--#config timefmt="%b %d, %Y" -->
+    Document last modified: <!--#echo var="LAST_MODIFIED" -->
+  </p>
+</font>
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>

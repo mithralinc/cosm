@@ -1,0 +1,26 @@
+## OS        : generic UNIX
+## CPU       : unknown
+## Compiler  : GNU
+
+CC      = gcc
+FC      = g77
+LD      = gcc -o 
+AR      = ar rc 
+RM      = rm -f
+RNLIB   = ranlib
+STRIP   = strip
+INSTALL = install
+OBJ     = o
+
+# a good set of defaults
+CCFLAGS = -O2 -Wall -pedantic -Wno-long-long $(EXTRA_FLAGS)
+FCFLAGS = -O2 -Wall -pedantic -Wno-long-long $(EXTRA_FLAGS)
+LDFLAGS = -static
+LDLIBS  = -lm -lpthread $(EXTRA_LIBS)
+
+# Cosm Defines
+COSM_DEFS = -DCPU_32BIT -DOS_TYPE=OS_UNKNOWN -DCPU_TYPE=CPU_UNKNOWN
+
+.c.$(OBJ):
+	@echo "Compiling $<"
+	@$(CC) $(CC_FLAGS) $(COSM_DEFS) -o $@ -c $<

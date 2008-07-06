@@ -1,0 +1,353 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<html>
+  <head>
+    <title>
+      Cosm API - Program Config File Functions
+    </title>
+    <style type="text/css"><!-- a {text-decoration: none} --></style>
+  </head>
+  <body background="images/docbg.jpg" bgcolor="#000000" text="#cccccc"
+    link="#9999ff" vlink="#9999ff" alink="#ffcc66">
+
+  <table border="0" cellspacing="0" cellpadding="0">
+    <tr valign="top">
+      <td width="30"></td>
+      <td width="570">
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <p align="center">
+      <img src="images/cosmlogo.gif" alt="[Cosm Logo]"
+        width="357" height="123" border="0"><br>
+    </p>
+
+<!-- 678901234567890123456789012345678901234567890123456789012345678901234 -->
+
+    <h2 align="center">
+      Program Config File Functions
+    </h2>
+
+    <ul>
+      <li><a href="#CosmConfigLoad">CosmConfigLoad</a>
+      <li><a href="#CosmConfigSave">CosmConfigSave</a>
+      <li><a href="#CosmConfigSet">CosmConfigSet</a>
+      <li><a href="#CosmConfigGet">CosmConfigGet</a>
+      <li><a href="#CosmConfigFree">CosmConfigFree</a>
+    </ul>
+
+    <hr>
+
+    <a name="CosmConfigLoad"></a>
+    <h3>
+      CosmConfigLoad
+    </h3>
+
+    <h4>Syntax</h4>
+</font>
+<pre>
+#include "config.h"
+s32 CosmConfigLoad( cosm_CONFIG * config, const ascii * filename );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Description</h4>
+    <p>
+      Attempt to open the <em>filename</em> and read in the config data. See
+      <a href="os_file.html#CosmFileOpen">CosmFileOpen</a> in
+      <a href="os_file.html">os_file.h</a> for how to specify the path and
+      file name. If <em>filename</em> is NULL, create an empty config.
+    </p>
+    <p>
+      A config file will look something like this.
+    </p>
+</font>
+<pre>
+&lt;begin file&gt;
+[section1]\n
+key1=value1\n
+key2=value2\n
+\n
+[section2]\n
+key1=value1\n
+key2=value2\n
+\n
+&lt;/end file&gt;
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+    <p>
+      Config files follow these conventions:
+    </p>
+    <ul>
+      <li>They are binary files, not text. You're not supposed to have to
+        edit them.
+      <li>No linefeeds (\n) in section/keys/values - those are line
+        separators.
+      <li>No '=' or '[' in keys, and avoid ']'.
+      <li>Everything is case sensitive.
+      <li>Blank lines are ignored, but added at the end of sections for
+        humans.
+      <li>Any improperly formatted line is discarded.
+      <li>Comment lines don't exist, that's what documentation is for.
+      <li>In the majority of cases the config will only be read, so optimize
+        for reading.
+    </ul>
+
+    <h4>Return Values</h4>
+    <p>
+      COSM_PASS on success, or a <a href="os_file.html">file</a> error code
+      (COSM_FILE_ERROR_*) on failure.
+    </p>
+
+    <h4>Errors</h4>
+    <p>
+      None.
+    </p>
+
+    <h4>Example</h4>
+</font>
+<pre>
+  cosm_CONFIG * config;
+  s32 result;
+
+  config = CosmMemAlloc( sizeof( cosm_CONFIG ) );
+
+  result = CosmConfigLoad( config, "program.cfg" );
+  if ( result != COSM_PASS )
+  {
+    /* error */
+  }
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <hr>
+
+    <a name="CosmConfigSave"></a>
+    <h3>
+      CosmConfigSave
+    </h3>
+
+    <h4>Syntax</h4>
+</font>
+<pre>
+#include "config.h"
+s32 CosmConfigSave( const cosm_CONFIG * config, const ascii * filename );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Description</h4>
+    <p>
+      Write out the config data to the file specified by <em>filename</em>.
+      See <a href="os_file.html#CosmFileOpen">CosmFileOpen</a> in
+      <a href="os_file.html">os_file.h</a> for how to specify the path and
+      file name. See <a href="#CosmConfigLoad">CosmConfigLoad</a> for more
+      information on config files.
+    </p>
+
+    <h4>Return Values</h4>
+    <p>
+      COSM_PASS on success, or a <a href="os_file.html">file</a> error code
+      (COSM_FILE_ERROR_*) on failure.
+    </p>
+
+    <h4>Errors</h4>
+    <p>
+      None.
+    </p>
+
+    <h4>Example</h4>
+</font>
+<pre>
+  cosm_CONFIG * config;
+  s32 result;
+
+  config = CosmMemAlloc( sizeof( cosm_CONFIG ) );
+
+  result = CosmConfigLoad( config, "program.cfg" );
+  if ( result != COSM_PASS )
+  {
+    /* error */
+  }
+
+  /* ... */
+
+  result = CosmConfigSave( config, "program.cfg" );
+  if ( result != COSM_PASS )
+  {
+    /* error */
+  }
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <hr>
+
+    <a name="CosmConfigSet"></a>
+    <h3>
+      CosmConfigSet
+    </h3>
+
+    <h4>Syntax</h4>
+</font>
+<pre>
+#include "config.h"
+s32 CosmConfigSet( cosm_CONFIG * config, const utf8 * section,
+  const utf8 * key, const utf8 * value );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Description</h4>
+    <p>
+      Set the <em>value</em> for the <em>section</em>/<em>key</em> pair. If
+      <em>value</em> is NULL then <em>key</em> is deleted.
+    </p>
+
+    <h4>Return Values</h4>
+    <p>
+      COSM_PASS on success, or COSM_FAIL on failure.
+    </p>
+
+    <h4>Errors</h4>
+    <p>
+      None.
+    </p>
+
+    <h4>Example</h4>
+</font>
+<pre>
+  cosm_CONFIG * config;
+  s32 result;
+
+  config = CosmMemAlloc( sizeof( cosm_CONFIG ) );
+
+  result = CosmConfigLoad( config, "program.cfg" )
+  if ( result != COSM_PASS )
+  {
+    /* error */
+  }
+
+  result = CosmConfigSet( config, "Options",
+     "logging", "1" );
+
+  if ( result != COSM_PASS )
+  {
+    /* error */
+  }
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <hr>
+
+    <a name="CosmConfigGet"></a>
+    <h3>
+      CosmConfigGet
+    </h3>
+
+    <h4>Syntax</h4>
+</font>
+<pre>
+#include "config.h"
+const utf8 * CosmConfigGet( cosm_CONFIG * config, const utf8 * section,
+  const utf8 * key );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Description</h4>
+    <p>
+      Get the value of the <em>section</em>/<em>key</em> pair. The returned
+      pointer will no longer be valid once another CosmConfig* call is made.
+    </p>
+
+    <h4>Return Values</h4>
+    <p>
+      A pointer to the value on success, or NULL on failure.
+    </p>
+
+    <h4>Errors</h4>
+    <p>
+      None.
+    </p>
+
+    <h4>Example</h4>
+</font>
+<pre>
+  cosm_CONFIG * config;
+  s32 result;
+  utf8 * value;
+
+  config = CosmMemAlloc( sizeof( cosm_CONFIG ) );
+
+  result = CosmConfigLoad( config, "program.cfg" );
+  if ( result != COSM_PASS )
+  {
+    /* error */
+  }
+
+  value = CosmConfigGet( config, "Program",
+     "interval" );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <hr>
+
+    <a name="CosmConfigFree"></a>
+    <h3>
+      CosmConfigFree
+    </h3>
+
+    <h4>Syntax</h4>
+</font>
+<pre>
+#include "config.h"
+void CosmConfigFree( cosm_CONFIG * config );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Description</h4>
+    <p>
+      Free the internal config data.
+    </p>
+
+    <h4>Return Values</h4>
+    <p>
+      None.
+    </p>
+
+    <h4>Errors</h4>
+    <p>
+      None.
+    </p>
+
+    <h4>Example</h4>
+</font>
+<pre>
+  cosm_CONFIG * config;
+
+  config = CosmMemAlloc( sizeof( cosm_CONFIG ) );
+
+  /* use the config */
+
+  CosmConfigFree( config );
+
+  CosmMemFree( config );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+<hr>
+
+</font>
+<font face="Verdana,Arial,Helvetica" size="-2" color="#6666cc">
+  <p>
+    &copy; Copyright Mithral Communications &amp; Design Inc.
+    <!--#config timefmt="%Y" -->
+    1995-<!--#echo var="LAST_MODIFIED" -->.
+    All rights reserved.
+    Mithral&reg; and Cosm&reg; are trademarks of
+    Mithral Communications &amp; Design Inc.
+    <br>
+    <!--#config timefmt="%b %d, %Y" -->
+    Document last modified: <!--#echo var="LAST_MODIFIED" -->
+  </p>
+</font>
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>

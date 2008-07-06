@@ -1,0 +1,74 @@
+Phase 2 Cosm Credits
+-----------------------
+
+  Below are the people that contributed significantly to the development of
+  Cosm during Phase 2 from 2003-xxxx. Tasks listed may no longer correspond
+  to current tasks or code.
+
+  Design and Technomagery:
+    Adam L. Beberg - com.mithral#beberg - everything else
+
+  Coders:
+
+  Documentation:
+
+  Porting:
+
+  Translations:
+
+  Legal:
+
+
+=============================================================================|
+
+Phase 1 libCosm Credits
+-----------------------
+
+  Below are the people that contributed significantly to the development of
+  libCosm during Phase 1 from 1999-2002. Tasks listed may no longer correspond
+  to current tasks or code.
+
+  Design and Technomagery:
+    Adam L. 'Duncan' Beberg - com.mithral#beberg - too much to list
+
+  Coders:
+    Christopher R. 'BurtyB' Burton - uk.co.c-pac#chris - os_math, os_task
+    Ricky 'Cramer' Beam - net.bluetopia#jfbeam - os_math, os_net
+    Robert Preston Kuehne - com.sgi#rpk - os_task
+    James D. Ludlow - net.tourney#jdludlow - os_io
+    Bruce Raymond 'fordbr' Ford - au.edu.qut#b.ford - os_math
+    Alexis 'ElNounch' Nunes - fr.club-internet#anunes - os_file
+    Patrice 'NCruiser' Fournier - org.computer#pfournier - os_net, os_time,
+      email, mailing lists
+    Carlos 'patofiero' O'Donell Jr. - com.mindless#patofiero - os_mem
+    Viktor 'Ferd^' Leijon - se.sdf#viktor - buffer, os_math, io/parsing
+    Ryan 'desrtAngl' Lortie - net.necrosys#desrtangl - hashes, docs
+    Julian Seward - org.acm#jseward - bzip2 algoritms
+    Tomislav 'najt' Filipcic - hr.srce.jagor#tfilip - bzip2, security
+    Howard Abrams - org.acm#abramsh - IRIX, os_io, os_net
+
+  Misc Coding:
+    David 'David-T' Taylor - uk.co.yadt#davidt - html2man
+    Kevin Bruce Vigor - com.ascend.eng#kvigor - config v1
+    Mark Collette - com.home#whore - CosmPrintAtoU
+    Jeff Donner - net.earthlink#jdonner0 - Mutexes
+
+  Documentation:
+    Greg 'gregh' Hewgill - com.hewgill#greg - Ch 3
+    Daniel Oelke - com.opticalsolutions#doelke - Ch 2
+    Tim 'jrt' Nikkel - ca.mb.granite#tnikkel - much of doc/
+    David 'David-T' Taylor - uk.co.yadt#davidt - misc
+
+  Legal:
+    Paul Biba - license
+
+  Porting:
+    'SisterD' - Mac OS 9
+    Pat Fleckenstein - edu.rit.csh#pat - osf1-alpha
+    Geoffrey 'GeoffreyF' Faivre-Malloy - com.pduck#GJF - WIN32
+    John Ross 'jrp' Porter - com.uscom#joropo - OS/2, initial bzip2
+
+  Translations:
+    'Lazzy_Goo' - org.altern#lazzygoo - French
+    Sebastian Spath - de.sspaeth#sebastian - German
+    Patrik Martinson - se.liu.student#patma491 - Swedish

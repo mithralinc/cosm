@@ -1,0 +1,483 @@
+<html>
+  <head>
+    <title>Mithral - Cosm Programmers Guide</title>
+  </head>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+
+<!--#include virtual="/head.html" -->
+
+<!-- 678901234567890123456789012345678901234567890123456789012345678901234 -->
+<!-- $Revision: 1.20 $ -->
+
+    <h2>
+      Cosm Programmers Guide<br>
+      Version: p2-2003-07-01
+    </h2>
+
+    <h3>
+      Overview
+    </h3>
+    <p>
+The purpose of this document is to establish common programming
+methods for those developing code compatable with the Cosm libraries.
+    </p>
+
+    <h3>
+Development Cycle
+    </h3>
+    <p>
+      Since we use CVS the development cycle is continuous. Coders should
+      make sure they are familiar with CVS and
+      <a href="cvs.html">cvs.html</a>.
+    </p>
+
+    <h3>
+Coordination
+    </h3>
+    <p>
+_Any_ questions at all, ask. Before implementing any additional low level
+functions inform me, so we can make sure there isn't any overlap. I intend
+to be familiar with every line of code, so if you need any "major"
+functionality let me know, someone else may already be working on it.  Also,
+if you're going to do anything "neat" be sure and inform me first, just so
+more than one person knows what you're doing.
+    </p>
+
+    <h3>
+Use of Other Code and Libraries
+    </h3>
+    <p>
+All code must be original and your own writing, you can't cut-n-paste from
+_any_ other projects or code libraries due to license problems (and other code
+won't follow the Cosm standards anyway). I've made sure there are no license
+problems with the couple of libraries that are eventually needed, and even
+then they will be completely separated from the main code.
+    </p>
+
+    <h3>
+Simplicity
+    </h3>
+    <p>
+Simplicity and clarity in the code are more important than weird optimization
+tricks. Especially since all the real work is done in the cores. All code
+interfaces are designed to be as simple as possible.
+    </p>
+
+    <h3>
+Thread Safe Code
+    </h3>
+    <p>
+All Cosm routines must be fully thread safe. This is not optional. If you
+don't know how to use locks correctly please go read up, there are many
+sources on the net on using locks. Keep in mind also that 64 and 128bit
+data types may not be atomic.
+    </p>
+
+    <h3>
+Portability
+    </h3>
+    <p>
+Straight ANSI C + GNU Assembly. Period.<br>
+For numerous reasons of portability and readability Cosm will be written in
+straight ANSI C. The ASM optimizations should be done in GNU-ASM for
+portability to all OS variants of a given chip. C++ Is nice, but has caused
+a great deal of strange porting problems in the past requiring the addition
+of many #define and #ifdef statements.  Pointers are of unknown length so
+care must be taken not to do pointer math. The non-portable types int/long
+etc. should only be used as return values for pass/fail/error functions.
+    </p>
+
+    <h3>
+Testing
+    </h3>
+    <p>
+The Cosm_TestModule() functions must test all the functions in a file, causing
+all cases to be taken within the functions and all outcomes and errors to be
+generated. Cosm will also use the "well tested, infrequent release"
+philosophy, not "rapid release, let the user debug it" one. All code should
+always be kept in a state where it can be compiled without errors/warnings.
+Never submit code that you can't compile. The Cosm_TestModule() code will also
+serve as the example code, so it must be complete and correct.
+    </p>
+
+    <h3>
+Comments
+    </h3>
+    <p>
+Comments, comments, comments. In general anything more complex then a
+for( ... ) loop should have a comment in the code every few lines. Function
+definitions should also be documented (in the header file) with the
+parameters, return values, and error conditions. Any {  } block longer
+then ~30 (1/2 page) lines should have a comment at the closing }
+    </p>
+
+    <h3>
+Header Files
+    </h3>
+    <p>
+Header files for a given C file should contain all defines, structs, and
+function prototypes for the code. Functions should appear in the .c file in
+the same order they appear in the .h file, the 'helper' functions (Cosm_*)
+after main interface functions (Cosm*). Defines should be used liberally, and
+constants directly in the code where the meaning isn't obvious (read:
+everywhere) should not be used. Any other non-Cosm header files that are
+needed for the .c file should be included at the top of the .c, not in the
+.h which should only include it's own information. Only if a .h is needed
+for the .h to parse should it be included from the .h.
+    </p>
+    <p>
+Headers also contain the programmer documentation for a function, what it
+does, parameters, and expected return values or errors. No one should ever
+have to find and then dig around .c files to be able to use a function, and
+so any documentation should be in the header. All things will eventually be
+documented in non-programmer language in other formats.
+    </p>
+
+    <h3>
+Structure Alignment
+    </h3>
+    <p>
+All structures that will be written to the network or files, or used in an
+array MUST be properly aligned, padding if needed. This means that u64 and
+u128 data types must fall on 8 byte boundries, u32 on 4 byte boundries, and
+u16s on 2 byte boundries. The length of the structure must also be aligned
+for the biggest type, so if a struct has a u64, it has to be a multiple of
+8 bytes long, etc. Becasue of this only platform specific structures
+that never leave memory (like a mutex) are immune to this requirement. See
+the sample code below for examples.
+    </p>
+
+    <h3>
+Version Control
+    </h3>
+    <p>
+Version numbers for any code or files must be incremented when any change is
+made. Problems caused by a non-incremented version number can be quite
+difficult to track. Luckily, CVS does a wonderful job of this. CVS also
+does a great job of tracking changes and history. Make sure your messages
+on commited code are descriptive. Do no use the top of a .c file for the
+history, it quickly takes over the entire file.
+    </p>
+
+    <h3>
+#ifdef Usage
+    </h3>
+    <p>
+System specific #ifdef are only allowed in CPU/OS level libraries. The only
+#ifdefs in the utility layer of code should be those provided by the CPU/OS
+layer for endian, 64biness, etc. When doing any test for CPU/OS type, use
+globally defined OS_TYPE and CPU_TYPE to switch off of e.g.
+#if ( OS_TYPE == OS_MACOSX ) - this is more readable to people not familiar
+with each compiler/os/cpu combination, and is less likely to lead to
+confusion. Also, preprocessore '#'s go in column 1, and never get indented
+due to some compilers being picky about the standard.
+    </p>
+
+    <h3>
+Naming Conventions
+    </h3>
+    <p>
+All names should make sense and be long enough for the code to be self
+documenting
+    </p>
+    <p>
+<strong>Source File Names</strong><br>
+Related code and header files should have the same base filename,
+e.g. file.c and file.h.
+    </p>
+    <p>
+<strong>Functions</strong><br>
+All functions should begin with a capital letter and each word within a
+function name should be capitalized, e.g. ReadConfig( char * filename );
+    </p>
+    <p>
+<strong>Library Functions</strong><br>
+All user level functions should begin with "Cosm", the module pneumonic, and
+each word within a function name should be capitalized, e.g. CosmFoo( ... );
+All low level functions should begin with "Cosm_" and be named in a
+similar manner e.g. Cosm_Bar( ... );
+    </p>
+    <p>
+<strong>Local Variables and Function Arguments</strong><br>
+Loop variables can be one letter, e.g. u32 x, y, z; anything else should be
+descriptive and lower case "_" should be used between words in local
+variables. e.g. u64 word_count;
+    </p>
+    <p>
+<strong>Global Variables</strong><br>
+Globals are variables that need an "extern" and you have to go running
+around files trying to find the definitions/usage. So don't even think
+about using them. No global variables exist in Cosm APIs, and only a couple
+are used for global initialization and shutdown. Users will need them however,
+so when we must use then, they start with "__".
+    </p>
+    <p>
+<strong>Structures</strong><br>
+Structures should be named in all upper case with "cosm_" as a prefix e.g.
+struct cosm_PACKET_HEADER {...}; This may seem a bit odd until you realize it
+makes typing struct names very easy. This sets them apart from defines and
+macros. Structure members should be lower case like local variables.
+    </p>
+    <p>
+<strong>Defines</strong><br>
+Defines are in all upper case as per C standard e.g.<br>
+#define COSM_FOO 30<br>
+In general #if defined(...) is prefered over #ifdef since there is no
+#elifdef, so this is more consistent overall.
+    </p>
+    <p>
+<strong>Macros</strong><br>
+Macros are in all upper case beginning with "_COSM_" e.g.<br>
+#define _COSM_BAR( x ) Bar( x, 42 ); return;
+    </p>
+
+    <h3>
+Code Style
+    </h3>
+    <p>
+<strong>Liberal Spacing</strong><br>
+DontCrunchTheCodeAllTogether( void ); e.g. for( i = 0 ; i &lt; 42 ; i += 3 ) Each
+statement should be on it's own line. Statements that are long should be
+wrapped to the next line at the 78th column or less so that printing is
+possible.  Any logic more then one line (for, while, if-else) should use a
+set of { } for clarity. funtions( x ) and macros( 3 ) do not have a space
+between the function name and firt paren. Typecasts (ascii *) also do not have
+the extra spaces to that they can be distinguished from parameters.
+    </p>
+    <p>
+<strong>Indenting</strong><br>
+2 spaces for every level of logic, and 2 additional spaces when a line is
+wrapped. Tabs should never be used, as they are editor dependant.
+When wrapping a line with a "||" or any other logical operator, the operator
+should start the second line, not end the first.
+    </p>
+    <p>
+<strong>Width</strong><br>
+Keep everything within the standard 78 columns, wrap lines when needed. Some
+of the code will need to be printed, snail-mailed, or OCR'd into other
+countries. There is one important exception to this, in the html documentation
+for functions the width of example code must be 70 columns or less, due how
+man pages are displayed.
+    </p>
+
+    <h3>
+Example:
+    </h3>
+    <p>
+<strong>-- blah.h --</strong>
+    </p>
+  </font>
+<pre>
+#ifndef COSM_BLAH_H
+#define COSM_BLAH_H
+
+/* include everything we need */
+
+#include "cputypes.h"
+#include "cosm/os_io.h"
+
+#define COSM_FOO_ERROR -3
+
+typedef struct INVALID
+{
+  u32 a;
+  u64 b; /* not on 8 byte boundry, cannot be networked or filed */
+  u16 c; /* length isn't a multiple of 8, cannot be arrayed */
+} INVALID;
+
+typedef struct VALID
+{
+  u32 a;
+  u16 c;
+  u16 pad; /* padding */
+  u64 b; /* correctly aligned, correct length, etc. */
+} VALID;
+
+s32 Cosm_TestBlah( void );
+
+#endif
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <p>
+<strong>-- blah.c --</strong>
+    </p>
+
+</font>
+<pre>
+#include "blah.h"
+
+s32 Cosm_TestBlah( void )
+{
+  s32 error;
+
+  /*
+    run all tests
+    this is a multi-line comment
+  */
+
+  if ( ( /* test a fails */ )
+    || ( /* line wraping */ ) )
+  {
+    error = COSM_FOO_ERROR;
+  }
+  else /* this is the else format */
+  {
+    error = COSM_PASS;
+  }
+
+  /* foo failed - this is single line comment */
+  return error;
+}
+
+int CosmBlah( void )
+{
+  u64 apple;
+  s32 e;
+
+  /* use the macro to set apple */
+  _COSM_SET64( apple, 01234567, 89ABCDEF )
+
+  CosmPrint( "A is for Apple = 0x%016Y\n", apple );
+
+  if ( foo = Cosm_TestBlah() );
+  {
+    CosmPrint( "Test Blah Failed = %i\n", foo );
+    return COSM_FAIL;
+  }
+
+  return COSM_PASS;
+}
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <p>
+<strong>indent</strong><br>
+The unix program indent strips all whitespace and mangles comments
+but what comes close is an indent.pro file in docs/indent.pro.
+Since indent removes most all whitespace (a fundamental conflict with
+readability) this should only be used in absolute emergencies on extremely
+bad 3rd party code.
+    </p>
+    <h3>
+General Conventions
+    </h3>
+    <p>
+<strong>Constants on the left of comparisons</strong><br>
+    </p>
+</font>
+<pre>
+if ( NULL = variable ) ... /* wrong, generates error */
+if ( variable = NULL ) ... /* wrong, but no error! */
+if ( NULL == variable )... /* correct, error-resistant goodness */
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+    <p>
+<strong>Return Values</strong><br>
+When a pass/fail needs to be returned, zero should be pass, nonzero a failure.
+COSM_PASS and COSM_FAIL exist for this reason, so use them.
+This is so that all code can be of the general form
+    </p>
+
+</font>
+<pre>
+if ( COSM_PASS != ( error = test() ) )
+{
+  /* deal with the problem and recover */
+}
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <p>
+When pointers are returned, NULL is failure, anything else should be a
+considered valid.
+    </p>
+
+</font>
+<pre>
+if ( NULL == ( pointer = test() ) )
+{
+  /* deal with the problem and recover */
+}
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <p>
+When return is used, do not use the ()'s, it's not a function call.
+    </p>
+
+    <p>
+<strong>int, char, short</strong><br>
+int, char, short etc. are not used in the APIs. All parameters are of
+the universal cputypes.h formats. int can be used internally (with care) for
+any temp variables, for/while loops, system calls, etc.
+    </p>
+    <p>
+<strong>Parameter order</strong><br>
+When a function takes parameters, they should be (destination, source) similar
+to ( a = b ).
+    </p>
+    <p>
+<strong>u64 and s64's</strong><br>
+When using non-zero u64/s64 constants in code, use the "L" suffix.
+e.g. 42L, -1L. Do not use a lowercase "L", as it looks just like a "1"(one)
+in most fonts.
+    </p>
+<strong>Additional keywords (for syntax highlighting):</strong><br>
+u8 u16 u32 u64 u128 s8 s16 s32 s64 s128 f32 f64 f128 ascii utf8 utf8char
+cosmtime cosmid
+    </p>
+    <p>
+<strong>Program names</strong><br>
+Program names end in ".exe" reguardless of platform. Some platforms
+require this, the rest dont care. This way a program's name is always fixed.
+    </p>
+    <p>
+<strong>Credit Where Credit is Due</strong><br>
+A master CREDITS(.txt) file will be maintained where a list of names of the
+people that made a significant contribution to writing the code. People will
+be divided into categories as implementers, porters, and miscellaneous.
+    </p>
+
+    <h3>
+Common Pitfalls
+    </h3>
+    <p>
+<strong>Error Code Checking</strong><br>
+All function error codes must be checked and acted on accordingly.
+    </p>
+    <p>
+<strong>Network Buffers and Memory Overruns</strong><br>
+Buffer overrun and bad memory allocation should always be checked for.
+    </p>
+    <p>
+<strong>Use of Uncleared Structs</strong><br>
+Structures need to be either CosmMemeAlloc'd or CosmMemSet to zero before use.
+Structures on the local stack will have random values when the function
+is entered.
+    </p>
+    <p>
+<strong>Pointer Math</strong><br>
+Never cast a pointer to a u32 or u64 to do pointer math. You do not know if
+the pointers will be 32 or 64bits wide on the destination chip, and there is
+no good reason to do pointer math outside of the ASM tweaked (and therefore
+CPU specific) cores.
+    </p>
+    <p>
+<strong>NULL Pointers</strong><br>
+Check for NULL pointers before all operations. Be especially careful of
+library functions i.e. memcpy() as many machines have libraries that have
+problems with NULLs.
+    </p>
+    <p>
+<strong>Typecasting</strong><br>
+Most things should be typecast as normal for ANSI C. However,
+s64, u64, s128, and u128 cannot be typecast because they are structures on
+some systems. For these types macro/functions are provided in os_math.
+    </p>
+    <p>
+<strong>Memory Leaks</strong><br>
+Always Make sure any memory allocation has a matching memory free.
+    </p>
+
+<!--#include virtual="/tail.html" --></font></HTML>

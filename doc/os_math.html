@@ -1,0 +1,1089 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<html>
+  <head>
+    <title>
+      Cosm API - Math Functions
+    </title>
+    <style type="text/css"><!-- a {text-decoration: none} --></style>
+  </head>
+  <body background="images/docbg.jpg" bgcolor="#000000" text="#cccccc"
+    link="#9999ff" vlink="#9999ff" alink="#ffcc66">
+
+  <table border="0" cellspacing="0" cellpadding="0">
+    <tr valign="top">
+      <td width="30"></td>
+      <td width="570">
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <p align="center">
+      <img src="images/cosmlogo.gif" alt="[Cosm Logo]"
+        width="357" height="123" border="0"><br>
+    </p>
+
+<!-- 678901234567890123456789012345678901234567890123456789012345678901234 -->
+
+    <h2 align="center">
+      Math Functions
+    </h2>
+
+    <ul>
+      <li><a href="#Cosm{bigger}{smaller}">Cosm{bigger}{smaller}</a>
+      <li><a href="#Cosm{smaller}{bigger}">Cosm{smaller}{bigger}</a>
+      <li><a href="#Cosm{unsigned}{signed}">Cosm{unsigned}{signed}</a>
+      <li><a href="#Cosm{signed}{unsigned}">Cosm{signed}{unsigned}</a>
+      <li><a href="#CosmAdd">CosmAdd</a>
+      <li><a href="#CosmSub">CosmSub</a>
+      <li><a href="#CosmMul">CosmMul</a>
+      <li><a href="#CosmDiv">CosmDiv</a>
+      <li><a href="#CosmMod">CosmMod</a>
+      <li><a href="#CosmDivMod">CosmDivMod</a>
+      <li><a href="#CosmInc">CosmInc</a>
+      <li><a href="#CosmDec">CosmDec</a>
+      <li><a href="#CosmEq">CosmEq</a>
+      <li><a href="#CosmGt">CosmGt</a>
+      <li><a href="#CosmLt">CosmLt</a>
+      <li><a href="#CosmAnd">CosmAnd</a>
+      <li><a href="#CosmOr">CosmOr</a>
+      <li><a href="#CosmXor">CosmXor</a>
+      <li><a href="#CosmNot">CosmNot</a>
+      <li><a href="#CosmLsh">CosmLsh</a>
+      <li><a href="#CosmRsh">CosmRsh</a>
+      <li><a href="#CosmFloatNaN">CosmFloatNaN</a>
+      <li><a href="#CosmFloatInf">CosmFloatInf</a>
+    </ul>
+
+    <hr>
+
+    <a name="Cosm{bigger}{smaller}"></a>
+    <h3>
+      Cosm{bigger}{smaller}
+    </h3>
+
+    <h4>Syntax</h4>
+</font>
+<pre>
+#include "cosm/os_math.h"
+u128 CosmU128U32( u32 a );
+s128 CosmS128S32( s32 a );
+u128 CosmU128U64( u64 a );
+s128 CosmS128S64( s64 a );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Description</h4>
+    <p>
+      Converts an integer into a larger sized integer. Cannot convert signed
+      to unsigned, or unsigned to signed.
+    </p>
+
+    <h4>Return Values</h4>
+    <p>
+      The larger sized integer.
+    </p>
+
+    <h4>Errors</h4>
+    <p>
+      None.
+    </p>
+
+    <h4>Example</h4>
+</font>
+<pre>
+  u32 cat = 39;
+  u128 tiger;
+
+  tiger = CosmU128U32( cat );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <hr>
+
+    <a name="Cosm{smaller}{bigger}"></a>
+    <h3>
+      Cosm{smaller}{bigger}
+    </h3>
+
+    <h4>Syntax</h4>
+</font>
+<pre>
+#include "cosm/os_math.h"
+u32 CosmU32U128( u128 a );
+s32 CosmS32S128( s128 a );
+u64 CosmU64U128( u128 a );
+s64 CosmS64S128( s128 a );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Description</h4>
+    <p>
+      Converts an integer into a smaller sized integer. Truncation will
+      occur. Cannot convert signed to unsigned, or unsigned to signed.
+    </p>
+
+    <h4>Return Values</h4>
+    <p>
+      The smaller sized integer.
+    </p>
+
+    <h4>Errors</h4>
+    <p>
+      None.
+    </p>
+
+    <h4>Example</h4>
+</font>
+<pre>
+  u128 pig;
+  u32 ham;
+
+  _COSM_SET128( pig, FEDCBA9876543210, FEDCBA9876543210 );
+
+  ham = CosmU32v128( pig );
+  /* ham = 0x76543210 */
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <hr>
+
+    <a name="Cosm{unsigned}{signed}"></a>
+    <h3>
+      Cosm{unsigned}{signed}
+    </h3>
+
+    <h4>Syntax</h4>
+</font>
+<pre>
+#include "cosm/os_math.h"
+u128 CosmU128S128( s128 a ); /* u128 <- s128 */
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Description</h4>
+    <p>
+      Converts a signed integer into an unsigned integer of the same size.
+      The value may change drasticly.
+    </p>
+
+    <h4>Return Values</h4>
+    <p>
+      The unsigned integer.
+    </p>
+
+    <h4>Errors</h4>
+    <p>
+      None.
+    </p>
+
+    <h4>Example</h4>
+</font>
+<pre>
+  s128 a;
+  u128 b;
+
+  a = ...;
+  b = CosmU128S128( a );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <hr>
+
+    <a name="Cosm{signed}{unsigned}"></a>
+    <h3>
+      Cosm{signed}{unsigned}
+    </h3>
+
+    <h4>Syntax</h4>
+</font>
+<pre>
+#include "cosm/os_math.h"
+s128 CosmS128U128( u128 a ); /* s128 <- u128 */
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Description</h4>
+    <p>
+      Converts an unsigned integer into a signed integer of the same size.
+      The sign and value may change.
+    </p>
+
+    <h4>Return Values</h4>
+    <p>
+      The signed integer.
+    </p>
+
+    <h4>Errors</h4>
+    <p>
+      None.
+    </p>
+
+    <h4>Example</h4>
+</font>
+<pre>
+  u64 a;
+  s64 b;
+
+  _COSM_SET128( a, FFFFFFFFFFFFFFFF, FFFFFFFFFFFFFFFF )
+  b = CosmS128U128( a );
+  /* b = -1 */
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <hr>
+
+    <a name="CosmAdd"></a>
+    <h3>
+      CosmAdd
+    </h3>
+
+    <h4>Syntax</h4>
+</font>
+<pre>
+#include "cosm/os_math.h"
+u128 CosmU128Add( u128 a, u128 b );
+s128 CosmS128Add( s128 a, s128 b );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Description</h4>
+    <p>
+      Adds two integers of specified type and returns the result.
+    </p>
+
+    <h4>Return Values</h4>
+    <p>
+      The sum of the two arguments.
+    </p>
+
+    <h4>Errors</h4>
+    <p>
+      None.
+    </p>
+
+    <h4>Example</h4>
+</font>
+<pre>
+  u128 expenses;
+  u128 fees;
+  u128 total_costs;
+
+  /* ... */
+
+  total_costs = CosmU128Add( fees, expenses );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <hr>
+
+    <a name="CosmSub"></a>
+    <h3>
+      CosmSub
+    </h3>
+
+    <h4>Syntax</h4>
+</font>
+<pre>
+#include "cosm/os_math.h"
+u128 CosmU128Sub( u128 a, u128 b );
+s128 CosmS128Sub( s128 a, s128 b );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Description</h4>
+    <p>
+      Subtracts two integers of specified type and returns the result.
+    </p>
+
+    <h4>Return Values</h4>
+    <p>
+      The difference of the two arguments.
+    </p>
+
+    <h4>Errors</h4>
+    <p>
+      None.
+    </p>
+
+    <h4>Example</h4>
+</font>
+<pre>
+  u128 income;
+  u128 expenses;
+  u128 net;
+
+  /* ... */
+
+  net = CosmU128Sub( income, expenses );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <hr>
+
+    <a name="CosmMul"></a>
+    <h3>
+      CosmMul
+    </h3>
+
+    <h4>Syntax</h4>
+</font>
+<pre>
+#include "cosm/os_math.h"
+u128 CosmU128Mul( u128 a, u128 b );
+s128 CosmS128Mul( s128 a, s128 b );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Description</h4>
+    <p>
+      Multiplies two integers of specified type and returns the result.
+    </p>
+
+    <h4>Return Values</h4>
+    <p>
+      The product of the two arguments.
+    </p>
+
+    <h4>Errors</h4>
+    <p>
+      None.
+    </p>
+
+    <h4>Example</h4>
+</font>
+<pre>
+  u128 length;
+  u128 width;
+  u128 area;
+
+  /* ... */
+
+  area = CosmU128Mul( length, width );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <hr>
+
+    <a name="CosmDiv"></a>
+    <h3>
+      CosmDiv
+    </h3>
+
+    <h4>Syntax</h4>
+</font>
+<pre>
+#include "cosm/os_math.h"
+u128 CosmU128Div( u128 a, u128 b );
+s128 CosmS128Div( s128 a, s128 b );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Description</h4>
+    <p>
+      Divides two integers of specified type and returns the result.
+    </p>
+
+    <h4>Return Values</h4>
+    <p>
+      The quotient of the two arguments.
+    </p>
+
+    <h4>Errors</h4>
+    <p>
+      If <em>b</em> is zero (divide by zero), 0 will be returned.
+    </p>
+
+    <h4>Example</h4>
+</font>
+<pre>
+  u128 candies;
+  u128 children;
+  u128 candies_each;
+
+  /* ... */
+
+  candies_each = CosmU128Div( candies, children );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <hr>
+
+    <a name="CosmMod"></a>
+    <h3>
+      CosmMod
+    </h3>
+
+    <h4>Syntax</h4>
+</font>
+<pre>
+#include "cosm/os_math.h"
+u128 CosmU128Mod( u128 a, u128 b );
+s128 CosmS128Mod( s128 a, s128 b );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Description</h4>
+    <p>
+      Finds the residue class of <em>a</em> mod <em>b</em>.
+    </p>
+
+    <h4>Return Values</h4>
+    <p>
+      0 to |<em>b</em>|-1.
+    </p>
+
+    <h4>Errors</h4>
+    <p>
+      If <em>b</em> is zero (divide by zero), 0 will be returned.
+    </p>
+
+    <h4>Example</h4>
+</font>
+<pre>
+  u64 cards;
+  u64 players;
+  u64 leftover_cards;
+
+  /* ... */
+
+  leftover_cards = CosmU128Mod( cards, players );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <hr>
+
+    <a name="CosmDivMod"></a>
+    <h3>
+      CosmDivMod
+    </h3>
+
+    <h4>Syntax</h4>
+</font>
+<pre>
+#include "cosm/os_math.h"
+void CosmU64DivMod( u64 a, u64 b, u64 * div, u64 * mod );
+void CosmU128DivMod( u128 a, u128 b, u128 * div, u128 * mod );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Description</h4>
+    <p>
+      Combined version of the unsigned Div and Mod functions.<br>
+      <em>div</em> = <em>a</em> / <em>b</em>;<br>
+      <em>mod</em> = <em>a</em> % <em>b</em>;
+    </p>
+
+    <h4>Return Values</h4>
+    <p>
+      None.
+    </p>
+
+    <h4>Errors</h4>
+    <p>
+      If <em>b</em> is zero (divide by zero), 0 will be returned
+      in both <em>div</em> and <em>mod</em>.
+    </p>
+
+    <h4>Example</h4>
+</font>
+<pre>
+  u64 cards;
+  u64 players;
+  u64 per_player;
+  u64 leftover;
+
+  CosmU64DivMod( cards, players, &amp;per_player, &amp;leftover );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <hr>
+
+    <a name="CosmInc"></a>
+    <h3>
+      CosmInc
+    </h3>
+
+    <h4>Syntax</h4>
+</font>
+<pre>
+#include "cosm/os_math.h"
+u128 CosmU128Inc( u128 * a );
+s128 CosmS128Inc( s128 * a );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Description</h4>
+    <p>
+      Adds one to an integer of specified type, by reference.
+    </p>
+
+    <h4>Return Values</h4>
+    <p>
+      The value of <em>a</em> BEFORE it is incremented. <em>a</em>
+      is incremented, possibly wrapping the value of <em>a</em>.
+      The return value is equivalent to <em>a</em>++.
+    </p>
+
+    <h4>Errors</h4>
+    <p>
+      None.
+    </p>
+
+    <h4>Example</h4>
+</font>
+<pre>
+  u128 i;
+
+  /* ... */
+
+  CosmU128Inc( &amp;i );
+
+  /* i is now one more then it was */
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <hr>
+
+    <a name="CosmDec"></a>
+    <h3>
+      CosmDec
+    </h3>
+
+    <h4>Syntax</h4>
+</font>
+<pre>
+#include "cosm/os_math.h"
+u128 CosmU128Dec( u128 * a );
+s128 CosmS128Dec( s128 * a );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Description</h4>
+    <p>
+      Subtracts one from an integer of specified type, by reference.
+    </p>
+
+    <h4>Return Values</h4>
+    <p>
+      The value of <em>a</em> BEFORE it is decremented. <em>a</em>
+      is decremented, possibly wrapping the value of <em>a</em>.
+      The return value is equivalent to <em>a</em>--.
+    </p>
+
+    <h4>Errors</h4>
+    <p>
+      None.
+    </p>
+
+    <h4>Example</h4>
+</font>
+<pre>
+  u128 i;
+
+  /* ... */
+
+  CosmU128Inc( &amp;i );
+
+  /* i is now one less then it was */
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <hr>
+
+    <a name="CosmEq"></a>
+    <h3>
+      CosmEq
+    </h3>
+
+    <h4>Syntax</h4>
+</font>
+<pre>
+#include "cosm/os_math.h"
+u32 CosmU128Eq( u128 a, u128 b );
+u32 CosmS128Eq( s128 a, s128 b );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Description</h4>
+    <p>
+      Checks the equality of two integers of specified type.
+    </p>
+
+    <h4>Return Values</h4>
+    <p>
+      1 if the numbers are equal, or 0 if they are not equal.
+    </p>
+
+    <h4>Errors</h4>
+    <p>
+      None.
+    </p>
+
+    <h4>Example</h4>
+</font>
+<pre>
+  u128 bytes_received;
+  u128 bytes_sent;
+
+  /* ... */
+
+  if ( !CosmU128Eq( bytes_received, bytes_sent ) )
+  {
+    /* ... */
+  }
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <hr>
+
+    <a name="CosmGt"></a>
+    <h3>
+      CosmGt
+    </h3>
+
+    <h4>Syntax</h4>
+</font>
+<pre>
+#include "cosm/os_math.h"
+u32 CosmU128Gt( u128 a, u128 b );
+u32 CosmS128Gt( s128 a, s128 b );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Description</h4>
+    <p>
+      Checks to see if the first integer of specified type is greater than
+      the second. For greater than or equal use !CosmLt().
+    </p>
+
+    <h4>Return Values</h4>
+    <p>
+      1 if the first number is greater than the second, otherwise 0.
+    </p>
+
+    <h4>Errors</h4>
+    <p>
+      None.
+    </p>
+
+    <h4>Example</h4>
+</font>
+<pre>
+  u128 bytes_received;
+  u128 bytes_sent;
+
+  /* ... */
+
+  if ( CosmU128Gt( bytes_received, bytes_sent ) )
+  {
+    /* ... */
+  }
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <hr>
+
+    <a name="CosmLt"></a>
+    <h3>
+      CosmLt
+    </h3>
+
+    <h4>Syntax</h4>
+</font>
+<pre>
+#include "cosm/os_math.h"
+u32 CosmU128Lt( u128 a, u128 b );
+u32 CosmS128Lt( s128 a, s128 b );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Description</h4>
+    <p>
+      Checks to see if the first integer of specified type is less than the
+      second. For less than or equal use !CosmGt().
+    </p>
+
+    <h4>Return Values</h4>
+    <p>
+      1 if the first number is less than the second, otherwise 0.
+    </p>
+
+    <h4>Errors</h4>
+    <p>
+      None.
+    </p>
+
+    <h4>Example</h4>
+</font>
+<pre>
+  u128 bytes_received;
+  u128 bytes_sent;
+
+  /* ... */
+
+  if ( CosmU128Lt( bytes_received, bytes_sent ) )
+  {
+    /* ... */
+  }
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+    <hr>
+
+    <a name="CosmAnd"></a>
+    <h3>
+      CosmAnd
+    </h3>
+
+    <h4>Syntax</h4>
+</font>
+<pre>
+#include "cosm/os_math.h"
+u128 CosmU128And( u128 a, u128 b );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Description</h4>
+    <p>
+      Performs the logical AND of two integers of specified type.
+    </p>
+
+    <h4>Return Values</h4>
+    <p>
+      The logical AND of the two arguments.
+    </p>
+
+    <h4>Errors</h4>
+    <p>
+      None.
+    </p>
+
+    <h4>Example</h4>
+</font>
+<pre>
+  u128 foo;
+  u128 bar;
+  u128 result;
+
+  /* ... */
+
+  result = CosmU128And( foo, bar );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <hr>
+
+    <a name="CosmOr"></a>
+    <h3>
+      CosmOr
+    </h3>
+
+    <h4>Syntax</h4>
+</font>
+<pre>
+#include "cosm/os_math.h"
+u128 CosmU128Or( u128 a, u128 b );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Description</h4>
+    <p>
+      Performs the logical OR of two integers of specified type.
+    </p>
+
+    <h4>Return Values</h4>
+    <p>
+      The logical OR of the two arguments.
+    </p>
+
+    <h4>Errors</h4>
+    <p>
+      None.
+    </p>
+
+    <h4>Example</h4>
+</font>
+<pre>
+  u128 foo;
+  u128 bar;
+  u128 result;
+
+  /* ... */
+
+  result = CosmU128Or( foo, bar );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <hr>
+
+    <a name="CosmXor"></a>
+    <h3>
+      CosmXor
+    </h3>
+
+    <h4>Syntax</h4>
+</font>
+<pre>
+#include "cosm/os_math.h"
+u128 CosmU128Xor( u128 a, u128 b );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Description</h4>
+    <p>
+      Performs the logical exclusive OR of two integers of specified type.
+    </p>
+
+    <h4>Return Values</h4>
+    <p>
+      The logical exclusive OR of the two arguments.
+    </p>
+
+    <h4>Errors</h4>
+    <p>
+      None.
+    </p>
+
+    <h4>Example</h4>
+</font>
+<pre>
+  u128 foo;
+  u128 bar;
+  u128 result;
+
+  /* ... */
+
+  result = CosmU128Xor( foo, bar );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <hr>
+
+    <a name="CosmNot"></a>
+    <h3>
+      CosmNot
+    </h3>
+
+    <h4>Syntax</h4>
+</font>
+<pre>
+#include "cosm/os_math.h"
+u128 CosmU128Not( u128 a );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Description</h4>
+    <p>
+      Performs the logical NOT of two integers of specified type.
+    </p>
+
+    <h4>Return Values</h4>
+    <p>
+      The logical NOT of the argument.
+    </p>
+
+    <h4>Errors</h4>
+    <p>
+      None.
+    </p>
+
+    <h4>Example</h4>
+</font>
+<pre>
+  u128 foo;
+  u128 result;
+
+  /* ... */
+
+  result = CosmU128Not( foo );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <hr>
+
+    <a name="CosmLsh"></a>
+    <h3>
+      CosmLsh
+    </h3>
+
+    <h4>Syntax</h4>
+</font>
+<pre>
+#include "cosm/os_math.h"
+u128 CosmU128Lsh( u128 a, u32 x );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Description</h4>
+    <p>
+      Shifts an integer of specified type by <em>x</em> digits to the left.
+    </p>
+
+    <h4>Return Values</h4>
+    <p>
+      The shifted integer.
+    </p>
+
+    <h4>Errors</h4>
+    <p>
+      None.
+    </p>
+
+    <h4>Example</h4>
+</font>
+<pre>
+  u128 foo;
+  u128 fooshifted;
+
+  /* ... */
+
+  fooshifted = CosmU128Lsh( foo, 4 );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <hr>
+
+    <a name="CosmRsh"></a>
+    <h3>
+      CosmRsh
+    </h3>
+
+    <h4>Syntax</h4>
+</font>
+<pre>
+#include "cosm/os_math.h"
+u128 CosmU128Rsh( u128 a, u32 x );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Description</h4>
+    <p>
+      Shifts an integer of specified type by <em>x</em> digits to the right.
+    </p>
+
+    <h4>Return Values</h4>
+    <p>
+      The shifted integer.
+    </p>
+
+    <h4>Errors</h4>
+    <p>
+      None.
+    </p>
+
+    <h4>Example</h4>
+</font>
+<pre>
+  u128 foo;
+  u128 fooshifted;
+
+  /* ... */
+
+  fooshifted = CosmU128Lsh( foo, 4 );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <hr>
+
+    <a name="CosmFloatNaN"></a>
+    <h3>
+      CosmFloatNaN
+    </h3>
+
+    <h4>Syntax</h4>
+</font>
+<pre>
+#include "cosm/os_math.h"
+s32 CosmFloatNaN( f64 number );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Description</h4>
+    <p>
+      Test if <em>number</em> is NAN.
+    </p>
+
+    <h4>Return Values</h4>
+    <p>
+      1 if <em>number</em> is NAN, 0 otherwise.
+    </p>
+
+    <h4>Errors</h4>
+    <p>
+      None.
+    </p>
+
+    <h4>Example</h4>
+</font>
+<pre>
+  f64 a;
+
+  /* some math */
+  if ( CosmFloatNaN( a ) )
+  {
+    /* error, a isn't a number anymore */
+  }
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <hr>
+
+    <a name="CosmFloatInf"></a>
+    <h3>
+      CosmFloatInf
+    </h3>
+
+    <h4>Syntax</h4>
+</font>
+<pre>
+#include "cosm/os_math.h"
+s32 CosmFloatInf( f64 number );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Description</h4>
+    <p>
+      Test if <em>number</em> is +/- Inf.
+    </p>
+
+    <h4>Return Values</h4>
+    <p>
+      1 if <em>number</em> is +Inf, -1 if -Inf, 0 otherwise.
+    </p>
+
+    <h4>Errors</h4>
+    <p>
+      None.
+    </p>
+
+    <h4>Example</h4>
+</font>
+<pre>
+  f64 a;
+
+  /* some math */
+  if ( CosmFloatInf( a ) )
+  {
+    /* error, a got too large */
+  }
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+<hr>
+
+</font>
+<font face="Verdana,Arial,Helvetica" size="-2" color="#6666cc">
+  <p>
+    &copy; Copyright Mithral Communications &amp; Design Inc.
+    <!--#config timefmt="%Y" -->
+    1995-<!--#echo var="LAST_MODIFIED" -->.
+    All rights reserved.
+    Mithral&reg; and Cosm&reg; are trademarks of
+    Mithral Communications &amp; Design Inc.
+    <br>
+    <!--#config timefmt="%b %d, %Y" -->
+    Document last modified: <!--#echo var="LAST_MODIFIED" -->
+  </p>
+</font>
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>

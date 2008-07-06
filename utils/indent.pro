@@ -1,0 +1,7 @@
+-bad -bap -bl -bli0 -ci2 -cli2 -cs -di2 -fc1 -fca -i2 -l78
+-nbc -ncdb -nlp -npcs -npsl -nsc -prs -sob -ss -st -ts120
+-cdw -ip0 -lc78
+-T u8 -T s8 -T u16 -T s16 -T u32 -T s32 -T u64 -T s64 -T u128 -T s128
+-T f32 -T f64 -T f128 -T ascii -T unicode -T cosmtime -T vector -T pixel
+-T GLvoid -T GLboolean -T GLfloat -T GLdouble
+-T GLbyte -T GLshort -T GLint -T GLubyte -T GLushort -T GLuint -T GLsizei
