@@ -1,0 +1,29 @@
+## OS        : MacOS X
+## CPU       : x86
+## Compiler  : GNU
+
+CC      = gcc
+FC      = g77
+LD      = gcc -arch i386 -o 
+DYLIB   = libtool -dynamic -o 
+AR      = ar rc 
+RM      = rm -f
+RNLIB   = ranlib
+STRIP   = strip
+INSTALL = install
+OBJ     = o
+
+CCFLAGS  = -O2 -no-common -Wall -pedantic -Wno-long-long -Wno-long-double \
+  -isysroot /Developer/SDKs/MacOSX10.4u.sdk $(EXTRA_FLAGS)
+FCFLAGS  = -O2 -no-common -Wall -pedantic -Wno-long-long -Wno-long-double \
+  -isysroot /Developer/SDKs/MacOSX10.4u.sdk $(EXTRA_FLAGS)
+LDFLAGS = -Wl,-syslibroot /Developer/SDKs/MacOSX10.4u.sdk \
+  -mmacosx-version-min=10.4
+LDLIBS  = $(EXTRA_LIBS)
+
+# Cosm Defines
+COSM_DEFS = -DCPU_32BIT -DOS_TYPE=OS_MACOSX -DCPU_TYPE=CPU_X86
+
+.c.$(OBJ):
+	@echo "Compiling $<"
+	@$(CC) $(CC_FLAGS) $(COSM_DEFS) -arch i386 -o $@ -c $<

@@ -1,0 +1,194 @@
+---------------------------
+Modifications Since Phase 1
+---------------------------
+
+If you did not use the phase 1 Cosm API, then you do not read to read this
+document, and should insted consult the current documentation.
+
+It's been 10 years since the innitial 1995/6 design of the Cosm APIs. Since
+then compilers and hardware have advanced, and even C itself has changed. Add
+in 10 years of feedback, you'll see why some things have changed since then.
+
+CPU/OS
+------
+
+general:
+  - the "v3" prefix has been replaces with variations of "Cosm", and the
+    naming convention has been modified. Check the programmers guide.
+  - Files and headers in the CPU/OS layer are now os_* instead of cosm* to
+    remove the confusion between the low level CPU/OS layer and the high level
+    Cosm layer.
+  - Compilers now support 64bit data types for C99 compatability. This makes
+    the 32<->64bit conversion and math macros unnecessary, and are removed.
+    For constants use the "LL" or "ULL" suffix, e.g. 42LL.
+  - The {type}Load/Save/Add and other functions like v3u64Add now follow
+    the naming conventions with the uppercase U/S.
+  - V3_HAVE_U64 has been removed.
+  - The defines and methods related to CosmTest() have been changed to reduce
+    code size and complexity. See cosm.html.
+  - Endian defines can now be used at compile time and/or run time.
+  - v3_time is now cosmtime.
+  - CPU and OS types updated, many removed.
+  - fixed the _V3_ (now _COSM_) macro's to allow nested expansion.
+  - DynamicLib (aka DLL, shared library) functions have been added (os_task).
+os_file:
+  - Save/Load is now a macro on big endian systems.
+  - offset and length are no longer tracked internally, use the functions.
+  - DirOpen's V3_DIR_MODE_READ flag removed as redundant.
+  - Add COSM_FILE_MODE_NOBUFFER file mode.
+  - Memory mapped file functions have been added.
+os_io:
+  - Strings and os_io are now fully UTF-8.
+    bignum, config, log, security, are also UTF-8. os_file (files/dirs),
+    email, net, http, os_task (commands), are ascii protocols of course.
+  - The string library (os_io) now uses u32 instead of u64 in most cases.
+    This is for better performance and ease of use.
+  - f128 type added for your hardcore math needs.
+    f128 in CosmPrint() is %g and %G.
+  - CosmPrint() %n and %N are removed from the documention (never existed)
+  - CosmStrLength is now CosmStrBytes for clarity.
+os_math:
+  - Cosmf64NaN/Inf are now CosmFloatNaN/Inf.
+  - Cosm[u64|u128]DivMod are now public functions. For signed math, still use
+    the separate Div and Mod functions.
+os_mem:
+  - CosmMemAlloc/Realloc no longer need the COSM_MEM_NORMAL/SECURE flag, there
+    is a separate CosmMemAllocSecure function for allocating secure memeory.
+  - CosmMemWarning has been removed. If your OS has no memory protection, then
+    there is nothing you can do about it. But whatever precautions can be
+    taken will be, like zero on free.
+  - Named shared memory functions have been added.
+  - You can now use -DMEM_LEAK_FIND no matter if the libs are compiled with
+    it or not, the functions now always exist.
+os_net:
+  - Full IPv6 support.
+  - CosmNetOpen is simplified, and the parameters reordered correctly.
+  - CosmNetOpenSocks is now a separate, and depreciated function, so
+    CosmNetOpen takes 2 less parameters. SOCKS proxies have not been in
+    common use for over 5 years, as host-based filtering has taken over.
+  - IP addressses are now a struct cosm_NET_ADDR, not a u32 ip with u16 port.
+    This is for IPv6 support, unfortunately this does require user code
+    changes. Since Win32, Linux, and OSX all support IPv6, this is no
+    longer an issue.
+    os_net, http and email were also effected.
+  - CosmNetMyIP() has another parameter and may now return more then one IP.
+    Expect at least 2+ IPv4 address, and possibly 1+ IPv6 ones as well.
+  - CosmNetACLTest is now CosmNetACLCheck to avoid confusion with all of the
+    "Test" functions.
+  - The mask parameter of the NetACL* functions is now mask_bits, and is
+    handled differently. If you were using it, your code will need changes.
+  - cosm_NET no longer keeps firewall settings in memory.
+  - With IPv6 comes threadsafe DNS lookups, feel free to use DNS functions
+    from more then one thread.
+  - WIN32 systems now needs at least winsock 2.0.
+os_task:
+  - CPUGet has been removed.
+  - Mutex's now have an Init function. Mutex's should also be unlocked in
+    the same thread they are locked in. This is change is due to
+    performance and portability issues. Use Semaphores for cross-thread
+    locking.
+  - CosmMutexUnlock now returns void.
+  - CosmProcessSignal is now CosmSignal.
+  - Named Semaphore functions have been added.
+
+
+Utility
+-------
+bignum:
+  - v3BNA -> CosmBNStr
+  - v3BNMovInv is fixed
+buffer:
+  - Create -> Init, to conform with the standard.
+compress:
+  - The Base64 transform has been moved out of compress.* into transform.* this
+    leaves compress.* as empty files and so they have been removed.
+transform:
+  - Transform API simplified greatly, and are now chainable. This will require
+    some manual changes to code.
+http:
+  - Fix header sending for HTTP/1.0 headers.
+  - New error COSM_HTTP_ERROR_VERSION for versioning errors.
+  - Better handling of legacy 0.9 and 1.0 HTTPD requests.
+security:
+  - Changes to API to conform with transform API changes.
+  - COSM_HASH_MD5SHA1 has been removed (too weak), replaced with SHA256
+  - Both MD5 and SHA1 algorithms have been significiantly weakened by attacks
+    since 1995, and should no longer be used for strong cryptography.
+  - Key aliases are now 32 unicode bytes, reasonable length for asian users.
+speed:
+  - speed.* are now gone, the benchmarks there were not reliable. Replacement
+    timing functions are now in time.*
+
+
+Development Environment
+-----------------------
+
+- bzip2 and other libraries that plug into the Cosm API's are now separated
+  into dirs/libraries along with their API glue and makefiles. To use them
+  you will need to #include just the glue-header and link in the library.
+  This is far more scaleable and less of a mess legally when code with other
+  licenses has to be used. The header and lib should be installed to the same
+  dir as the main Cosm headers and libs. Of course GPL, patented, or
+  commerical code still cannot be used.
+- All Cosm related files when installed now go into /usr/local/cosm/
+  This means Phase 2 compatible files go into /usr/local/cosm/lib
+  and .../include. Examples of adding non-libCosm libraries will be given.
+  In Makefile.cosm COSM_LIB, COSM_INC, and COSM_MAN are defined and will
+  always be consistent with whatever version you are writing for.
+- Adding makefiles for Intel's compiler on systems where it is free (Linux).
+  The results only run on Pentium+/Itanium systems of course. Other build
+  targets will be added over time as we migrate from phase 1.
+- The generic apps/ and lib/ makefiles have been updated.
+- Makefiles output is much more clear.
+- CPU_WORD_SIZES is no longer needed.
+- Memory tracking (for -DMEM_LEAK_FIND) is now threadsafe.
+- NONPORTABLE_CODE is now ALLOW_UNSAFE_C, which is much clearer.
+- NO_TRHEADS has been removed, all OS's now have threads.
+
+Format and Style
+----------------
+- return statements now do not have ()'s like function calls.
+- apps/indent.pro added. You'll need indent 2.2.9 or better. This should
+  only be used in absolute emergencies on extremely bad 3rd party code.
+  It likes to mix up the whitespace, and split hex strings in two. Beware.
+
+Other
+-----
+
+- apps/p2update.pl <filenames> ...
+  A perl app that allows automated updates of almost all code to p2 from p1.
+  This corrects all the functions that have changed. Makefiles should be all
+  that need manual conversions.
+- apps/longlines.pl - quick little Perl app to find lines over 78 chars.
+- Win32 and Linux now support CPU affinity, so CPULock/Unlock work.
+- SOCKS users are on notice that support will be removed eventually, noone
+  has run a network that way in years, and the code to support it is huge.
+- The GUI API layer has been removed. GUIs will be native w/OpenGL. PERIOD.
+- Incomplete MacOS 9 support dropped. MaxOS X still fully supported.
+- Incomplete OS/2 and BeOS support was dropped.
+- Support for Win95/98 and WinME dropped. With no Microsoft support, and
+  Cosm's need for security, 99%+ of those will have spyware and rootkits.
+
+MANUAL CHANGES NEEDED:
+----------------------
+
+First run p2update.pl
+
+Required:
+- CosmTest -> predefines/usage has changed. See cosm.html for example.
+- CosmMutexInit's must be added, and must be lock/unlocked in the same thread.
+- CosmTransform API and CosmEncrypt macro API changes.
+- CosmCompressInit -> Add a final NULL parameter where CosmCompressInit was.
+- CosmNet -> Changes for cosm_NET_ADDR.
+- CosmNetOpen - API change. CosmNetOpenSocks added but depreciated.
+- CosmNetACL* -> API change.
+- CosmNetMyIP -> API change, additional length parameter.
+- CosmCPUGet - removed.
+- Strings are now u32 based, compiler warnings will pop up in some places.
+- Some CosmBNA -> CosmBNStr may be missed in cases of bad formatting.
+- The COSM_MEM_NORMAL's the script didn't get need to be removed, and any
+  COSM_MEM_SECURE need to be changed into CosmMemAllocSecure().
+- Some 64bit math functions may remain if the script could not extract
+  them safely. you will get errors for removed functions like v3u64Add.
+
+*** 5678901234567890123456789012345678901234567890123456789012345678901234 --|

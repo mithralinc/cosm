@@ -1,0 +1,63 @@
+[this licence will be replaced with the dual licence as soon as possible]
+
+                    PHASE 1 COSM SOFTWARE LICENSE
+
+YOU SHOULD READ CAREFULLY THE FOLLOWING LICENSE TERMS AND CONDITIONS BEFORE
+USING COSM.  COSM SOFTWARE, AND ALL PARTS AND COMPONENTS THEREOF (hereinafter
+the "Software"), IS THE PROPERTY OF ADAM L. BEBERG (hereinafter the
+"Licensor"), AND MAY ONLY BE USED IN ACCORDANCE WITH THE TERMS OF THIS
+LICENSE.  USING THE SOFTWARE, OR ANY PART OR COMPONENT THEREOF, INDICATES
+THAT YOU ACCEPT THESE TERMS.
+
+1. You are hereby granted a nonexclusive, royalty-free license to use the
+Software subject to the terms and conditions of this License.  You may use
+the Software on any computer for any commercial or non-commercial or research
+work, provided that you do the following: make available the source code used
+in the project at the start of such project, and any changes in the source
+during the course of the project, make available within 30 days of project
+completion all data and results of your project for which you used the
+Software, and if the project takes over 60 days to complete, or is continuous,
+publish all data and results of such project every 60 days, or if this is
+impractical, transmit the above to a third party, named by Licensor, to be
+made a part of a public archive.
+
+2. You may copy and distribute exact copies of the Software, as received by
+you, to third parties, provided that included with such copying and
+distribution is a copy of this License.  You must include in such copies all
+credits and revision histories as were contained in the original received by
+you.  You may not charge any fees (other than a fee to cover the actual costs
+of the physical transfer) to any third party for such copying and distribution.
+
+3. You may NOT make any change, removal or additions to the Software's
+underlying protocols or APIs without the prior written permission of Licensor.
+Other than this, you may make modifications to the Software, but you must
+offer to Licensor, for distribution to all other users, all such modifications
+made for porting, optimization, or other purposes, so that all users can
+benefit, and you hereby grant to Licensor a nonexclusive, transferable,
+royalty-free license to such modifications. You must distribute or publish
+any resulting modified Software that you create at no charge to any third
+party, and the distribution must be under the terms of this License.  If any
+such modification is made, you must post a prominent notice in the modified
+code that the Software has been modified, and you must include a description
+of what the modifications are.  It is the intent of this provision that all
+users of the Software have access to all modifications to the Software.  You
+hereby recognize that it is the intent of the Licensor that the Software shall
+not develop into variants that may result in the inability of projects to run
+except on a particular variant of the Software.
+
+4. You will use your best efforts to discontinue the use and distribution of
+earlier versions of the Software once a new version, update or upgrade is
+available.  You will also use your best efforts to distribute such new
+version, update or upgrade to any third party to whom you may have distributed
+an earlier version.
+
+5. THE SOFTWARE IS LICENSED FREE OF CHARGE AND LICENSOR DOES NOT REPRESENT OR
+WARRANTY THAT ANY PROJECT WILL RUN SUCCESSFULLY, OR PRODUCE CORRECT DATA, IF
+THE SOFTWARE IS USED TO RUN SUCH PROJECT.  YOU HEREBY RECOGNIZE AND AGREE
+THAT THE SOFTWARE IS PROVIDED "AS IS" AND WITHOUT ANY EXPRESS OR IMPLIED
+WARRANTY OF ANY KIND WHATSOEVER, INCLUDING ANY WARRANTIES OF MERCHANTIBILITY
+OR FITNESS FOR A PARTICULAR PURPOSE.  YOU HEREBY AGREE THAT YOU USE THE
+SOFTWARE AT YOUR OWN RISK AND LICENSOR MAKES NO REPRESENTATION AS TO THE
+QUALITY OR PERFORMANCE OF THE SOFTWARE.  LICENSOR SHALL NOT BE LIABLE FOR
+ANY DIRECT, INDIRECT, GENERAL, SPECIAL, INCIDENTAL, PUNITIVE, OR CONSEQUENTIAL
+DAMAGES OF ANY KIND OR NATURE, AND YOU HEREBY WAIVE ANY ENTITLEMENT THERETO.

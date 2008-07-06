@@ -1,0 +1,41 @@
+## OS        : MacOS X
+## CPU       : Universal Binaries
+## Compiler  : GNU
+
+CC      = gcc
+FC      = g77
+LD      = gcc -arch i386 -arch x86_64 -arch ppc -arch ppc64 -o 
+DYLIB   = gcc -dynamiclib -o 
+AR      = ar rc 
+RM      = rm -f
+RNLIB   = ranlib
+STRIP   = strip
+INSTALL = install
+OBJ     = o
+
+CCFLAGS  = -O2 -no-common -Wall -pedantic -Wno-long-long -Wno-long-double \
+  -isysroot /Developer/SDKs/MacOSX10.4u.sdk $(EXTRA_FLAGS)
+FCFLAGS  = -O2 -no-common -Wall -pedantic -Wno-long-long -Wno-long-double \
+  -isysroot /Developer/SDKs/MacOSX10.4u.sdk $(EXTRA_FLAGS)
+LDFLAGS = -Wl,-syslibroot /Developer/SDKs/MacOSX10.4u.sdk \
+  -mmacosx-version-min=10.4
+LDLIBS  = $(EXTRA_LIBS)
+
+# Cosm Defines
+#COSM_DEFS =  < no generic setting this time >
+
+.c.$(OBJ):
+	@echo "Compiling $< X86"
+	@$(CC) $(CC_FLAGS) -DOS_TYPE=OS_MACOSX \
+	  -DCPU_32BIT -DCPU_TYPE=CPU_X86 -arch i386 -o $@.i386 -c $<
+	@echo "Compiling $< AMD64"
+	@$(CC) $(CC_FLAGS) -DOS_TYPE=OS_MACOSX \
+	  -DCPU_64BIT -DCPU_TYPE=CPU_AMD64 -arch x86_64 -o $@.x86_64 -c $<
+	@echo "Compiling $< PPC"
+	@$(CC) $(CC_FLAGS) -DOS_TYPE=OS_MACOSX \
+	  -DCPU_32BIT -DCPU_TYPE=CPU_PPC -arch ppc -o $@.ppc -c $<
+	@echo "Compiling $< PPC64"
+	@$(CC) $(CC_FLAGS) -DOS_TYPE=OS_MACOSX \
+	  -DCPU_64BIT -DCPU_TYPE=CPU_PPC64 -arch ppc64 -o $@.ppc64 -c $<
+	@lipo $@.i386 $@.x86_64 $@.ppc $@.ppc64 -create -output $@ 
+	@$(RM) $@.i386 $@.x86_64 $@.ppc $@.ppc64

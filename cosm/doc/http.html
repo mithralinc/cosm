@@ -1,0 +1,665 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<html>
+  <head>
+    <title>
+      Cosm API - HTTP Protocol Functions
+    </title>
+    <style type="text/css"><!-- a {text-decoration: none} --></style>
+  </head>
+  <body background="images/docbg.jpg" bgcolor="#000000" text="#cccccc"
+    link="#9999ff" vlink="#9999ff" alink="#ffcc66">
+
+  <table border="0" cellspacing="0" cellpadding="0">
+    <tr valign="top">
+      <td width="30"></td>
+      <td width="570">
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <p align="center">
+      <img src="images/cosmlogo.gif" alt="[Cosm Logo]"
+        width="357" height="123" border="0"><br>
+    </p>
+
+<!-- 678901234567890123456789012345678901234567890123456789012345678901234 -->
+
+    <h2 align="center">
+      HTTP Protocol Functions
+    </h2>
+
+    <ul>
+      <li><a href="#CosmHTTPOpen">CosmHTTPOpen</a>
+      <li><a href="#CosmHTTPGet">CosmHTTPGet</a>
+      <li><a href="#CosmHTTPPost">CosmHTTPPost</a>
+      <li><a href="#CosmHTTPRecv">CosmHTTPRecv</a>
+      <li><a href="#CosmHTTPClose">CosmHTTPClose</a>
+      <li><a href="#CosmHTTPDInit">CosmHTTPDInit</a>
+      <li><a href="#CosmHTTPDSetHandler">CosmHTTPDSetHandler</a>
+      <li><a href="#CosmHTTPDStart">CosmHTTPDStart</a>
+      <li><a href="#CosmHTTPDStop">CosmHTTPDStop</a>
+      <li><a href="#CosmHTTPDSendInit">CosmHTTPDSendInit</a>
+      <li><a href="#CosmHTTPDSendHead">CosmHTTPDSendHead</a>
+      <li><a href="#CosmHTTPDSend">CosmHTTPDSend</a>
+      <li><a href="#CosmHTTPDRecv">CosmHTTPDRecv</a>
+      <li><a href="#CosmHTTPDFree">CosmHTTPDFree</a>
+    </ul>
+
+    <hr>
+
+    <a name="CosmHTTPOpen"></a>
+    <h3>
+      CosmHTTPOpen
+    </h3>
+
+    <h4>Syntax</h4>
+</font>
+<pre>
+s32 CosmHTTPOpen( cosm_HTTP * http, const ascii * uri,
+  const cosm_NET_ADDR proxy_host, const u16 proxy_port, const ascii * proxy_name,
+  const ascii * proxy_pass, const ascii * user_name,
+  const ascii * user_pass );
+
+s32 _COSM_HTTPOPEN( cosm_HTTP * http, const ascii * uri );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Description</h4>
+    <p>
+      Open an HTTP/1.1 (RFC 2616) connection to the given <em>uri</em>.
+      The uri must be of the standard "http://host[:port][/][ignored]"
+      form, anything past and including the single slash is ignored.
+      <em>proxy_host</em> and <em>proxy_port</em> are the address of the web
+      proxy, and are used if both are non-zero. The name and pass parameters
+      are for the proxy and web page passwords.
+    </p>
+    <p>
+      Since CosmHTTPOpen is rather complex, a macro for simpler cases is also
+      defined. _COSM_HTTPOPEN(...) allows just the first 2 parameters to be
+      specified for when you do not need to worry about proxies or passwords.
+    </p>
+
+    <h4>Return Values</h4>
+    <p>
+      COSM_PASS on success, or an error code on failure.
+    </p>
+
+    <h4>Errors</h4>
+    <dl>
+      <dt>COSM_HTTP_ERROR_PARAM
+      <dd>Parameter error
+      <dt>COSM_HTTP_ERROR_URI
+      <dd>URI invalid
+    </dl>
+
+    <h4>Example</h4>
+</font>
+<pre>
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+<hr>
+
+    <a name="CosmHTTPGet"></a>
+    <h3>
+      CosmHTTPGet
+    </h3>
+
+    <h4>Syntax</h4>
+</font>
+<pre>
+s32 CosmHTTPGet( cosm_HTTP * http, u32 * status, const ascii * uri_path,
+  u32 wait_ms );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Description</h4>
+    <p>
+      Using the open <em>http</em> connection, open the <em>uri_path</em>
+      given for reading and place the resulting HTTP status code into
+      <em>status</em>. CGI parameters may be passed as part of the
+      <em>uri_path</em>. This function is only used to read static web data.
+      <em>wait_ms</em> is the network timeout while looking for a
+      response to see if anything is coming back or not.
+    </p>
+
+    <h4>Return Values</h4>
+    <p>
+      COSM_PASS on success, or an error code on failure.
+    </p>
+
+    <h4>Errors</h4>
+    <dl>
+      <dt>COSM_HTTP_ERROR_PARAM
+      <dd>Parameter error
+      <dt>COSM_HTTP_ERROR_NET
+      <dd>Host/proxy unreachable
+      <dt>COSM_HTTP_ERROR_ORDER
+      <dd>Functions called in wrong order
+      <dt>COSM_HTTP_ERROR_MEMORY
+      <dd>Buffer/memory error
+    </dl>
+
+    <h4>Example</h4>
+</font>
+<pre>
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+<hr>
+
+    <a name="CosmHTTPPost"></a>
+    <h3>
+      CosmHTTPPost
+    </h3>
+
+    <h4>Syntax</h4>
+</font>
+<pre>
+s32 CosmHTTPPost( cosm_HTTP * http, u32 * status, const ascii * uri_path,
+  const void * data, u32 length, u32 wait_ms );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Description</h4>
+    <p>
+      Using the open <em>http</em> connection, send <em>length</em> bytes of
+      data to the <em>uri_path</em> which is then opened for reading and the
+      resulting HTTP status code is put into <em>status</em>. CGI parameter
+      data may be sent as data, but none is allowed in the <em>uri_path</em>
+      with this method. This function is primarily for communication when
+      network traffic of blocked, but is fully compatable with web servers.
+      <em>wait_ms</em> is the network timeout while looking for a
+      response to see if anything is coming back or not.
+    </p>
+
+    <h4>Return Values</h4>
+    <p>
+      COSM_PASS on success, or an error code on failure.
+    </p>
+
+    <h4>Errors</h4>
+    <dl>
+      <dt>COSM_HTTP_ERROR_PARAM
+      <dd>Parameter error
+      <dt>COSM_HTTP_ERROR_NET
+      <dd>Host/proxy unreachable
+      <dt>COSM_HTTP_ERROR_ORDER
+      <dd>Functions called in wrong order
+      <dt>COSM_HTTP_ERROR_MEMORY
+      <dd>Buffer/memory error
+    </dl>
+
+    <h4>Example</h4>
+</font>
+<pre>
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+<hr>
+
+    <a name="CosmHTTPRecv"></a>
+    <h3>
+      CosmHTTPRecv
+    </h3>
+
+    <h4>Syntax</h4>
+</font>
+<pre>
+s32 CosmHTTPRecv( void * buffer, u32 * bytes_received, cosm_HTTP * http,
+  u32 length, u32 wait_ms );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Description</h4>
+    <p>
+      Read up to <em>length</em> bytes of the resulting get/post data from
+      the server into the <em>buffer</em>, waiting up to <em>wait_ms</em>
+      milliseconds for data to arrive. <em>bytes_read</em> is set to the
+      number of bytes actually read.
+    </p>
+
+    <h4>Return Values</h4>
+    <p>
+      COSM_PASS on success, or an error code on failure.
+    </p>
+
+    <h4>Errors</h4>
+    <dl>
+      <dt>COSM_HTTP_ERROR_ORDER
+      <dd>Functions called in wrong order
+    </dl>
+
+    <h4>Example</h4>
+</font>
+<pre>
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+<hr>
+
+    <a name="CosmHTTPClose"></a>
+    <h3>
+      CosmHTTPClose
+    </h3>
+
+    <h4>Syntax</h4>
+</font>
+<pre>
+s32 CosmHTTPClose( cosm_HTTP * http );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Description</h4>
+    <p>
+      Close the <em>http</em> connection and free any remaining data.
+    </p>
+
+    <h4>Return Values</h4>
+    <p>
+      COSM_PASS on success, or an error code on failure.
+    </p>
+
+    <h4>Errors</h4>
+    <dl>
+      <dt>COSM_HTTP_ERROR_PARAM
+      <dd>Parameter error
+      <dt>COSM_HTTP_ERROR_NET
+      <dd>Host/proxy unreachable
+    </dl>
+
+    <h4>Example</h4>
+</font>
+<pre>
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+<hr>
+
+    <a name="CosmHTTPDInit"></a>
+    <h3>
+      CosmHTTPDInit
+    </h3>
+
+    <h4>Syntax</h4>
+</font>
+<pre>
+s32 CosmHTTPDInit( cosm_HTTPD * httpd, ascii * log_path, u32 log_level,
+  u32 threads, u32 stack_size, cosm_NET_ADDR ip, u16 port, u32 wait_ms );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Description</h4>
+    <p>
+      Initialize a server with <em>threads</em> threads, each with a stack
+      size of <em>stack_size</em>, running on the <em>ip</em> and
+      <em>port</em> given. Depending on how you write your handlers, not
+      much stack should be needed. <em>log_path</em> and
+      <em>log_level</em> are for the server log using a standard
+      <a href="log.html">CosmLog</a>.
+      wait_ms is the network timeout while parsing the request.
+    </p>
+
+    <h4>Return Values</h4>
+    <p>
+      COSM_PASS on success, or an error code on failure.
+    </p>
+
+    <h4>Errors</h4>
+    <dl>
+      <dt>COSM_HTTP_ERROR_PARAM
+      <dd>Parameter error
+    </dl>
+
+    <h4>Example</h4>
+</font>
+<pre>
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+<hr>
+
+    <a name="CosmHTTPDSetHandler"></a>
+    <h3>
+      CosmHTTPDSetHandler
+    </h3>
+
+    <h4>Syntax</h4>
+</font>
+<pre>
+s32 CosmHTTPDSetHandler( cosm_HTTPD * httpd, const ascii * path,
+  cosm_NET_ACL * acl, s32 (*handler)( cosm_HTTPD_REQUEST * request ) );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Description</h4>
+    <p>
+      A handler will be called when a client mathching the ACL requests a
+      URL starting with <em>path</em>. The handler with the longest matching
+      path will be called, and the order handlers are added does not matter.
+      if handler is NULL, the handler is removed. At minimum you must
+      have a handler set for the path "/" which will be called if no other
+      handler matches.
+    </p>
+
+    <h4>Return Values</h4>
+    <p>
+      COSM_PASS on success, or an error code on failure.
+    </p>
+
+    <h4>Errors</h4>
+    <dl>
+      <dt>COSM_HTTP_ERROR_PARAM
+      <dd>Parameter error
+    </dl>
+
+    <h4>Example</h4>
+</font>
+<pre>
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+<hr>
+
+    <a name="CosmHTTPDStart"></a>
+    <h3>
+      CosmHTTPDStart
+    </h3>
+
+    <h4>Syntax</h4>
+</font>
+<pre>
+s32 CosmHTTPDStart( cosm_HTTPD * httpd, u32 timeout_ms );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Description</h4>
+    <p>
+      Starts the <em>httpd</em> server once it is initialized and handlers
+      are set.
+    </p>
+    <p>
+      Since your server will probably be stopped by a message or signal,
+      the correct way to see that it is still running is to check that
+      httpd.status != COSM_HTTPD_STATUS_STOPPED.
+    </p>
+    <p>
+      It is possible on some systems for severe network driver errors to stop
+      the server. Calling CosmHTTPStart again may be able to restart it.
+    </p>
+
+    <h4>Return Values</h4>
+    <p>
+      COSM_PASS on success, or an error code on failure.
+    </p>
+
+    <h4>Errors</h4>
+    <dl>
+      <dt>COSM_HTTPD_ERROR_PARAM
+      <dd>Parameter error
+      <dt>COSM_HTTPD_ERROR_TIMEOUT
+      <dd>Unable to start the server.
+    </dl>
+
+    <h4>Example</h4>
+</font>
+<pre>
+
+
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+<hr>
+
+    <a name="CosmHTTPDStop"></a>
+    <h3>
+      CosmHTTPDStop
+    </h3>
+
+    <h4>Syntax</h4>
+</font>
+<pre>
+s32 CosmHTTPDStop( cosm_HTTPD * httpd, u32 timeout_ms );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Description</h4>
+    <p>
+      Stops the <em>httpd</em> server, possibly to change the handlers. If
+      the threads cannot be shutdown within <em>timeout_ms</em> milliseconds,
+      then COSM_HTTPD_ERROR_TIMEOUT is returned and you can attempt to stop it
+      again.
+    </p>
+
+    <h4>Return Values</h4>
+    <p>
+      COSM_PASS on success, or an error code on failure.
+    </p>
+
+    <h4>Errors</h4>
+    <dl>
+      <dt>COSM_HTTP_ERROR_PARAM
+      <dd>Parameter error
+    </dl>
+
+    <h4>Example</h4>
+</font>
+<pre>
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+<hr>
+
+    <a name="CosmHTTPDSendInit"></a>
+    <h3>
+      CosmHTTPDSendInit
+    </h3>
+
+    <h4>Syntax</h4>
+</font>
+<pre>
+s32 CosmHTTPDSendInit( cosm_HTTPD_REQUEST * request, ascii * code,
+  ascii * string, ascii * content_type );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Description</h4>
+    <p>
+      This is the first function that should be called in any handler.
+      <em>code</em> is the 3 digit HTTP status ("200", "404") for the
+      result. <em>string</em> is the text associated with the that code
+      ("OK", "Not Found"). <em>content_type</em> is the media type of data to
+      be sent, "text/http" for tunneling purposes, or a type based on the
+      content like "image/jpeg". Further information on these parameters can
+      be found in the HTTP/1.1 documentation (RFC 2616).
+    </p>
+
+    <h4>Return Values</h4>
+    <p>
+      COSM_PASS on success, or an error code on failure.
+    </p>
+
+    <h4>Errors</h4>
+    <dl>
+      <dt>COSM_HTTP_ERROR_PARAM
+      <dd>Parameter error
+    </dl>
+
+    <h4>Example</h4>
+</font>
+<pre>
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+<hr>
+
+    <a name="CosmHTTPDSendHead"></a>
+    <h3>
+      CosmHTTPDSendHead
+    </h3>
+
+    <h4>Syntax</h4>
+</font>
+<pre>
+s32 CosmHTTPDSendHead( cosm_HTTPD_REQUEST * request, const void * string );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Description</h4>
+    <p>
+      Send the <em>string</em> to the client as part of the HTTP header sent
+      in handler functions. This function must be used after
+      <a href="#CosmHTTPDSendInit">CosmHTTPDSendInit</a> but before any
+      <a href="#CosmHTTPDSend">CosmHTTPDSend</a> are called.
+    </p>
+
+    <h4>Return Values</h4>
+    <p>
+      COSM_PASS on success, or an error code on failure.
+    </p>
+
+    <h4>Errors</h4>
+    <dl>
+      <dt>COSM_HTTP_ERROR_PARAM
+      <dd>Parameter error
+    </dl>
+
+    <h4>Example</h4>
+</font>
+<pre>
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+<hr>
+
+    <a name="CosmHTTPDSend"></a>
+    <h3>
+      CosmHTTPDSend
+    </h3>
+
+    <h4>Syntax</h4>
+</font>
+<pre>
+s32 CosmHTTPDSend( cosm_HTTPD_REQUEST * request, const void * data, u32 length );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Description</h4>
+    <p>
+      Send <em>length</em> bytes of data to the client in a handler
+      function.
+    </p>
+
+    <h4>Return Values</h4>
+    <p>
+      COSM_PASS on success, or an error code on failure.
+    </p>
+
+    <h4>Errors</h4>
+    <dl>
+      <dt>COSM_HTTP_ERROR_PARAM
+      <dd>Parameter error
+    </dl>
+
+    <h4>Example</h4>
+</font>
+<pre>
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+<hr>
+
+    <a name="CosmHTTPDRecv"></a>
+    <h3>
+      CosmHTTPDRecv
+    </h3>
+
+    <h4>Syntax</h4>
+</font>
+<pre>
+s32 CosmHTTPDRecv( void * buffer, u32 * bytes_received,
+  cosm_HTTPD_REQUEST * request, u32 length, u32 wait_ms );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Description</h4>
+    <p>
+      Read up to <em>length</em> bytes of the posted data from the client
+      into the <em>buffer</em>, waiting up to <em>wait_ms</em> milliseconds
+      for data to arrive. <em>bytes_received</em> is set to the number of
+      bytes actually read. For use in handler functions.
+    </p>
+
+    <h4>Return Values</h4>
+    <p>
+      COSM_PASS on success, or an error code on failure.
+    </p>
+
+    <h4>Errors</h4>
+    <dl>
+      <dt>COSM_HTTP_ERROR_PARAM
+      <dd>Parameter error
+    </dl>
+
+    <h4>Example</h4>
+</font>
+<pre>
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+<hr>
+
+    <a name="CosmHTTPDFree"></a>
+    <h3>
+      CosmHTTPDFree
+    </h3>
+
+    <h4>Syntax</h4>
+</font>
+<pre>
+s32 CosmHTTPDFree( cosm_HTTPD * httpd );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Description</h4>
+    <p>
+      Free the <em>httpd</em> and any remaining data. A server must not be
+      running in order to free it.
+    </p>
+
+    <h4>Return Values</h4>
+    <p>
+      COSM_PASS on success, or an error code on failure.
+    </p>
+
+    <h4>Errors</h4>
+    <dl>
+      <dt>COSM_HTTP_ERROR_PARAM
+      <dd>Parameter error
+    </dl>
+
+    <h4>Example</h4>
+</font>
+<pre>
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+<hr>
+
+</font>
+<font face="Verdana,Arial,Helvetica" size="-2" color="#6666cc">
+  <p>
+    &copy; Copyright Mithral Communications &amp; Design Inc.
+    <!--#config timefmt="%Y" -->
+    1995-<!--#echo var="LAST_MODIFIED" -->.
+    All rights reserved.
+    Mithral&reg; and Cosm&reg; are trademarks of
+    Mithral Communications &amp; Design Inc.
+    <br>
+    <!--#config timefmt="%b %d, %Y" -->
+    Document last modified: <!--#echo var="LAST_MODIFIED" -->
+  </p>
+</font>
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>

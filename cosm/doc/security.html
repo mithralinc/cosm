@@ -1,0 +1,977 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<html>
+  <head>
+    <title>
+      Cosm API - Data Signing, Encryption, and Hash Functions
+    </title>
+    <style type="text/css"><!-- a {text-decoration: none} --></style>
+  </head>
+  <body background="images/docbg.jpg" bgcolor="#000000" text="#cccccc"
+    link="#9999ff" vlink="#9999ff" alink="#ffcc66">
+
+  <table border="0" cellspacing="0" cellpadding="0">
+    <tr valign="top">
+      <td width="30"></td>
+      <td width="570">
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <p align="center">
+      <img src="images/cosmlogo.gif" alt="[Cosm Logo]"
+        width="357" height="123" border="0"><br>
+    </p>
+
+<!-- 678901234567890123456789012345678901234567890123456789012345678901234 -->
+
+    <h2 align="center">
+      Data Signing, Encryption, and Hash Functions
+    </h2>
+
+    <ul>
+
+      <li><a href="#CosmHashEq">CosmHashEq</a>
+      <li><a href="#CosmPRNG">CosmPRNG</a>
+      <li>CosmEntropy
+      <li><a href="#CosmPKIKeyGen">CosmPKIKeyGen</a>
+      <li><a href="#CosmPKIKeyLoad">CosmPKIKeyLoad</a>
+      <li><a href="#CosmPKIKeySave">CosmPKIKeySave</a>
+      <li><a href="#CosmPKIKeyFree">CosmPKIKeyFree</a>
+      <li><a href="#CosmPKISigLoad">CosmPKISigLoad</a>
+      <li><a href="#CosmPKISigSave">CosmPKISigSave</a>
+      <li><a href="#CosmPKISigFree">CosmPKISigFree</a>
+      <li><a href="#CosmPKIEncode">CosmPKIEncode</a>
+      <li><a href="#CosmPKIDecode">CosmPKIDecode</a>
+    </ul>
+
+    <h4>Predefined Hash Types</h4>
+    <dl>
+      <dt>COSM_HASH_CRC32
+      <dd>32-bits, for error checking only. CCITT Standard.
+      <dt>COSM_HASH_MD5
+      <dd>128-bits, preferred for checksums.
+      <dt>COSM_HASH_SHA1
+      <dd>160-bits, preferred for signing hashes.
+      <dt>COSM_HASH_SHA256
+      <dd>256-bits, preferred for RSA operations.
+    </dl>
+
+    <h4>Encryption Modes:</h4>
+    <dl>
+      <dt>COSM_CRYPTO_MODE_CFB
+      <dd>8-bit cipher-feedback, for stream data.
+      <dt>COSM_CRYPTO_MODE_CBC
+      <dd>Cipher block chainging, for files.
+      <dt>COSM_CRYPTO_MODE_ECB
+      <dd>Electronic codebook, for keys and random.
+    </dl>
+
+    <hr>
+
+    <a name="CosmHashEq"></a>
+    <h3>
+      CosmHashEq
+    </h3>
+
+    <h4>Syntax</h4>
+</font>
+<pre>
+#include "cosm/security.h"
+s32 CosmHashEq( const cosm_HASH * hashA, const cosm_HASH * hashB );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Description</h4>
+    <p>
+      Check if the hashes are equal.
+    </p>
+
+    <h4>Return Values</h4>
+    <p>
+      1 if the hashes are equal, or 0 if they are not equal.
+    </p>
+
+    <h4>Errors</h4>
+    <p>
+      None.
+    </p>
+
+    <h4>Example</h4>
+</font>
+<pre>
+  cosm_HASH hashA, hashB;
+
+  /* Fill in the hashes ... */
+
+  if( !CosmHashEq( &amp;hashA, &amp;hashB ) )
+  {
+    /* Hashes are not equal */
+  }
+
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <hr>
+
+    <a name="CosmPRNG"></a>
+    <h3>
+      CosmPRNG
+    </h3>
+
+    <h4>Syntax</h4>
+</font>
+<pre>
+#include "cosm/security.h"
+s32 CosmPRNG( cosm_PRNG * prng, void * data, u64 length,
+  const void * salt, u64 salt_length );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Description</h4>
+    <p>
+      Generate <em>length</em> bytes of deterministic psuedo-random
+      <em>data</em>. Initialization of the generator is done
+      by feeding it <em>salt_length</em> bytes of <em>salt</em>. Any salt
+      fed to the generator will be used before the data is generated, and is
+      also cumulative, so it can be called repeatedly with additional salt
+      to provide more initial randomness. Given the same salt, the same
+      bytes will always come out.
+    </p>
+
+    <h4>Return Values</h4>
+    <p>
+      COSM_PASS on success, or COSM_FAIL on failure.
+    </p>
+
+    <h4>Errors</h4>
+    <p>
+      None.
+    </p>
+
+    <h4>Example</h4>
+</font>
+<pre>
+  cosm_PRNG rnd;
+  u8 bytes[32];
+  cosmtime mytime;
+
+  CosmMemSet( &amp;rnd, sizeof( cosm_PRNG ), 0 );
+
+  /* seed it */
+  CosmPRNG( &amp;rnd, NULL, (u64) 0,
+    &amp;mytime, sizeof( cosmtime ) );
+
+  /* get some bytes */
+  CosmPRNG( &amp;rnd, bytes, sizeof( bytes ),
+    NULL, 0 );
+
+  /* OR - do both at once */
+  CosmPRNG( &amp;rnd, bytes, sizeof( bytes ),
+    &amp;mytime, sizeof( cosmtime ) );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <hr>
+
+    <a name="CosmPKIKeyGen"></a>
+    <h3>
+      CosmPKIKeyGen
+    </h3>
+
+    <h4>Syntax</h4>
+</font>
+<pre>
+#include "cosm/security.h"
+s32 CosmPKIKeyGen( cosm_PKI_KEY * public_key, cosm_PKI_KEY * private_key,
+  u32 bits, const u8 * rnd_bits, u64 id, const utf8 * alias,
+  cosmtime create, cosmtime expire,
+  void (*callback)( s32, s32, void * ), void * callback_param );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Description</h4>
+    <p>
+      Generate <em>public_key</em> and <em>private_key</em> with a
+      <em>bits</em> bit n. Please read this entire description, as
+      many parameters have special meanings and restrictions.
+      Knowing what you're doing before using any PKI functions would
+      be a very good idea.
+    </p>
+    <p>
+      <em>bits</em> must be at least 512, and a power of 2.
+      Keys of 1024 bits are now suspected to be breakable by large
+      organizations and governments, and 512 bit keys are breakable
+      with a few computers in a few weeks, so 2048 is the smallest
+      key recommended.
+    </p>
+    <p>
+      <em>rnd_bits</em> should be <em>bits</em> bits of random data.
+      It is VERY important that the user take great care to make sure
+      that these bits are truely random, and not based on any data
+      such as the time. CosmPRNG and CosmEntropy are also not enough on
+      their own.
+    </p>
+    <p>
+      <em>create</em> is the time of key creation and should always
+      be the current time. <em>expire</em> is the expiration time
+      of the keys. CosmPKIEncode will not be allowed with an
+      expired key. Most keys should have a lifetime of 1 year.
+    </p>
+    <p>
+      The <em>id</em> on a key has specific ranges and meanings:<br>
+      0    to 2^31-1: human local ID.<br>
+      2^31 to 2^32-1: machine local ID.<br>
+      2^32 to 2^63-1: human global Cosm-assigned ID.<br>
+      2^63 to 2^64-1: machine global Cosm-assigned ID.<br>
+      When printed in hex, local IDs are 8 digits, and global ID are 16
+      digits.
+      Local ID are use within each organization, often something like an
+      employee number, or a customer number for example. Global IDs should
+      not be used to identify people once they are in a local domain, the
+      local ID should be used instead for privacy and security reasons.
+      That something is using a human ID does NOT imply they are an adult
+      that can sign contracts, nor any form of intelligence.
+    </p>
+    <p>
+      A key is uniquely identified by the <em>bits</em>,
+      <em>id</em>, and <em>create</em>. This means that keys
+      should not be generated more then once a second, this should not
+      be a big concern. You should also never generate a key with a
+      <em>id</em> you haven't been assigned, because it will not
+      result in a valid key.
+    </p>
+    <p>
+      <em>alias</em> is a max 31 character utf8 string that has no
+      special meaning except to the key's owner as a tool to quickly
+      tell keys apart. No special meaning should be given beyond that.
+    </p>
+    <p>
+      <em>callback</em> and <em>callback_param</em> provide information
+      on the possibly long key generation process. They work as decribed
+      in CosmBNPrimeGen, with the added calls of
+      callback( 3, 0, callback_param ) when the keypair test begins and
+      callback( 4, 0, callback_param ) when the test finishes.
+      Note that 2 primes will be generated during key creation.
+    </p>
+    <p>
+      The user-relevant (only) elements of cosm_PKI_KEY are:
+    </p>
+</font>
+<pre>
+typedef struct cosm_PKI_KEY
+{
+  u16 pkt_type;     /* == COSM_PKI_PUBLIC or COSM_PKI_PRIVATE */
+  u16 pkt_version;
+  u32 bits;
+  s64 create;
+  u64 id;
+  s64 expire;
+  ascii alias[32];
+  ...
+} cosm_PKI_KEY;
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Return Values</h4>
+    <p>
+      COSM_PASS on success, or an error code on failure.
+    </p>
+
+    <h4>Errors</h4>
+    <dl>
+      <dt>COSM_PKI_ERROR_PARAM
+      <dd>Invalid parameter.
+      <dt>COSM_PKI_ERROR_MEMORY
+      <dd>Internal error, usually memory.
+      <dt>COSM_PKI_ERROR_FORMAT
+      <dd>Key or signature is invalid or wrong size.
+      <dt>COSM_PKI_ERROR_NO_CRYPTO
+      <dd>Compiled with -DNO_CRYPTO.
+    </dl>
+
+    <h4>Example</h4>
+</font>
+<pre>
+  void my_progress( s32 type, s32 count, void * param )
+  {
+    switch( type )
+    {
+      case 0:
+        CosmPrint( "." );
+        break;
+      case 1:
+        CosmPrint( "+" );
+        break;
+      case 2:
+        CosmPrint( "\n" );
+        break;
+      case 3:
+        CosmPrint( "[testing keypair..." );
+        break;
+      case 4:
+        CosmPrint( "]\n" );
+        break;
+      default:
+        break;
+    }
+  }
+
+  void example( void )
+  {
+    const ascii alias[32];
+    cosm_PKI_KEY pub, pri;
+    cosmtime create, expire;
+    u8 rnd_bits[256];
+
+    /* set create, and expire in a year */
+    CosmSystemClock( &amp;create );
+    _COSM_SET128( expire, 0000000001E13380, 0000000000000000 );
+    expire = CosmS128Add( create, expire );
+
+    /* get user data and carefully construct rnd_bits */
+
+    /* set alias to make a key for at work, employee id = 42 */
+    CosmStrCopy( alias, "Salt Mines #2002", 32LL );
+
+    /* generate a key */
+    CosmMemSet( &amp;pub, sizeof( cosm_PKI_KEY ), 0 );
+    CosmMemSet( &amp;pri, sizeof( cosm_PKI_KEY ), 0 );
+    if ( CosmPKIKeyGen( &amp;pub, &amp;pri, 2048, rnd_bits,
+      (u64) 42, alias, create, expire, my_progress, NULL )
+      != COSM_PASS )
+    {
+      /* key generation failed */
+    }
+
+    /* save the keys, or use them as ephemeral keys */
+
+    /* ... */
+  }
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <hr>
+
+    <a name="CosmPKIKeyLoad"></a>
+    <h3>
+      CosmPKIKeyLoad
+    </h3>
+
+    <h4>Syntax</h4>
+</font>
+<pre>
+#include "cosm/security.h"
+s32 CosmPKIKeyLoad( cosm_PKI_KEY * key, u64 * bytes_read,
+  const u8 * buffer, u64 max_bytes, const cosm_HASH * pass_hash );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Description</h4>
+    <p>
+      Load the key from the <em>buffer</em> into <em>key</em>, reading
+      at most <em>max_bytes</em> bytes. <em>bytes_read</em> will be set to
+      the number of bytes that were in the key.
+    </p>
+    <p>
+      Loading private keys also requires the COSM_HASH_SHA256 hash of
+      the users passphrase <em>pass_hash</em> in order to decrypt the
+      private data. When loading a public key <em>pass_hash</em> is ignored.
+    </p>
+
+    <h4>Return Values</h4>
+    <p>
+      COSM_PASS on success, or an error code on failure.
+    </p>
+
+    <h4>Errors</h4>
+    <dl>
+      <dt>COSM_PKI_ERROR_PARAM
+      <dd>Invalid parameter.
+      <dt>COSM_PKI_ERROR_MEMORY
+      <dd>Internal error, usually memory.
+      <dt>COSM_PKI_ERROR_FORMAT
+      <dd>Key or signature is invalid or wrong size.
+      <dt>COSM_PKI_ERROR_PASSPHRASE
+      <dd>Passphrase hash was incorrect.
+      <dt>COSM_PKI_ERROR_NO_CRYPTO
+      <dd>Compiled with -DNO_CRYPTO.
+    </dl>
+
+    <h4>Example</h4>
+</font>
+<pre>
+  cosm_PKI_KEY pub, pri;
+  cosm_HASH pass_hash;
+  u8 save_buf[4096];
+  u64 len;
+
+  /* read key from file etc. */
+
+  /* loading a public key */
+  if ( CosmPKIKeyLoad( &amp;pub, &amp;len, save_buf,
+    sizeof( save_buf ), NULL ) != COSM_PASS )
+  {
+    /* Load failed */
+  }
+
+  /* hash passphrase into pass_hash with COSM_HASH_SHA256 */
+
+  /* loading a private key */
+  if ( CosmPKIKeyLoad( &amp;pri, &amp;len, save_buf,
+    sizeof( save_buf ), &amp;data_hash ) != COSM_PASS )
+  {
+    /* Load failed */
+  }
+
+  /* free keys */
+  CosmPKIKeyFree( &amp;pub );
+  CosmPKIKeyFree( &amp;pri );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <hr>
+
+    <a name="CosmPKIKeySave"></a>
+    <h3>
+      CosmPKIKeySave
+    </h3>
+
+    <h4>Syntax</h4>
+</font>
+<pre>
+#include "cosm/security.h"
+s32 CosmPKIKeySave( u8 * buffer, u64 * length, const cosm_PKI_KEY * key,
+  const u64 max_bytes, const u8 * rnd_bytes,
+  const cosm_HASH * pass_hash );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Description</h4>
+    <p>
+      Save the key <em>key</em> into the <em>buffer</em>, writing at
+      most <em>max_bytes</em> bytes. <em>length</em> will be set to the
+      number of bytes written.
+    </p>
+    <p>
+      Private keys also requite 16 bytes of random data <em>rnd_bytes</em>,
+      and a hash <em>pass_hash</em> which is the COSM_HASH_SHA256 hash of
+      the users passphrase in order to encrypt the private data. When
+      saving a public key these two parameters are ignored.
+    </p>
+
+    <h4>Return Values</h4>
+    <p>
+      COSM_PASS on success, or an error code on failure.
+    </p>
+
+    <h4>Errors</h4>
+    <dl>
+      <dt>COSM_PKI_ERROR_PARAM
+      <dd>Invalid parameter.
+      <dt>COSM_PKI_ERROR_MEMORY
+      <dd>Internal error, usually memory.
+      <dt>COSM_PKI_ERROR_FORMAT
+      <dd>Key or signature is invalid or wrong size.
+      <dt>COSM_PKI_ERROR_NO_CRYPTO
+      <dd>Compiled with -DNO_CRYPTO.
+    </dl>
+
+    <h4>Example</h4>
+</font>
+<pre>
+  cosm_PKI_KEY pub, pri;
+  cosm_HASH pass_hash;
+  u8 save_buf[4096];
+  u64 len;
+
+  /* generate a keypair - if we load keys we dont need to re-save them */
+
+  /* saving a public key */
+  if ( CosmPKIKeySave( save_buf, &amp;len, &amp;pub,
+    sizeof( save_buf ), NULL, NULL ) != COSM_PASS )
+  {
+    /* Save failed */
+  }
+
+  /* write save_buf to file etc. */
+
+  /* generate 16 random bytes for the rnd_bytes */
+
+  /* hash passphrase into pass_hash with COSM_HASH_SHA256 */
+
+  /* saving a private key */
+  if ( CosmPKIKeySave( save_buf, &amp;len, &amp;pri,
+    sizeof( save_buf ), rnd_bits, &amp;pass_hash )
+    != COSM_PASS )
+  {
+    /* Save failed */
+  }
+
+  /* write save_buf to file etc. */
+
+  /* free keys */
+  CosmPKIKeyFree( &amp;pub );
+  CosmPKIKeyFree( &amp;pri );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <hr>
+
+    <a name="CosmPKIKeyFree"></a>
+    <h3>
+      CosmPKIKeyFree
+    </h3>
+
+    <h4>Syntax</h4>
+</font>
+<pre>
+#include "cosm/security.h"
+void CosmPKIKeyFree( cosm_PKI_KEY * key );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Description</h4>
+    <p>
+      Free all internal key data, and zero the key structure.
+    </p>
+
+    <h4>Return Values</h4>
+    <p>
+      None.
+    </p>
+
+    <h4>Errors</h4>
+    <p>
+      None.
+    </p>
+
+    <h4>Example</h4>
+</font>
+<pre>
+  cosm_PKI_KEY key;
+
+  CosmMemSet( &amp;key, sizeof( cosm_PKI_KEY ), 0 );
+
+  /* use the key */
+
+  CosmPKIKeyFree( &amp;key );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <hr>
+
+    <a name="CosmPKISigLoad"></a>
+    <h3>
+      CosmPKISigLoad
+    </h3>
+
+    <h4>Syntax</h4>
+</font>
+<pre>
+#include "cosm/security.h"
+s32 CosmPKISigLoad( cosm_PKI_SIG * sig, u64 * bytes_read,
+  const u8 * buffer, u64 max_bytes );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Description</h4>
+    <p>
+      Load the signature from the <em>buffer</em> into <em>sig</em>, reading
+      at most <em>max_bytes</em> bytes. <em>bytes_read</em> will be set to
+      the number of bytes that were in the signature.
+    </p>
+
+    <h4>Return Values</h4>
+    <p>
+      COSM_PASS on success, or an error code on failure.
+    </p>
+
+    <h4>Errors</h4>
+    <dl>
+      <dt>COSM_PKI_ERROR_PARAM
+      <dd>Invalid parameter.
+      <dt>COSM_PKI_ERROR_MEMORY
+      <dd>Internal error, usually memory.
+      <dt>COSM_PKI_ERROR_FORMAT
+      <dd>Key or signature is invalid or wrong size.
+      <dt>COSM_PKI_ERROR_NO_CRYPTO
+      <dd>Compiled with -DNO_CRYPTO.
+    </dl>
+
+    <h4>Example</h4>
+</font>
+<pre>
+  cosm_PKI_SIG sig;
+  u8 save_buf[4096];
+  u64 len;
+
+  if ( CosmPKISigLoad( &amp;sig, &amp;len, save_buf, 4096LL )
+    != COSM_PASS )
+  {
+    /* failure to read signature */
+  }
+
+  /* use signature for key or verification */
+
+  /* free signature */
+  CosmPKISigFree( &amp;sig );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <hr>
+
+    <a name="CosmPKISigSave"></a>
+    <h3>
+      CosmPKISigSave
+    </h3>
+
+    <h4>Syntax</h4>
+</font>
+<pre>
+#include "cosm/security.h"
+s32 CosmPKISigSave( u8 * buffer, u64 * length, const cosm_PKI_SIG * sig,
+  u64 max_bytes );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Description</h4>
+    <p>
+      Save the signature <em>sig</em> into the <em>buffer</em>, writing at
+      most <em>max_bytes</em> bytes. <em>length</em> will be set to the
+      number of bytes written.
+    </p>
+
+    <h4>Return Values</h4>
+    <p>
+      COSM_PASS on success, or an error code on failure.
+    </p>
+
+    <h4>Errors</h4>
+    <dl>
+      <dt>COSM_PKI_ERROR_PARAM
+      <dd>Invalid parameter.
+      <dt>COSM_PKI_ERROR_MEMORY
+      <dd>Internal error, usually memory.
+      <dt>COSM_PKI_ERROR_FORMAT
+      <dd>Key or signature is invalid or wrong size.
+      <dt>COSM_PKI_ERROR_NO_CRYPTO
+      <dd>Compiled with -DNO_CRYPTO.
+    </dl>
+
+    <h4>Example</h4>
+</font>
+<pre>
+  cosm_PKI_SIG sig;
+  u8 save_buf[4096];
+  u64 len;
+
+  /* load or create signature */
+
+  if ( CosmPKISigSave( save_buf, &amp;len, &amp;sig, 4096LL )
+    != COSM_PASS )
+  {
+    /* failure to write signature */
+  }
+
+  /* free signature */
+  CosmPKISigFree( &amp;sig );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <hr>
+
+    <a name="CosmPKISigFree"></a>
+    <h3>
+      CosmPKISigFree
+    </h3>
+
+    <h4>Syntax</h4>
+</font>
+<pre>
+#include "cosm/security.h"
+void CosmPKISigFree( cosm_PKI_SIG * sig );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Description</h4>
+    <p>
+      Free all internal data, and zero the signature structure.
+    </p>
+
+    <h4>Return Values</h4>
+    <p>
+      COSM_PASS on success, or an error code on failure.
+    </p>
+
+    <h4>Errors</h4>
+    <p>
+      None.
+    </p>
+
+    <h4>Example</h4>
+</font>
+<pre>
+  cosm_PKI_SIG sig;
+
+  CosmMemSet( &amp;sig, sizeof( cosm_PKI_SIG ), 0 );
+
+  /* use the sig */
+
+  CosmPKISigFree( &amp;sig );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <hr>
+
+    <a name="CosmPKIEncode"></a>
+    <h3>
+      CosmPKIEncode
+    </h3>
+
+    <h4>Syntax</h4>
+</font>
+<pre>
+#include "cosm/security.h"
+s32 CosmPKIEncode( cosm_PKI_SIG * sig, const cosm_HASH * hash,
+  cosmtime timestamp, u8 type, u8 shared, const cosm_PKI_KEY * key );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Description</h4>
+    <p>
+      Use the <em>key</em> to encode the <em>hash</em> data,
+      <em>timestamp</em> (in seconds), <em>type</em>, and <em>shared</em>
+      flag into the signature <em>sig</em>. A signature of type
+      COSM_PKI_SIG_MESSAGE needs a public key, all other types need a
+      private key to encode. You should always use COSM_HASH_SHA256 to
+      generate the hash for signatures. Care should be taken in chosing
+      the type and shared flag you use.
+    </p>
+
+    <p>
+      The user-relevant (only) elements of cosm_PKI_SIG are:
+    </p>
+</font>
+<pre>
+typedef struct cosm_PKI_SIG
+{
+  u16 pkt_type;     /* == COSM_PKI_SIG */
+  u16 pkt_version;
+  u32 bits;
+  s64 create;
+  u64 id;
+  s64 timestamp;
+  u8 type;
+  u8 shared;
+  cosm_BN sig;
+} cosm_PKI_SIG;
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Signature Types</h4>
+    <dl>
+      <dt>COSM_PKI_SIG_MESSAGE
+      <dd>Sending hash data to the key owner.
+      <dt>COSM_PKI_SIG_SIGN
+      <dd>Signer signs data.
+      <dt>COSM_PKI_SIG_KNOWN
+      <dd>Signer untrusted but known data.
+      <dt>COSM_PKI_SIG_WEAK
+      <dd>Signer weakly trusts the data.
+      <dt>COSM_PKI_SIG_STRONG
+      <dd>Signer strongly trusts the data.
+      <dt>COSM_PKI_SIG_TIMESTAMP
+      <dd>Signer says data existed at time only.
+      <dt>COSM_PKI_SIG_REVOKE
+      <dd>Signer revokes the matching signature.
+    </dl>
+
+    <h4>Shared Flags</h4>
+    <dl>
+      <dt>COSM_PKI_SHARED_NO
+      <dd>Signatere is valid to signer only.
+      <dt>COSM_PKI_SHARED_YES
+      <dd>Signatere is valid to any reader.
+    </dl>
+
+    <h4>Return Values</h4>
+    <p>
+      COSM_PASS on success, or an error code on failure.
+    </p>
+
+    <h4>Errors</h4>
+    <dl>
+      <dt>COSM_PKI_ERROR_PARAM
+      <dd>Invalid parameter.
+      <dt>COSM_PKI_ERROR_MEMORY
+      <dd>Internal error, usually memory.
+      <dt>COSM_PKI_ERROR_EXPIRED
+      <dd>Key is expired.
+      <dt>COSM_PKI_ERROR_NO_CRYPTO
+      <dd>Compiled with -DNO_CRYPTO.
+    </dl>
+
+    <h4>Example</h4>
+</font>
+<pre>
+  cosm_HASH data_hash, sig_hash;
+  cosm_PKI_KEY pri;
+  cosm_PKI_SIG sig;
+  cosmtime sig_time;
+  u8 sig_type;
+  u8 share;
+
+  /* hash the data into data_hash (use COSM_HASH_SHA256) */
+
+  /* load private key into pub with CosmPKIKeyLoad() */
+
+  /* get the current time */
+  CosmSystemClock( &amp;time_now );
+
+  /* Sign the hash */
+  if ( CosmPKIEncode( &amp;sig, &amp;data_hash, time_now,
+    COSM_PKI_SIG_SIGN, COSM_PKI_SHARED_YES, &amp;pri ) != COSM_PASS )
+  {
+    /* Encoding failed */
+  }
+
+  /* save the signature with CosmPKISigSave() */
+
+  /* free the key and sig */
+  CosmPKIKeyFree( &amp;key );
+  CosmPKISigFree( &amp;sig );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <hr>
+
+    <a name="CosmPKIDecode"></a>
+    <h3>
+      CosmPKIDecode
+    </h3>
+
+    <h4>Syntax</h4>
+</font>
+<pre>
+#include "cosm/security.h"
+s32 CosmPKIDecode( cosm_HASH * hash, cosmtime * timestamp, u8 * type,
+  u8 * shared, const cosm_PKI_SIG * sig, const cosm_PKI_KEY * key );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Description</h4>
+    <p>
+      Extract the <em>hash</em>, <em>timestamp</em>, <em>type</em>, and
+      <em>shared</em> flag from the signature <em>sig</em> using the
+      <em>key</em>. A COSM_PASS from this function does NOT mean the signature
+      is valid, only that it was decoded correctly. A signature of type
+      COSM_PKI_SIG_MESSAGE needs a private key, all other types need a
+      public key to decode.
+    </p>
+    <p>
+      It is important to understand that the undecoded parameters of a
+      signature (sig.timestamp, sig.type, sig.shared) are MEANINGLESS,
+      because they can be trivially modified by an attacker.
+      Only use the decoded values.
+    </p>
+
+    <h4>Signature Types</h4>
+    <dl>
+      <dt>COSM_PKI_SIG_MESSAGE
+      <dd>Sending hash data to the key owner.
+      <dt>COSM_PKI_SIG_SIGN
+      <dd>Signer signs data.
+      <dt>COSM_PKI_SIG_KNOWN
+      <dd>Signer untrusted but known data.
+      <dt>COSM_PKI_SIG_WEAK
+      <dd>Signer weakly trusts the data.
+      <dt>COSM_PKI_SIG_STRONG
+      <dd>Signer strongly trusts the data.
+      <dt>COSM_PKI_SIG_TIMESTAMP
+      <dd>Signer says data existed at time only.
+      <dt>COSM_PKI_SIG_REVOKE
+      <dd>Signer revokes the matching signature.
+    </dl>
+
+    <h4>Shared Flags</h4>
+    <dl>
+      <dt>COSM_PKI_SHARED_NO
+      <dd>Signatere is valid to signer only.
+      <dt>COSM_PKI_SHARED_YES
+      <dd>Signatere is valid to any reader.
+    </dl>
+
+    <h4>Return Values</h4>
+    <p>
+      COSM_PASS on success, or an error code on failure.
+    </p>
+
+    <h4>Errors</h4>
+    <dl>
+      <dt>COSM_PKI_ERROR_PARAM
+      <dd>Invalid parameter.
+      <dt>COSM_PKI_ERROR_MEMORY
+      <dd>Internal error, usually memory.
+      <dt>COSM_PKI_ERROR_FORMAT
+      <dd>Key or signature is invalid.
+      <dt>COSM_PKI_ERROR_NO_CRYPTO
+      <dd>Compiled with -DNO_CRYPTO.
+    </dl>
+
+    <h4>Example</h4>
+</font>
+<pre>
+  cosm_HASH data_hash, sig_hash;
+  cosm_PKI_KEY pub;
+  cosm_PKI_SIG sig;
+  cosmtime sig_time;
+  u8 sig_type;
+  u8 share;
+
+  /* hash the data into data_hash (use COSM_HASH_SHA256) */
+
+  /* load public key into pub with CosmPKIKeyLoad() */
+
+  /* load the signature into sig with CosmPKISigLoad() */
+
+  if ( CosmPKIDecode( &amp;sig_hash, &amp;sig_time, &amp;sig_type, &amp;share,
+    &amp;sig, &amp;pub ) != COSM_PASS )
+  {
+    /* decode failed */
+  }
+
+  /* now verify the signature */
+  if ( !CosmHashEq( &amp;data_hash, &amp;sig_hash ) )
+  {
+    /* Signature was not for the data we hashed */
+  }
+
+  /*
+    sig_time, sig_type, and share are now what
+    the signer set them to, and effect what it means.
+  */
+
+  CosmPKIKeyFree( &amp;key );
+  CosmPKISigFree( &amp;sig );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+<hr>
+
+</font>
+<font face="Verdana,Arial,Helvetica" size="-2" color="#6666cc">
+  <p>
+    &copy; Copyright Mithral Communications &amp; Design Inc.
+    <!--#config timefmt="%Y" -->
+    1995-<!--#echo var="LAST_MODIFIED" -->.
+    All rights reserved.
+    Mithral&reg; and Cosm&reg; are trademarks of
+    Mithral Communications &amp; Design Inc.
+    <br>
+    <!--#config timefmt="%b %d, %Y" -->
+    Document last modified: <!--#echo var="LAST_MODIFIED" -->
+  </p>
+</font>
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>

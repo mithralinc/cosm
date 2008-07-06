@@ -1,0 +1,858 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<html>
+  <head>
+    <title>
+      Cosm API - Network Functions
+    </title>
+    <style type="text/css"><!-- a {text-decoration: none} --></style>
+  </head>
+  <body background="images/docbg.jpg" bgcolor="#000000" text="#cccccc"
+    link="#9999ff" vlink="#9999ff" alink="#ffcc66">
+
+  <table border="0" cellspacing="0" cellpadding="0">
+    <tr valign="top">
+      <td width="30"></td>
+      <td width="570">
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <p align="center">
+      <img src="images/cosmlogo.gif" alt="[Cosm Logo]"
+        width="357" height="123" border="0"><br>
+    </p>
+
+<!-- 678901234567890123456789012345678901234567890123456789012345678901234 -->
+
+    <h2 align="center">
+      Network Functions
+    </h2>
+
+    <ul>
+      <li><a href="#CosmNetOpen">CosmNetOpen</a>
+      <li><a href="#CosmNetSend">CosmNetSend</a>
+      <li><a href="#CosmNetRecv">CosmNetRecv</a>
+      <li><a href="#CosmNetSendUDP">CosmNetSendUDP</a>
+      <li><a href="#CosmNetRecvUDP">CosmNetRecvUDP</a>
+      <li><a href="#CosmNetListen">CosmNetListen</a>
+      <li><a href="#CosmNetAccept">CosmNetAccept</a>
+      <li><a href="#CosmNetClose">CosmNetClose</a>
+      <li><a href="#CosmNetDNS">CosmNetDNS</a>
+      <li><a href="#CosmNetRevDNS">CosmNetRevDNS</a>
+      <li><a href="#CosmNetMyIP">CosmNetMyIP</a>
+      <li><a href="#CosmNetACLAdd">CosmNetACLAdd</a>
+      <li><a href="#CosmNetACLDelete">CosmNetACLDelete</a>
+      <li><a href="#CosmNetACLCheck">CosmNetACLCheck</a>
+      <li><a href="#CosmNetACLFree">CosmNetACLFree</a>
+    </ul>
+
+    <hr>
+
+    <a name="CosmNetOpen"></a>
+    <h3>
+      CosmNetOpen
+    </h3>
+
+    <h4>Syntax</h4>
+</font>
+<pre>
+#include "cosm/os_net.h"
+s32 CosmNetOpen( cosm_NET * net, cosm_NET_ADDR host, u16 port, cosm_NET_ADDR my_host,
+  u16 my_port, u32 mode, cosm_NET_ADDR firehost, u16 fireport,
+  const ascii * firepass );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Description</h4>
+    <p>
+      Open a network connection to the remote <em>host</em> and
+      <em>port</em>. <em>my_host</em> and <em>my_port</em> are the host
+      and port you attempt to connect from, 0 for either means the OS picks.
+      If <em>mode</em> is COSM_NET_MODE_TCP, TCP protocol is used.
+      If <em>mode</em> is COSM_NET_MODE_UDP, UDP protocol is used.
+      <em>firehost</em>, <em>fireport</em>, <em>firepass</em> are for
+      proxies that need to go through a firewall. Use semi-colon to
+      separate username from password for SOCKS5 firewall.
+      ONLY proxies will ever cross firewalls.
+    </p>
+    <p>
+      Since CosmNetOpen is rather complex, a macro for simpler cases is also
+      defined:
+    </p>
+</font>
+<pre>
+s32 _COSM_NETOPEN( cosm_NET * net, cosm_NET_ADDR host, u16 port );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+    <p>
+       _COSM_NETOPEN(...) allows just the first 3 parameters to be
+      specified for when you do not need to worry about firewalls and just
+      need a TCP connection.
+    </p>
+
+    <h4>Return Values</h4>
+    <p>
+      COSM_PASS on success, or an error code on failure.
+    </p>
+
+    <h4>Errors</h4>
+    <dl>
+      <dt>COSM_NET_ERROR_HOST
+      <dd>Unable to connect to host.
+      <dt>COSM_NET_ERROR_PORT
+      <dd>Unable to connect/listen on port.
+      <dt>COSM_NET_ERROR_FIREHOST
+      <dd>Invalid firewall host.
+      <dt>COSM_NET_ERROR_FIREPORT
+      <dd>Invalid firewall port.
+      <dt>COSM_NET_ERROR_FIREPASS
+      <dd>Bad firewall password.
+      <dt>COSM_NET_ERROR_CLOSED
+      <dd>Connection closed.
+      <dt>COSM_NET_ERROR_NO_NET
+      <dd>No networking support.
+    </dl>
+
+    <h4>Example</h4>
+</font>
+<pre>
+  cosm_NET_ADDR ip;
+  s32 result;
+  cosm_NET * net, * net2;
+
+  /* ... */
+
+  result = CosmNetOpen( net, ip, 80, 0, 0, COSM_NET_MODE_TCP,
+    0, 0, NULL);
+
+  if ( result == COSM_PASS )
+    CosmPrint( "Connection to port 80 established.\n" );
+  else
+    CosmPrint( "Connection to port 80 failed.\n" );
+
+  /* same thing with macro */
+  result = _COSM_NETOPEN( net2, ip, 80 );
+
+  if ( result == COSM_PASS )
+    CosmPrint( "Another connection to port 80 established.\n" );
+  else
+    CosmPrint( "Another connection to port 80 failed.\n" );
+
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <hr>
+
+    <a name="CosmNetSend"></a>
+    <h3>
+      CosmNetSend
+    </h3>
+
+    <h4>Syntax</h4>
+</font>
+<pre>
+#include "cosm/os_net.h"
+s32 CosmNetSend( cosm_NET * net, u32 * bytes_sent, const void * data,
+  u32 length );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Description</h4>
+    <p>
+      Send the <em>data</em> over the network connection. Returns once data
+      is sent. <em>bytes_sent</em> is set to the number of bytes actually
+      sent. Connection must be opened/accepted in COSM_NET_MODE_TCP mode.
+    </p>
+
+    <h4>Return Values</h4>
+    <p>
+      COSM_PASS on success, or an error code on failure.
+    </p>
+
+    <h4>Errors</h4>
+    <dl>
+      <dt>COSM_NET_ERROR_HOST
+      <dd>Unable to connect to host.
+      <dt>COSM_NET_ERROR_CLOSED
+      <dd>Connection closed.
+      <dt>COSM_NET_ERROR_NO_NET
+      <dd>No networking support.
+    </dl>
+
+    <h4>Example</h4>
+</font>
+<pre>
+  s32 result;
+  cosm_NET * net;
+  ascii to_send[30];
+  u32 bytes;
+
+  /* ... */
+
+  CosmStrCopy( to_send, "Hello world!\n", 30LL );
+  result = CosmNetSend( net, &amp;bytes, to_send,
+    CosmStrBytes( to_send ) );
+  if ( result == COSM_PASS )
+  {
+    CosmPrint( "String sent to remote host\n" );
+  }
+  else
+  {
+    CosmPrint( "Sent %u bytes of string\n", bytes );
+  }
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <hr>
+
+    <a name="CosmNetRecv"></a>
+    <h3>
+      CosmNetRecv
+    </h3>
+
+    <h4>Syntax</h4>
+</font>
+<pre>
+#include "cosm/os_net.h"
+s32 CosmNetRecv( void * buffer, u32 * bytes_received, cosm_NET * net,
+  u32 length, u32 wait_ms );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Description</h4>
+    <p>
+      Read whatever data is available, up to <em>length</em> bytes, into the
+      <em>buffer</em>. If <em>wait_ms</em> is non-zero, then delay up to
+      <em>wait_ms</em> milliseconds until <em>length</em> bytes have been
+      received. <em>bytes_received</em> is set to the number of bytes actually
+      read. Connection must be opened/accepted in COSM_NET_MODE_TCP mode.
+      A suggested time for <em>wait_ms</em> is ( <em>length</em> + 5000 ),
+      giving 5 seconds plus 1sec/KiB of data allowing for enough data
+      transfer time over modems and other net glitches.
+    </p>
+
+    <h4>Return Values</h4>
+    <p>
+      COSM_PASS on success, or an error code on failure.
+    </p>
+
+    <h4>Errors</h4>
+    <dl>
+      <dt>COSM_NET_ERROR_HOST
+      <dd>Unable to connect to host.
+      <dt>COSM_NET_ERROR_CLOSED
+      <dd>Connection closed.
+      <dt>COSM_NET_ERROR_NO_NET
+      <dd>No networking support.
+    </dl>
+
+    <h4>Example</h4>
+</font>
+<pre>
+  u32 bytes;
+  cosm_NET * net;
+  ascii getbuff[1024];
+
+  /* ... */
+
+  while ( CosmNetRecv( getbuff, &amp;bytes, net, 1024,
+    1024 + 5000 ) == COSM_PASS )
+  {
+    getbuff[bytes] = 0;
+    CosmPrint( "%s", getbuff );
+  }
+  CosmPrint( "\nThe remote host closed the connection.\n" );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <hr>
+
+    <a name="CosmNetSendUDP"></a>
+    <h3>
+      CosmNetSendUDP
+    </h3>
+
+    <h4>Syntax</h4>
+</font>
+<pre>
+#include "cosm/os_net.h"
+s32 CosmNetSendUDP( cosm_NET * net, const cosm_NET_ADDR * addr,
+  const void * data, u32 length );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Description</h4>
+    <p>
+    Send <em>length</em> bytes of <em>data</em> to the <em>addr</em>,
+    may or may not arrive.
+    Connection must be opened in COSM_NET_MODE_UDP mode.
+    </p>
+
+    <h4>Return Values</h4>
+    <p>
+      COSM_PASS on success, or an error code on failure.
+    </p>
+
+    <h4>Errors</h4>
+    <dl>
+      <dt>COSM_NET_ERROR_NO_NET
+      <dd>No networking support.
+    </dl>
+
+    <h4>Example</h4>
+</font>
+<pre>
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <hr>
+
+    <a name="CosmNetRecvUDP"></a>
+    <h3>
+      CosmNetRecvUDP
+    </h3>
+
+    <h4>Syntax</h4>
+</font>
+<pre>
+#include "cosm/os_net.h"
+s32 CosmNetRecvUDP( void * buffer, u32 * bytes_read, cosm_NET * net, u32 length,
+  cosm_NET_ACL * acl, u32 wait_ms );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Description</h4>
+    <p>
+      Read a UDP packet into the <em>buffer</em>, if the buffer length is
+      not long enough to hold the packet, the remaining data will be lost.
+      If <em>wait_ms</em> is non-zero, then delay up to <em>wait_ms</em>
+      milliseconds for a packet to arrive. Connection must be
+      listening in COSM_NET_MODE_UDP mode. Any data from a host that
+      fails the <em>acl</em> masks will be ignored.
+    </p>
+
+    <h4>Return Values</h4>
+    <p>
+      <em>length</em> on success, 0 or less than <em>length</em> indicates
+      failure (<em>last_error</em> of <em>net</em> will be set to an error
+      code).
+    </p>
+
+    <h4>Errors</h4>
+    <p>
+      Upon failure <em>last_error</em> of <em>net</em> will be set to one of
+      the following:
+    </p>
+    <dl>
+      <dt>COSM_NET_ERROR_NO_NET
+      <dd>No networking support.
+    </dl>
+
+    <h4>Example</h4>
+</font>
+<pre>
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <hr>
+
+    <a name="CosmNetListen"></a>
+    <h3>
+      CosmNetListen
+    </h3>
+
+    <h4>Syntax</h4>
+</font>
+<pre>
+#include "cosm/os_net.h"
+s32 CosmNetListen( cosm_NET * net, const cosm_NET_ADDR * addr, u32 mode,
+  u32 queue );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Description</h4>
+    <p>
+      Set up a listening point on <em>addr</em> that will accept connections.
+      Listen on <em>addr</em> if possible, if the IP is zero then listen on
+      all interfaces. If mode is COSM_NET_MODE_TCP, TCP protocol is used. If
+      <em>mode</em> is COSM_NET_MODE_UDP, then the UDP protocol is used.
+      If <em>port</em> is zero, let OS pick one.
+      Allow <em>queue</em> connections to be queued before
+      rejecting connections, the OS may silently limit this number.
+    </p>
+
+    <h4>Return Values</h4>
+    <p>
+      COSM_PASS on success, or an error code on failure.
+    </p>
+
+    <h4>Errors</h4>
+    <dl>
+      <dt>COSM_NET_ERROR_PORT
+      <dd>Unable to connect/listen on port.
+      <dt>COSM_NET_ERROR_NO_NET
+      <dd>No networking support.
+    </dl>
+
+    <h4>Example</h4>
+</font>
+<pre>
+  s32 result;
+  cosm_NET * net;
+
+  result = CosmNetListen( net, 0, 5150, COSM_NET_MODE_TCP, 5 );
+
+  if ( result == COSM_PASS )
+    CosmPrint(
+      "Listening on port 5150 on all interfaces.\n" );
+  else
+    CosmPrint(
+      "Couldn't bind to port 5150. Is the port in use?\n" );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <hr>
+
+    <a name="CosmNetAccept"></a>
+    <h3>
+      CosmNetAccept
+    </h3>
+
+    <h4>Syntax</h4>
+</font>
+<pre>
+#include "cosm/os_net.h"
+s32 CosmNetAccept( cosm_NET * new_connection, cosm_NET * net, cosm_NET_ACL * acl,
+  u32 wait );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Description</h4>
+    <p>
+      Accept a network connection if one is waiting, and fill in all the
+      fields of <em>new_connection</em>.
+      If <em>wait</em> is COSM_NET_ACCEPT_WAIT then do not return until a
+      connection is accepted, otherwise if <em>wait</em> is
+      COSM_NET_ACCEPT_NOWAIT return immediately. Any host that fails the
+      <em>acl</em> masks will be ignored.
+    </p>
+
+    <h4>Return Values</h4>
+    <p>
+      COSM_PASS on success, or an error code on failure.
+    </p>
+
+    <h4>Errors</h4>
+    <dl>
+      <dt>COSM_NET_ERROR_PARAM
+      <dd>Parameter error.
+      <dt>COSM_NET_ERROR_TIMEOUT
+      <dd>No waiting connection.
+      <dt>COSM_NET_ERROR_CLOSED
+      <dd>Connection closed.
+      <dt>COSM_NET_ERROR_SOCKET
+      <dd>Internal socket error, now closed.
+      <dt>COSM_NET_ERROR_MODE
+      <dd>UDP accepts not allowed.
+      <dt>COSM_NET_ERROR_NO_NET
+      <dd>No networking support.
+    </dl>
+
+    <h4>Example</h4>
+</font>
+<pre>
+  s32 result;
+  cosm_NET * net;
+  cosm_NET * connection;
+
+  CosmNetListen( net, 0, 5150, 5 );
+
+  /* ... */
+
+  result=CosmNetAccept( connection, net, NULL, COSM_NET_ACCEPT_NOWAIT );
+  if ( result == COSM_PASS )
+    CosmPrint( "Connection received to port 5150.\n" );
+  else
+    CosmPrint( "Nobody is waiting to connect on port 5150.\n" );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <hr>
+
+    <a name="CosmNetClose"></a>
+    <h3>
+      CosmNetClose
+    </h3>
+
+    <h4>Syntax</h4>
+</font>
+<pre>
+#include "cosm/os_net.h"
+s32 CosmNetClose( cosm_NET * net );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Description</h4>
+    <p>
+      Close the Network connection and clear out any remaining data.
+    </p>
+
+    <h4>Return Values</h4>
+    <p>
+      COSM_PASS on success, or an error code on failure.
+    </p>
+
+    <h4>Errors</h4>
+    <dl>
+      <dt>COSM_NET_ERROR_CLOSED
+      <dd>Connection closed.
+      <dt>COSM_NET_ERROR_NO_NET
+      <dd>No networking support.
+    </dl>
+
+    <h4>Example</h4>
+</font>
+<pre>
+  s32 result;
+  cosm_NET * net;
+
+  /* ... */
+
+  result = CosmNetClose( net );
+  if ( result == COSM_PASS )
+    CosmPrint( "Connection closed and remaining data flushed.\n" );
+  else
+    CosmPrint( "The remote host closed the connection before us.\n" );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <hr>
+
+    <a name="CosmNetDNS"></a>
+    <h3>
+      CosmNetDNS
+    </h3>
+
+    <h4>Syntax</h4>
+</font>
+<pre>
+#include "cosm/os_net.h"
+u32 CosmNetDNS( cosm_NET_ADDR * addr, u32 count, ascii * name );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Description</h4>
+    <p>
+      Perform DNS lookup. Sets up to <em>count</em> <em>addr</em>'s to the
+      addresses of the <em>name</em>'d host.
+    </p>
+
+    <h4>Return Values</h4>
+    <p>
+      Number of IP's set, 0 indicates failure.
+    </p>
+
+    <h4>Errors</h4>
+    <p>
+      Possible causes of failure:
+    </p>
+    <ul>
+      <li><em>ip</em> or <em>name</em> is NULL.
+      <li><em>count</em> is 0.
+      <li>Couldn't get the IP of the <em>name</em>'d host.
+    </ul>
+
+    <h4>Example</h4>
+</font>
+<pre>
+  cosm_NET_ADDR hosts[16];
+  u32 result;
+
+  result = CosmNetDNS( &amp;hosts, 16, "www.mithral.com" );
+  if ( result > 0 )
+    CosmPrint( "Hostname www.mithral.com successfully resolved.\n" );
+  else
+    CosmPrint( "Error resolving host www.mithral.com.\n" );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <hr>
+
+    <a name="CosmNetRevDNS"></a>
+    <h3>
+      CosmNetRevDNS
+    </h3>
+
+    <h4>Syntax</h4>
+</font>
+<pre>
+#include "cosm/os_net.h"
+s32 CosmNetRevDNS( cosm_NET_HOSTNAME * name, cosm_NET_ADDR ip );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Description</h4>
+    <p>
+      Perform reverse DNS. Sets <em>name</em> to the hostname of the
+      <em>ip</em>.
+    </p>
+
+    <h4>Return Values</h4>
+    <p>
+      COSM_PASS on success, or COSM_FAIL on failure.
+    </p>
+
+    <h4>Errors</h4>
+    <p>
+      Possible causes of failure:
+    </p>
+    <ul>
+      <li><em>name</em> is NULL.
+      <li><em>ip</em> is 0.
+      <li>Can't get a domain name for <em>ip</em>.
+    </ul>
+
+    <h4>Example</h4>
+</font>
+<pre>
+  s32 result;
+  cosm_NET_ADDR ip;
+  cosm_NET_HOSTNAME hostname;
+
+  ip = 0xD162B486;
+
+  result = CosmNetRevDNS( hostname, ip );
+  if ( result == COSM_PASS )
+    CosmPrint( hostname );
+  else
+    CosmPrint( "Unable to perform reverse DNS.\n" );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <hr>
+
+    <a name="CosmNetMyIP"></a>
+    <h3>
+      CosmNetMyIP
+    </h3>
+
+    <h4>Syntax</h4>
+</font>
+<pre>
+#include "cosm/os_net.h"
+u32 CosmNetMyIP( cosm_NET_ADDR * addr, u32 count );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Description</h4>
+    <p>
+      Sets up to <em>count</em> <em>addr</em>'s to the IP of the host.
+      A mix of IPv4 and IPv6 addresses will be returned, and the first
+      result will be the "primary" IP of the system. 127.0.0.1 and ::1
+      will not be on the list.
+    </p>
+
+    <h4>Return Values</h4>
+    <p>
+      Number of addresses set, 0 indicates failure.
+    </p>
+
+    <h4>Errors</h4>
+    <p>
+      Possible causes of failure:
+    </p>
+    <ul>
+      <li><em>ip</em> is NULL.
+      <li><em>count</em> is 0.
+      <li>Couldn't get local host name.
+      <li>Couldn't get IP of local host name.
+    </ul>
+
+    <h4>Example</h4>
+</font>
+<pre>
+  s32 result;
+  cosm_NET_ADDR host[8];
+
+  if ( CosmNetMyIP( &amp;host, 8 ) > 0 )
+  {
+    CosmPrint( "Local addresses successfully determined.\n" );
+  }
+  else
+  {
+    CosmPrint( "Unable to determine local addresses.\n" );
+  }
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <hr>
+
+    <a name="CosmNetACLAdd"></a>
+    <h3>
+      CosmNetACLAdd
+    </h3>
+
+    <h4>Syntax</h4>
+</font>
+<pre>
+#include "cosm/os_net.h"
+s32 CosmNetACLAdd( cosm_NET_ACL * acl, cosm_NET_ADDR ip, u32 mask_bits,
+  u32 permission, cosmtime expires );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Description</h4>
+    <p>
+      Add the <em>ip</em>/<em>mask_bits</em> pair to the <em>acl</em>.
+      A mask of 255.255.255.0/24 is 24 mask_bits, 255.255.0.0/16 is 16, etc.
+      <em>permission</em> should be either COSM_NET_ALLOW or COSM_NET_DENY.
+      <em>expires</em> is the time after which the entry will be deleted
+      automatically, and should be based off of
+      <a href="os_task.html#CosmSystemClock">CosmSystemClock</a> time.
+    </p>
+
+    <h4>Return Values</h4>
+    <p>
+      COSM_PASS on success, or COSM_FAIL on failure.
+    </p>
+
+    <h4>Errors</h4>
+    <p>
+      COSM_PASS on success, or COSM_FAIL on failure.
+    </p>
+
+    <h4>Example</h4>
+</font>
+<pre>
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <hr>
+
+    <a name="CosmNetACLDelete"></a>
+    <h3>
+      CosmNetACLDelete
+    </h3>
+
+    <h4>Syntax</h4>
+</font>
+<pre>
+#include "cosm/os_net.h"
+s32 CosmNetACLDelete( cosm_NET_ACL * acl, cosm_NET_ADDR ip, u32 mask_bits );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Description</h4>
+    <p>
+      Delete the <em>ip</em>/<em>mask</em> entry from the <em>acl</em>.
+    </p>
+
+    <h4>Return Values</h4>
+    <p>
+      COSM_PASS on success, or COSM_FAIL on failure.
+    </p>
+
+    <h4>Errors</h4>
+    <p>
+      COSM_PASS on success, or COSM_FAIL on failure.
+    </p>
+
+    <h4>Example</h4>
+</font>
+<pre>
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <hr>
+
+    <a name="CosmNetACLCheck"></a>
+    <h3>
+      CosmNetACLCheck
+    </h3>
+
+    <h4>Syntax</h4>
+</font>
+<pre>
+#include "cosm/os_net.h"
+s32 CosmNetACLCheck( cosm_NET_ACL * acl, cosm_NET_ADDR ip );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Description</h4>
+    <p>
+      Test if an ip is accepted by the <em>acl</em>. An ip is accepted if it
+      passed through each of the acl entries in order and has a COSM_NET_ALLOW
+      setting at the end. The default is to allow (a NULL or empty acl).
+    </p>
+
+    <h4>Return Values</h4>
+    <p>
+      COSM_NET_ALLOW if accepted, or COSM_NET_DENY if rejected.
+    </p>
+
+    <h4>Errors</h4>
+    <p>
+      COSM_PASS on success, or COSM_FAIL on failure.
+    </p>
+
+    <h4>Example</h4>
+</font>
+<pre>
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <hr>
+
+    <a name="CosmNetACLFree"></a>
+    <h3>
+      CosmNetACLFree
+    </h3>
+
+    <h4>Syntax</h4>
+</font>
+<pre>
+#include "cosm/os_net.h"
+void CosmNetACLFree( cosm_NET_ACL * acl );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Description</h4>
+    <p>
+      Free the internal <em>acl</em> data.
+    </p>
+
+    <h4>Return Values</h4>
+    <p>
+      None.
+    </p>
+
+    <h4>Errors</h4>
+    <p>
+      None.
+    </p>
+
+    <h4>Example</h4>
+</font>
+<pre>
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+<hr>
+
+</font>
+<font face="Verdana,Arial,Helvetica" size="-2" color="#6666cc">
+  <p>
+    &copy; Copyright Mithral Communications &amp; Design Inc.
+    <!--#config timefmt="%Y" -->
+    1995-<!--#echo var="LAST_MODIFIED" -->.
+    All rights reserved.
+    Mithral&reg; and Cosm&reg; are trademarks of
+    Mithral Communications &amp; Design Inc.
+    <br>
+    <!--#config timefmt="%b %d, %Y" -->
+    Document last modified: <!--#echo var="LAST_MODIFIED" -->
+  </p>
+</font>
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>

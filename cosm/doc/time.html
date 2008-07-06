@@ -1,0 +1,267 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<html>
+  <head>
+    <title>
+      Cosm API - Time Functions
+    </title>
+    <style type="text/css"><!-- a {text-decoration: none} --></style>
+  </head>
+  <body background="images/docbg.jpg" bgcolor="#000000" text="#cccccc"
+    link="#9999ff" vlink="#9999ff" alink="#ffcc66">
+
+  <table border="0" cellspacing="0" cellpadding="0">
+    <tr valign="top">
+      <td width="30"></td>
+      <td width="570">
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <p align="center">
+      <img src="images/cosmlogo.gif" alt="[Cosm Logo]"
+        width="357" height="123" border="0"><br>
+    </p>
+
+<!-- 678901234567890123456789012345678901234567890123456789012345678901234 -->
+
+    <h2 align="center">
+      Time and Random Functions
+    </h2>
+
+    <ul>
+      <li><a href="#CosmTime">CosmTime</a>
+      <li><a href="#CosmTimeSet">CosmTimeSet</a>
+      <li><a href="#CosmTimeUnitsGregorian">CosmTimeUnitsGregorian</a>
+      <li><a href="#CosmTimeDigestGregorian">CosmTimeDigestGregorian</a>
+    </ul>
+
+    <hr>
+
+    <a name="CosmTime"></a>
+    <h3>
+      CosmTime
+    </h3>
+
+    <h4>Syntax</h4>
+</font>
+<pre>
+#include "cosm/time.h"
+s32 CosmTime( cosmtime * dest, cosm_TIME_CORRECTION * corrections );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Description</h4>
+    <p>
+      Get the current time, already synchronized with network time.
+      Compensate for system clock drift and correct accordingly.
+    </p>
+
+    <h4>Return Values</h4>
+    <p>
+      COSM_PASS on success, or COSM_FAIL on failure.
+    </p>
+
+    <h4>Errors</h4>
+    <p>
+      Possible causes of failure:
+    </p>
+    <ul>
+      <li><em>dest</em> or <em>corrections</em> is NULL.
+      <li><em>corrections</em> is not properly initialized.
+      <li>Could not get the system time.
+      <li><em>corrections</em> was set in the future.
+      <li>Could not get a mutex lock. See
+        <a href="os_task.html#CosmMutexLock">CosmMutexLock</a> in
+        <a href="os_task.html">os_task.h</a>.
+    </ul>
+
+    <h4>Example</h4>
+</font>
+<pre>
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <hr>
+
+    <a name="CosmTimeSet"></a>
+    <h3>
+      CosmTimeSet
+    </h3>
+
+    <h4>Syntax</h4>
+</font>
+<pre>
+#include "cosm/time.h"
+s32 CosmTimeSet( cosm_TIME_CORRECTION * corrections,
+  u32 * ip_list, u32 ip_count );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Description</h4>
+    <p>
+      Synchronize with network time. Don't attempt to set the system clock
+      even though that would be nice. Set the value of time_offset and
+      related values relative to the system clock instead. Use the
+      <em>ip_list</em> as the list of time servers to sync with.
+    </p>
+
+    <h4>Return Values</h4>
+    <p>
+      COSM_PASS on success, or COSM_FAIL on failure.
+    </p>
+
+    <h4>Errors</h4>
+    <p>
+      None.
+    </p>
+
+    <h4>Example</h4>
+</font>
+<pre>
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <hr>
+
+    <a name="CosmTimeUnitsGregorian"></a>
+    <h3>
+      CosmTimeUnitsGregorian
+    </h3>
+
+    <h4>Syntax</h4>
+</font>
+<pre>
+#include "cosm/time.h"
+s32 CosmTimeUnitsGregorian( cosm_TIME_UNITS * units, cosmtime time );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Description</h4>
+    <p>
+      Fill in the <em>units</em> structure with the <em>time</em> in
+      Gregorian format.
+    </p>
+    <p>
+      The structure of cosm_TIME_UNITS is as follows:
+    </p>
+</font>
+<pre>
+typedef struct cosm_TIME_UNITS
+{
+  /* all values are zero based */
+  s64 year;   /* year */
+  u32 month;  /* month */
+  u32 day;    /* day of month */
+  u32 wday;   /* day of week */
+  u32 yday;   /* day of year */
+  u32 hour;   /* hours */
+  u32 min;    /* minutes */
+  u32 sec;    /* seconds */
+  u64 subsec; /* sub-seconds, note: unsigned unlike cosmtime */
+} cosm_TIME_UNITS;
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+    <p>
+      Users will probably find the predefined arrays COSM_TIME_MONTHS,
+      COSM_TIME_MONTHS3, COSM_TIME_DAYS, and COSM_TIME_DAYS3 useful, see example.
+    </p>
+
+    <h4>Return Values</h4>
+    <p>
+      COSM_PASS on success, or COSM_FAIL on failure.
+    </p>
+
+    <h4>Errors</h4>
+    <p>
+      Possible causes of failure:
+    </p>
+    <ul>
+      <li><em>units</em> is NULL.
+    </ul>
+
+    <h4>Example</h4>
+</font>
+<pre>
+  cosmtime mytime;
+  cosm_TIME_UNITS myunits;
+  const ascii * days[7] = COSM_TIME_DAYS3;
+  const ascii * months[12] = COSM_TIME_MONTHS;
+  u64 milli;
+
+  milli = 0x004189374BC6A7EFLL;
+    if ( CosmSystemClock( &amp;mytime ) == COSM_PASS )
+  {
+    if ( CosmTimeUnitsGregorian( &amp;myunits, mytime ) == COSM_PASS )
+    {
+      CosmPrint(
+        "%.9s %.9s %u, %j %02u:%02u:%02u.%03v UTC, d%u\n",
+        days[myunits.wday], months[myunits.month], myunits.day + 1,
+        myunits.year, myunits.hour, myunits.min, myunits.sec,
+        ( myunits.subsec / milli ), myunits.yday + 1 );
+    }
+  }
+
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <hr>
+
+    <a name="CosmTimeDigestGregorian"></a>
+    <h3>
+      CosmTimeDigestGregorian
+    </h3>
+
+    <h4>Syntax</h4>
+</font>
+<pre>
+#include "cosm/time.h"
+s32 CosmTimeDigestGregorian( cosmtime * time,
+  const cosm_TIME_UNITS * const units );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Description</h4>
+    <p>
+      Convert back to a cosmtime value from Gregorian, sanity check the values.
+    </p>
+
+    <h4>Return Values</h4>
+    <p>
+      COSM_PASS on success, or COSM_FAIL on failure.
+    </p>
+
+    <h4>Errors</h4>
+    <p>
+      Possible causes of failure:
+    </p>
+    <ul>
+      <li><em>time</em> or <em>units</em> is NULL.
+      <li>Invalid month or number of days in <em>units</em>.
+      <li>An overflow or underflow.
+    </ul>
+
+    <h4>Example</h4>
+</font>
+<pre>
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+<hr>
+
+</font>
+<font face="Verdana,Arial,Helvetica" size="-2" color="#6666cc">
+  <p>
+    &copy; Copyright Mithral Communications &amp; Design Inc.
+    <!--#config timefmt="%Y" -->
+    1995-<!--#echo var="LAST_MODIFIED" -->.
+    All rights reserved.
+    Mithral&reg; and Cosm&reg; are trademarks of
+    Mithral Communications &amp; Design Inc.
+    <br>
+    <!--#config timefmt="%b %d, %Y" -->
+    Document last modified: <!--#echo var="LAST_MODIFIED" -->
+  </p>
+</font>
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>

@@ -1,0 +1,770 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<html>
+  <head>
+    <title>
+      Cosm API - Input/Output and String Functions
+    </title>
+    <style type="text/css"><!-- a {text-decoration: none} --></style>
+  </head>
+  <body background="images/docbg.jpg" bgcolor="#000000" text="#cccccc"
+    link="#9999ff" vlink="#9999ff" alink="#ffcc66">
+
+  <table border="0" cellspacing="0" cellpadding="0">
+    <tr valign="top">
+      <td width="30"></td>
+      <td width="570">
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <p align="center">
+      <img src="images/cosmlogo.gif" alt="[Cosm Logo]"
+        width="357" height="123" border="0"><br>
+    </p>
+
+<!-- 678901234567890123456789012345678901234567890123456789012345678901234 -->
+
+    <h2 align="center">
+      Input/Output and String Functions
+    </h2>
+
+    <ul>
+      <li><a href="#CosmInput">CosmInput</a>
+      <li><a href="#CosmInputRaw">CosmInputRaw</a>
+      <li><a href="#CosmStrBytes">CosmStrBytes</a>
+      <li><a href="#CosmStrCopy">CosmStrCopy</a>
+      <li><a href="#CosmStrAppend">CosmStrAppend</a>
+      <li><a href="#CosmStrCmp">CosmStrCmp</a>
+      <li><a href="#CosmStrChar">CosmStrChar</a>
+      <li><a href="#CosmStrStr">CosmStrStr</a>
+      <li><a href="#Cosm{itype}Str">Cosm{integral type}Str</a>
+      <li><a href="#Cosm{ftype}Str">Cosm{float type}Str</a>
+      <li><a href="#CosmPrint">CosmPrint</a>
+      <li><a href="#CosmPrintStr">CosmPrintStr</a>
+      <li><a href="#CosmPrintFile">CosmPrintFile</a>
+    </ul>
+
+    <hr>
+
+    <a name="CosmInput"></a>
+    <h3>
+      CosmInput
+    </h3>
+
+    <h4>Syntax</h4>
+</font>
+<pre>
+#include "cosm/os_io.h"
+u32 CosmInput( utf8 * buffer, u32 max_bytes, u32 echo );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Description</h4>
+    <p>
+      Reads up to <em>max_bytes</em>-1 bytes of UTF-8 from standard input
+      device until EOF or '\n' is reached. <em>buffer</em> will always be a
+      terminated string if input is read. If <em>echo</em> is COSM_IO_NOECHO
+      then the typed characters will not be echoed in any way
+      (for password entry etc), otherwise <em>echo</em> should be COSM_IO_ECHO.
+    </p>
+
+    <h4>Return Values</h4>
+    <p>
+      Number of characters input, 0xFFFFFFFF (-1) indicates EOF.
+    </p>
+
+    <h4>Errors</h4>
+    <p>
+      None.
+    </p>
+
+    <h4>Example</h4>
+</font>
+<pre>
+  utf8 buffer[256];
+  u32 len;
+
+  /* ... */
+
+  len = CosmInput( buffer, 256, COSM_IO_ECHO );
+
+  if ( len == -1 )
+  {
+    /* EOF */
+  }
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <hr>
+
+    <a name="CosmInputRaw"></a>
+    <h3>
+      CosmInputRaw
+    </h3>
+
+    <h4>Syntax</h4>
+</font>
+<pre>
+#include "cosm/os_io.h"
+u32 CosmInputRaw( u8 * buffer, u32 length, u32 echo );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Description</h4>
+    <p>
+      Read <em>length</em> bytes from stdin into the <em>buffer</em>.
+      If <em>echo</em> is COSM_IO_NOECHO then the typed characters will not be
+      echoed in any way (for password entry etc), otherwise <em>echo</em>
+      should be COSM_IO_ECHO. The buffer will not be terminated with a 0,
+      becasue it is not a string. Usually used with a <em>length</em> of 1.
+    </p>
+
+    <h4>Return Values</h4>
+    <p>
+      Number of bytes read, 0xFFFFFFFF (-1) indicates EOF.
+    </p>
+
+    <h4>Errors</h4>
+    <p>
+      None.
+    </p>
+
+    <h4>Example</h4>
+</font>
+<pre>
+  u8 * buffer;
+  u32 size;
+  u32 len;
+
+  /* ... */
+
+  CosmPrint( "Hit a key: " );
+  len = CosmInputRaw( buffer, size, COSM_IO_ECHO );
+
+  if ( ( len == -1 ) || ( len != 1 ) )
+  {
+    /* EOF reached */
+  }
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <hr>
+
+    <a name="CosmStrBytes"></a>
+    <h3>
+      CosmStrBytes
+    </h3>
+
+    <h4>Syntax</h4>
+</font>
+<pre>
+#include "cosm/os_io.h"
+u32 CosmStrBytes( const utf8 * string );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Description</h4>
+    <p>
+      Get the length of the string pointed to by <em>string</em>.
+    </p>
+
+    <h4>Return Values</h4>
+    <p>
+      The length of the string in bytes.
+    </p>
+
+    <h4>Errors</h4>
+    <p>
+      None.
+    </p>
+
+    <h4>Example</h4>
+</font>
+<pre>
+  utf8 * string;
+  u32 length;
+
+  string = "A 22 byte test string.";
+
+  length = CosmStrBytes( string );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <hr>
+
+    <a name="CosmStrCopy"></a>
+    <h3>
+      CosmStrCopy
+    </h3>
+
+    <h4>Syntax</h4>
+</font>
+<pre>
+#include "cosm/os_io.h"
+s32 CosmStrCopy( utf8 * dest, const utf8 * src, u32 max_bytes );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Description</h4>
+    <p>
+      Copy a string of up to <em>max_chars</em>-1 bytes from
+      <em>src</em> to <em>dest</em>, including the terminating '\0'. If the
+      <em>src</em> string is longer then <em>max_bytes</em>-1 the function
+      will fail and do nothing.
+    </p>
+
+    <h4>Return Values</h4>
+    <p>
+      COSM_PASS on success, or COSM_FAIL on failure.
+    </p>
+
+    <h4>Errors</h4>
+    <p>
+      Possible causes of an failure:
+    </p>
+    <ul>
+      <li>A parameter was NULL or 0.
+      <li>The <em>src</em> string was longer then <em>max_bytes</em>-1.
+    </ul>
+
+    <h4>Example</h4>
+</font>
+<pre>
+  /* !!! */
+  utf8 string[256];
+  utf8 copy[256];
+  u32 size;
+
+  /* ... */
+
+  if ( CosmStrCopy( copy, string, 256 ) != COSM_PASS )
+  {
+    /* Error */
+  }
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <hr>
+
+    <a name="CosmStrAppend"></a>
+    <h3>
+      CosmStrAppend
+    </h3>
+
+    <h4>Syntax</h4>
+</font>
+<pre>
+#include "cosm/os_io.h"
+s32 CosmStrAppend( utf8 * stringA, const utf8 * stringB, u32 max_bytes );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Description</h4>
+    <p>
+      Appends the stringB to the end of stringA, only if the sum of the
+      string lengths is less than <em>max_bytes</em>-1
+    </p>
+
+    <h4>Return Values</h4>
+    <p>
+      COSM_PASS on success, or COSM_FAIL on failure.
+    </p>
+
+    <h4>Errors</h4>
+    <p>
+      Possible causes of an failure:
+    </p>
+    <ul>
+      <li>A parameter was NULL or 0.
+      <li>Size of the resulting string would be longer than <em>max_bytes</em>-1
+    </ul>
+
+    <h4>Example</h4>
+</font>
+<pre>
+  /* !!! */
+  utf8 buffer[256];
+
+  /* ... */
+
+  if ( CosmStrAppend( buffer, "Test string", 256 )
+     != COSM_PASS )
+  {
+    /* Error */
+  }
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <hr>
+
+    <a name="CosmStrCmp"></a>
+    <h3>
+      CosmStrCmp
+    </h3>
+
+    <h4>Syntax</h4>
+</font>
+<pre>
+#include "cosm/os_io.h"
+s32 CosmStrCmp( const utf8 * stringA, const utf8 * stringB,
+  u32 max_bytes );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Description</h4>
+    <p>
+      Compare the two Unicode strings, up to <em>max_bytes</em> or the end of
+      one string.
+    </p>
+
+    <h4>Return Values</h4>
+    <p>
+      0 if the strings are identical, a postive number if the codepoint
+      of the first different character in stringA is greater than the
+      codepoint of that character in stringB, or a negative number if the
+      codepoint of the first different character in stringA is less than the
+      codepoint of that character in stringB. If any parameter is NULL/0
+      then it returns -1 unless <em>stringA</em> == <em>stringB</em>.
+    </p>
+
+    <h4>Errors</h4>
+    <p>
+      None.
+    </p>
+
+    <h4>Example</h4>
+</font>
+<pre>
+  utf8 stringa[128];
+  utf8 stringb[128];
+  u32 max;
+
+  /* set stringa and stringb to something */
+
+  if ( CosmStrCmp( stringa, stringb, max ) != 0 )
+  {
+    /* Strings do not match */
+  }
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <hr>
+
+    <a name="CosmStrChar"></a>
+    <h3>
+      CosmStrChar
+    </h3>
+
+    <h4>Syntax</h4>
+</font>
+<pre>
+#include "cosm/os_io.h"
+utf8 * CosmStrChar( const utf8 * string, utf8 character,
+  u32 max_bytes );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Description</h4>
+    <p>
+      Locate <em>character</em> in the <em>string</em>, which is up to
+      <em>max_bytes</em> long.
+    </p>
+
+    <h4>Return Values</h4>
+    <p>
+      A pointer to the first occurance of character in the <em>string</em>,
+      or NULL if it does not occur in the <em>string</em>.
+    </p>
+
+    <h4>Errors</h4>
+    <p>
+      None.
+    </p>
+
+    <h4>Example</h4>
+</font>
+<pre>
+  utf8 string[128];
+  utf8 * found;
+  u32 max;
+
+  /* read in string */
+
+  if ( ( found = CosmStrChar( string, 'a', max ) ) != NULL )
+  {
+    /* the character 'a' is in the string at found */
+  }
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <hr>
+
+    <a name="CosmStrStr"></a>
+    <h3>
+      CosmStrStr
+    </h3>
+
+    <h4>Syntax</h4>
+</font>
+<pre>
+#include "cosm/os_io.h"
+utf8 * CosmStrStr( const utf8 * string, const utf8 * substring,
+  u32 max_bytes );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Description</h4>
+    <p>
+      Locate <em>substring</em> in the <em>string</em>, which is up to
+      <em>max_bytes</em>-1 long.
+    </p>
+
+    <h4>Return Values</h4>
+    <p>
+      A pointer to the first match of <em>substring</em> in <em>string</em>,
+      or NULL if it does not occur in the string.
+    </p>
+
+    <h4>Errors</h4>
+    <p>
+      None.
+    </p>
+
+    <h4>Example</h4>
+</font>
+<pre>
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <hr>
+
+    <a name="Cosm{itype}Str"></a>
+    <h3>
+      Cosm{integral type}Str
+    </h3>
+
+    <h4>Syntax</h4>
+</font>
+<pre>
+#include "cosm/os_io.h"
+s32 CosmU32Str( u32 * result, utf8 ** end, const utf8 * string,
+  u32 radix );
+s32 CosmS32Str( s32 * result, utf8 ** end, const utf8 * string,
+  u32 radix );
+s32 CosmU64Str( u64 * result, utf8 ** end, const utf8 * string,
+  u32 radix );
+s32 CosmS64Str( s64 * result, utf8 ** end, const utf8 * string,
+  u32 radix );
+s32 CosmU128Str( u128 * result, utf8 ** end, const utf8 * string,
+  u32 radix );
+s32 CosmS128Str( s128 * result, utf8 ** end, const utf8 * string,
+  u32 radix );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Description</h4>
+    <p>
+      Convert the Unicode <em>string</em> written in <em>radix</em> to the
+      number type. Numbers are of the form: [space*][+|-][0|0x|0X]{0-9a-zA-Z}+
+      Numbers may be in any language form supported by Unicode.
+      <em>radix</em> must be 2-36 or 0. If <em>radix</em> is 0, numbers
+      starting with "0x" or "0X" will be read as base 16, numbers starting
+      with 0 will be interpreted as base 8, and all others will be base 10.
+      If <em>end</em> is not NULL, it will be set to the byte after the
+      last byte used by the number. For u8 and u16 types use the u32
+      function and typecast the result. Note that use of <em>radix</em>es
+      other then 2, 8, 10, or 16 are generally useless.
+    </p>
+
+    <h4>Return Values</h4>
+    <p>
+      Sets <em>result</em> to the number and returns COSM_PASS on success, or
+      sets <em>result</em> to 0 and returns COSM_FAIL on failure.
+    </p>
+
+    <h4>Errors</h4>
+    <p>
+      None.
+    </p>
+
+    <h4>Example</h4>
+</font>
+<pre>
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <hr>
+
+    <a name="Cosm{ftype}Str"></a>
+    <h3>
+      Cosm{float type}Str
+    </h3>
+
+    <h4>Syntax</h4>
+</font>
+<pre>
+#include "cosm/os_io.h"
+s32 Cosmf32Str( f32 * result, utf8 ** end, const utf8 * string );
+s32 Cosmf64Str( f64 * result, utf8 ** end, const utf8 * string );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Description</h4>
+    <p>
+      Convert the Unicode base-10 <em>string</em> to a floating point number.
+      Numbers are of the form:
+      [space*][+|-]{{0-9}+[.{0-9}*]|.{0-9}+}[{e|E}[+|-]{0-9}+]
+      Digits can be the base-10 digits of any language that Unicode supports.
+      If <em>end</em> is not NULL, it will be set to the character after the
+      last character used in the number.
+    </p>
+
+    <h4>Return Values</h4>
+    <p>
+      Sets <em>result</em> to the number and returns COSM_PASS on success, or
+      sets <em>result</em> to +/- HUGE_VAL if the number was too large or 0
+      if the string wasn't a number and returns COSM_FAIL on failure.
+    </p>
+
+    <h4>Errors</h4>
+    <p>
+      None.
+    </p>
+
+    <h4>Example</h4>
+</font>
+<pre>
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <hr>
+
+    <a name="CosmPrint"></a>
+    <h3>
+      CosmPrint
+    </h3>
+
+    <h4>Syntax</h4>
+</font>
+<pre>
+#include "cosm/os_io.h"
+u32 CosmPrint( const utf8 * format, ... );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Description</h4>
+    <p>
+      Prints the formatted text to the standard output device.
+      All output buffers will be flushed before return.
+    </p>
+    <p>
+      %[width][.prec]type_char
+    </p>
+    <p>
+      [width]
+      <ul>
+        <li>-n = min n characters are printed, left justify
+        <li>0n = min n characters are printed, pad 0. No effect type s.
+        <li>n = min n characters are printed, right justify.
+        <li>* = next argument (u32) will specify width
+      </ul>
+
+      [.prec]
+      <ul>
+        <li>.n = max n decimals places are printed for type f|F|g|G.
+          Should always be set, default = 6, capped at 40.
+        <li>.n = max n characters printed for type s|b. Default = 0.
+          No effect on all other types.
+        <li>.* = next argument (u32) will specify precision
+      </ul>
+      [type_char]
+      <ul>
+        <li>c = single character
+        <li>s = pointer to zero terminated string
+        <li>b = pointer to raw byte buffer, precision flag is length in bytes
+        <li>f = f32 or f64, [-]dddd.dddddd
+        <li>F = f32 or f64, [-]d.dddddd[Edd]
+        <li>g = f128, [-]dddd.dddddd
+        <li>G = f128, [-]d.dddddd[Edd]
+        <li>u = u32 dec
+        <li>v = u64 dec
+        <li>w = u128 dec
+        <li>i = s32 dec
+        <li>j = s64 dec
+        <li>k = s128 dec
+        <li>X = u32 hex (hex = [0-9A-F], always uppercase, no automatic
+          "0x" prefix)
+        <li>Y = u64 hex
+        <li>Z = u128 hex
+        <li>p = pointer, zero-padded hex - native length 32-bit|64-bit
+      </ul>
+      Note the mnemonics for the 32-bit (root) variants: c = character,
+      s = string, f = float, b = buffer, u = unsigned, i = integer, X = hex,
+      p = pointer, n = bignum.
+    </p>
+
+    <h4>Return Values</h4>
+    <p>
+      Number of bytes output.
+    </p>
+
+    <h4>Errors</h4>
+    <p>
+      None.
+    </p>
+
+    <h4>Example</h4>
+</font>
+<pre>
+  utf8 * output;
+  void * foo;
+  u32 size;
+
+  size = 256;
+  output = CosmMemAlloc( (u64) size );
+
+  /* ... */
+
+  CosmPrint( "Error: %.*s\n", size, output );
+  CosmPrint( "Size: %04u bytes\n", size );
+  CosmPrint( "foo points to: %p\nAddress of size is: %p\n",
+            foo, &amp;size );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+    <p>
+      This would print something similar to (on a 32-bit machine):
+    </p>
+</font>
+<pre>
+  Error: Timeout -- try again later
+  Size: 0255 bytes
+  foo points to: 08049860
+  Address of size is: 7FFFF7A8
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <hr>
+
+    <a name="CosmPrintStr"></a>
+    <h3>
+      CosmPrintStr
+    </h3>
+
+    <h4>Syntax</h4>
+</font>
+<pre>
+#include "cosm/os_io.h"
+u32 CosmPrintStr( utf8 * string, u32 max_bytes,
+  const utf8 * format, ... );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Description</h4>
+    <p>
+      Prints the formatted text to the <em>string</em>. No more than
+      <em>max_bytes</em>-1 bytes will be written to the string. See
+      <a href="#CosmPrint">CosmPrint</a> for format usage.
+    </p>
+
+    <h4>Return Values</h4>
+    <p>
+      Number of bytes written to string, or -1 if truncated due to
+      <em>max_bytes</em>.
+    </p>
+
+    <h4>Errors</h4>
+    <p>
+      None.
+    </p>
+
+    <h4>Example</h4>
+</font>
+<pre>
+  utf8 * output;
+  void * foo;
+  u32 chars_output;
+
+  output = CosmMemAlloc( 256LL );
+
+  /* ... */
+
+  chars_output = CosmPrintStr( output, 256,
+    "foo points to: %p\nAddress of chars_output is: %p\n",
+    foo, &amp;size );
+
+  if ( chars_output == 0 )
+  {
+    /* Error */
+  }
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <hr>
+
+    <a name="CosmPrintFile"></a>
+    <h3>
+      CosmPrintFile
+    </h3>
+
+    <h4>Syntax</h4>
+</font>
+<pre>
+#include "cosm/os_io.h"
+u32 CosmPrintFile( cosm_FILE * file, const utf8 * format, ... );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Description</h4>
+    <p>
+      Prints the formatted text to the <em>file</em>. See
+      <a href="#CosmPrint">CosmPrint</a> for format usage.
+    </p>
+
+    <h4>Return Values</h4>
+    <p>
+      Number of bytes written to <em>file</em>.
+    </p>
+
+    <h4>Errors</h4>
+    <p>
+      None.
+    </p>
+
+    <h4>Example</h4>
+</font>
+<pre>
+  utf8 * output;
+  u32 chars_written;
+  cosm_FILE * file;
+
+  /* ... */
+
+  chars_written = CosmPrintFile( file, "Error: %.*s\n",
+    256, output );
+
+  if ( chars_written == 0 )
+  {
+    /* Error */
+  }
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+<hr>
+
+</font>
+<font face="Verdana,Arial,Helvetica" size="-2" color="#6666cc">
+  <p>
+    &copy; Copyright Mithral Communications &amp; Design Inc.
+    <!--#config timefmt="%Y" -->
+    1995-<!--#echo var="LAST_MODIFIED" -->.
+    All rights reserved.
+    Mithral&reg; and Cosm&reg; are trademarks of
+    Mithral Communications &amp; Design Inc.
+    <br>
+    <!--#config timefmt="%b %d, %Y" -->
+    Document last modified: <!--#echo var="LAST_MODIFIED" -->
+  </p>
+</font>
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>

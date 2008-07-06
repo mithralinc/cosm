@@ -1,0 +1,247 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<html>
+  <head>
+    <title>
+      Cosm API - Log File Functions
+    </title>
+    <style type="text/css"><!-- a {text-decoration: none} --></style>
+  </head>
+  <body background="images/docbg.jpg" bgcolor="#000000" text="#cccccc"
+    link="#9999ff" vlink="#9999ff" alink="#ffcc66">
+
+  <table border="0" cellspacing="0" cellpadding="0">
+    <tr valign="top">
+      <td width="30"></td>
+      <td width="570">
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <p align="center">
+      <img src="images/cosmlogo.gif" alt="[Cosm Logo]"
+        width="357" height="123" border="0"><br>
+    </p>
+
+<!-- 678901234567890123456789012345678901234567890123456789012345678901234 -->
+
+    <h2 align="center">
+      Log File Functions
+    </h2>
+
+    <ul>
+      <li><a href="#CosmLogOpen">CosmLogOpen</a>
+      <li><a href="#CosmLog">CosmLog</a>
+      <li><a href="#CosmLogClose">CosmLogClose</a>
+    </ul>
+
+    <hr>
+
+    <a name="CosmLogOpen"></a>
+    <h3>
+      CosmLogOpen
+    </h3>
+
+    <h4>Syntax</h4>
+</font>
+<pre>
+#include "cosm/log.h"
+s32 CosmLogOpen( cosm_LOG * log, ascii * filename, u32 max_level,
+  u32 mode );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Description</h4>
+    <p>
+      Initialize the log, setting the <em>filename</em>, <em>max_level</em>,
+      and <em>mode</em>. If COSM_LOG_MODE_NUMBER then log any message with an
+      equal or lower level than <em>max_level</em>. If COSM_LOG_MODE_BITS then
+      log any message with it's level matching a bit in <em>max_level</em>.
+      Initializing a log with a NULL <em>filename</em> or invalid
+      <em>mode</em> causes failure.
+    </p>
+    <p>
+      <strong>Log modes:</strong>
+    </p>
+    <dl>
+      <dt>COSM_LOG_MODE_NUMBER
+      <dd>Log any message with an equal or lower level than
+        <em>max_level</em>.
+      <dt>COSM_LOG_MODE_BITS
+      <dd>Log any message with it's level matching a bit in
+        <em>max_level</em>.
+    </dl>
+
+    <h4>Return Values</h4>
+    <p>
+      COSM_PASS on success, or an error code on failure.
+    </p>
+
+    <h4>Errors</h4>
+    <dl>
+      <dt>COSM_LOG_ERROR_MODE
+      <dd>The specified mode is invalid.
+      <dt>COSM_LOG_ERROR_NAME
+      <dd>The specified <em>filename</em> is invalid.
+      <dt>COSM_LOG_ERROR_INIT
+      <dd><em>log</em> is invalid.
+      <dt>COSM_LOG_ERROR_ACCESS
+      <dd>Unable to get write access to the log file.
+    </dl>
+
+    <h4>Example</h4>
+</font>
+<pre>
+  cosm_LOG log;
+  s32 result;
+
+  CosmMemSet( &amp;log, sizeof( cosm_LOG ), 0 );
+
+  result = CosmLogOpen( &amp;log, "/var/log/cosmlog", 5,
+    COSM_LOG_MODE_NUMBER );
+
+  if ( result == COSM_PASS )
+  {
+    CosmPrint( "Log file /var/log/cosmlog initialized.\n" );
+  }
+  else
+  {
+    CosmPrint( "Unable to open /var/log/cosmlog.\n" );
+  }
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <hr>
+
+    <a name="CosmLog"></a>
+    <h3>
+      CosmLog
+    </h3>
+
+    <h4>Syntax</h4>
+</font>
+<pre>
+#include "cosm/log.h"
+s32 CosmLog( cosm_LOG * log, u32 level, u32 echo,
+  const utf8 * format, ... );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Description</h4>
+    <p>
+      Write the formatted string to the log.
+      See <a href="os_io.html#CosmPrint">CosmPrint</a> for format info.
+      The string will be logged only if the <em>level</em> is acceptable
+      to the open log. Level 0 will always be logged. If <em>echo</em> is
+      COSM_LOG_ECHO and the <em>level</em> passes then the string will also
+      be printed to the standard output device. Otherwise if <em>level</em>
+      does not pass or <em>echo</em> is COSM_LOG_NOECHO nothing will be
+      printed.
+    </p>
+
+    <h4>Return Values</h4>
+    <p>
+      COSM_PASS on success, or an error code on failure.
+    </p>
+
+    <h4>Errors</h4>
+    <dl>
+      <dt>COSM_LOG_ERROR_INIT
+      <dd>The log file wasn't initialized using
+        <a href="#CosmLogOpen">CosmLogOpen</a>.
+      <dt>COSM_LOG_ERROR_ACCESS
+      <dd>Unable to get write access to the log file.
+    </dl>
+
+    <h4>Example</h4>
+</font>
+<pre>
+  cosm_LOG log;
+
+  CosmMemSet( &amp;log, sizeof( cosm_LOG ), 0 );
+
+  CosmLogOpen( &amp;log, "file.log", 5, COSM_LOG_MODE_NUMBER );
+  /* check for errors */
+
+  CosmLog( &amp;log, 3, COSM_LOG_NOECHO,
+    "This is logged. 3 is less than 5.\n" );
+  CosmLog( &amp;log, 8, COSM_LOG_NOECHO,
+    "This is not logged. 8 is greater than 5.\n" );
+
+  CosmLogClose( &amp;log );
+
+  CosmLogOpen( &amp;log, "file.log", 0x55, COSM_LOG_MODE_BITS );
+  /* check for errors */
+
+  CosmLog( &amp;log, 0x03, COSM_LOG_NOECHO,
+    "This is logged. ( 0x03 &amp; 0x55 ) != 0.\n" );
+  CosmLog( &amp;log, 0x08, COSM_LOG_NOECHO,
+    "This is not logged. ( 0x08 &amp; 0x55 ) == 0.\n" );
+  CosmLog( &amp;log, 0x00, COSM_LOG_NOECHO,
+    "This is logged. Level 0 is ALWAYS logged.\n" );
+
+  CosmLogClose( &amp;log );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <hr>
+
+    <a name="CosmLogClose"></a>
+    <h3>
+      CosmLogClose
+    </h3>
+
+    <h4>Syntax</h4>
+</font>
+<pre>
+#include "cosm/log.h"
+s32 CosmLogClose( cosm_LOG * log );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Description</h4>
+    <p>
+      Close the <em>log</em>.
+    </p>
+
+    <h4>Return Values</h4>
+    <p>
+      COSM_PASS on success.
+    </p>
+
+    <h4>Errors</h4>
+    <p>
+      None.
+    </p>
+
+    <h4>Example</h4>
+</font>
+<pre>
+  cosm_LOG log;
+
+  CosmMemSet( &amp;log, sizeof( cosm_LOG ), 0 );
+
+  /* ... */
+
+  CosmLogClose( &amp;log );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+<hr>
+
+</font>
+<font face="Verdana,Arial,Helvetica" size="-2" color="#6666cc">
+  <p>
+    &copy; Copyright Mithral Communications &amp; Design Inc.
+    <!--#config timefmt="%Y" -->
+    1995-<!--#echo var="LAST_MODIFIED" -->.
+    All rights reserved.
+    Mithral&reg; and Cosm&reg; are trademarks of
+    Mithral Communications &amp; Design Inc.
+    <br>
+    <!--#config timefmt="%b %d, %Y" -->
+    Document last modified: <!--#echo var="LAST_MODIFIED" -->
+  </p>
+</font>
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>
