@@ -1414,6 +1414,9 @@ u32 CosmNetDNS( cosm_NET_ADDR * addr, u32 count, ascii * name )
       /* IPv4 */
       addr[found].type = COSM_NET_IPV4;
       addr[found].port = 0;
+      /* set the ipv6 to avoid uninitilized memory warnings */
+      addr[found].ip.v6.hi = 0;
+      addr[found].ip.v6.lo = 0;
       CosmU32Load( &addr[found].ip.v4,
         &( ( (struct sockaddr_in *) entry->ai_addr )->sin_addr ) );
       found++;
