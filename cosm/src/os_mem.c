@@ -389,7 +389,7 @@ void * CosmSharedMemOpen( cosm_SHARED_MEM * shared_mem,
     return NULL;
   }
 #elif ( defined( SYSV_SHARED_MEM ) )
-  if ( ( COSM_FAIL == CosmU32Str( &key, NULL, name, 10 ) )
+  if ( ( COSM_FAIL == CosmU32Str( &key, NULL, (utf8 *) name, 10 ) )
     || ( -1 == ( shared_mem->sysv_handle = shmget( key, 0 , 0 ) ) )
     || ( NULL == ( addr = shmat( shared_mem->sysv_handle, NULL, 0 ) ) ) )
   {

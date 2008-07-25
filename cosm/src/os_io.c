@@ -769,7 +769,7 @@ s32 Cosm_EncodeUTF8( utf8 * array, u32 * bytes_used, utf8char codepoint )
     return COSM_FAIL;\
   } }
 
-s32 Cosm_ParseInt( void * number, void ** end, const void * string,
+s32 Cosm_ParseInt( void * number, utf8 ** end, const utf8 * string,
   u32 number_width, u32 sign, u32 radix )
 {
   u32 tmp_u32, max_u32s, max_rem;
@@ -961,7 +961,7 @@ s32 Cosm_ParseInt( void * number, void ** end, const void * string,
 }
 
 #if ( !defined( NO_FLOATING_POINT ) )
-s32 Cosm_ParseFloat( void * number, void ** end, const void * string,
+s32 Cosm_ParseFloat( void * number, utf8 ** end, const utf8 * string,
   u8 number_width )
 {
   f64 fraction, exponent, position_value;
@@ -2607,7 +2607,7 @@ s32 Cosm_TestOSIO( void )
 
   /* Convert a string containing " 0xfF" to a number */
   tmpNum = 0;
-  CosmU32Str( &tmpNum, 0, ascNum, 0 );
+  CosmU32Str( &tmpNum, NULL, ascNum, 0 );
   if ( tmpNum != 255 )
   {
     return -9;
@@ -2615,7 +2615,7 @@ s32 Cosm_TestOSIO( void )
   /* utf8 tests */
 /*
   tmpNum = 0;
-  CosmU32Str( &tmpNum, 0, uniNum, 0 );
+  CosmU32Str( &tmpNum, NULL, uniNum, 0 );
   if ( tmpNum != 255 )
   {
     return -10;

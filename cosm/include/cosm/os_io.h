@@ -187,9 +187,9 @@ utf8 * CosmStrStr( const utf8 * string, const utf8 * substring,
 
 #if ( !defined( NO_FLOATING_POINT ) )
 #define Cosmf32Str( result, end, string ) \
-  Cosm_ParseFloat( (void *) result, (void **) end, (const void *) string, 4 )
+  Cosm_ParseFloat( (void *) result, end, string, 4 )
 #define Cosmf64Str( result, end, string ) \
-  Cosm_ParseFloat( (void *) result, (void **) end, (const void *) string, 8 )
+  Cosm_ParseFloat( (void *) result, end, string, 8 )
   /*
     Convert the ascii or Unicode base-10 string to a floating point number.
     ascii numbers are of the form:
@@ -278,7 +278,7 @@ s32 Cosm_EncodeUTF8( utf8 * array, u32 * bytes_used, utf8char codepoint );
     Returns: COSM_PASS on success, or COSM_FAIL on invalid codepoint.
   */
 
-s32 Cosm_ParseInt( void * number, void ** end, const void * string,
+s32 Cosm_ParseInt( void * number, utf8 ** end, const utf8 * string,
   u32 number_width, u32 sign, u32 radix );
   /*
     Worker function for Cosm{int}Str functions, places the parsed value into
@@ -290,7 +290,7 @@ s32 Cosm_ParseInt( void * number, void ** end, const void * string,
   */
 
 #if ( !defined( NO_FLOATING_POINT ) )
-s32 Cosm_ParseFloat( void * number, void ** end, const void * string,
+s32 Cosm_ParseFloat( void * number, utf8 ** end, const utf8 * string,
   u8 number_width );
   /*
     Worker function for Cosm{float}Str functions, places the parsed value

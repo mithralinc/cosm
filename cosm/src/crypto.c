@@ -890,7 +890,7 @@ s32 CosmPKIDecode( cosm_HASH * hash, cosmtime * timestamp, u8 * type,
     /* deal with version 0, which had invalid iqmp's */
     if ( sig->pkt_version == 0 )
     {
-      if ( CosmBNModExp( &sig->sig, &bn_hash, &key->d, &key->n )
+      if ( CosmBNModExp( &bn_hash, &sig->sig, &key->d, &key->n )
         != COSM_PASS )
       {
         CosmBNFree( &bn_hash );

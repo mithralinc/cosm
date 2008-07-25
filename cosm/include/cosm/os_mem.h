@@ -52,7 +52,7 @@
 #define COSM_SHARED_MEM_STATE_ALLOC  20
 #define COSM_SHARED_MEM_STATE_OPEN  252
 
-typedef ascii cosm_SHARED_MEM_NAME[32];
+typedef utf8 cosm_SHARED_MEM_NAME[32];
 typedef struct cosm_SHARED_MEM
 {
   u32 state;
