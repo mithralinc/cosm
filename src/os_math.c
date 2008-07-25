@@ -646,7 +646,7 @@ s32 CosmFloatNaN( f64 number )
 {
   u32 * n;
 
-  n = (u32 *) &number;
+  n = (void *) &number;
 
   /*
     NaN: u = dont care, At least one x-bit/X-byte must be non-zero.
@@ -665,7 +665,7 @@ s32 CosmFloatInf( f64 number )
 {
   s32 * n;
 
-  n = (s32 *) &number;
+  n = (void *) &number;
 
   /*
     +/- INF: s = sign bit.

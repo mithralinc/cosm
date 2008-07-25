@@ -1023,7 +1023,7 @@ s32 Cosm_HTTPNetOpen( cosm_HTTP * http )
 s32 Cosm_HTTPParseHeader( cosm_HTTP * http, u32 wait_ms )
 {
   static ascii http_magic[2][8] = { "HTTP/1.1", "http/1.0" };
-  u8 tmp_buffer[8];
+  utf8 tmp_buffer[8];
   u32 result;
   u32 i, count, length;
   ascii * ptr;
@@ -1288,7 +1288,7 @@ s32 Cosm_HTTPDParseRequest( cosm_HTTPD_REQUEST * request, cosm_NET * net,
   ascii ch;
   ascii * tmp;
   ascii * tmp_path;
-  ascii tmp_num[3] = { 0x00, 0x00, 0x00 };
+  utf8 tmp_num[3] = { 0x00, 0x00, 0x00 };
 
   /*
   Incoming request looks like...
@@ -1419,7 +1419,7 @@ s32 Cosm_HTTPDParseRequest( cosm_HTTPD_REQUEST * request, cosm_NET * net,
       /* hex encoded value */
       tmp_num[0] = *++tmp_path;
       tmp_num[1] = *++tmp_path;
-      CosmU32Str( &i, NULL, &tmp_num, 16 );
+      CosmU32Str( &i, NULL, tmp_num, 16 );
       *tmp++ = (ascii) i;
     }
     else if ( *tmp_path == '?' )
