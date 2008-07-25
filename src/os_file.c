@@ -591,7 +591,13 @@ s32 CosmFileInfo( cosm_FILE_INFO * info, const ascii * filename )
 #if ( ( OS_TYPE == OS_WIN32 ) || ( OS_TYPE == OS_WIN64 ) )
   struct __stat64 buf;
 #else
-  struct stat64 buf;
+#if ( ( OS_TYPE == OS_MACOSX ) && defined( __DARWIN_64_BIT_INO_T ) ) \
+  || ( ( OS_TYPE == OS_LINUX ) && defined( __USE_LARGEFILE64 ) )
+#define _STAT stat64
+#else
+#define _STAT stat
+#endif
+  struct _STAT buf;
 #endif
   cosm_FILENAME native_filename;
   cosmtime unix_epoc;
@@ -610,7 +616,7 @@ s32 CosmFileInfo( cosm_FILE_INFO * info, const ascii * filename )
 #if ( ( OS_TYPE == OS_WIN32 ) || ( OS_TYPE == OS_WIN64 ) )
   if ( _stat64( (const char *) native_filename, &buf ) != 0 )
 #else
-  if ( stat64( (const char *) native_filename, &buf ) != 0 )
+  if ( _STAT( (const char *) native_filename, &buf ) != 0 )
 #endif
   {
     switch( errno )
@@ -731,16 +737,18 @@ u64 CosmFileMapPageSize( void )
 void * CosmFileMap( cosm_FILE_MEMORY_MAP * map, cosm_FILE * file,
   u64 length, u64 offset )
 {
- void * addr;
- int access, map_mode;
+  void * addr;
+  int access;
+#if ( ( OS_TYPE == OS_WIN32 ) || ( OS_TYPE == OS_WIN64 ) )
+  int map_mode;
+#endif
  
- if ( ( NULL == map ) || ( NULL == file ) || ( 0 == length ) )
- {
-   return NULL;
- }
+  if ( ( NULL == map ) || ( NULL == file ) || ( 0 == length ) )
+  {
+    return NULL;
+  }
 
 #if ( ( OS_TYPE == OS_WIN32 ) || ( OS_TYPE == OS_WIN64 ) )
-
   if ( ( file->mode & COSM_FILE_MODE_READ )
     && ( file->mode & COSM_FILE_MODE_WRITE ) )
   {
@@ -771,7 +779,6 @@ void * CosmFileMap( cosm_FILE_MEMORY_MAP * map, cosm_FILE * file,
     CloseHandle( map->file_mapping );
     return NULL;
   }
-
 #else
   access = ( ( file->mode & COSM_FILE_LOCK_READ ) ? PROT_READ : 0 )
     | ( ( file->mode & COSM_FILE_LOCK_WRITE ) ? PROT_WRITE : 0 )

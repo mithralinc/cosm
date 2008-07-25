@@ -275,7 +275,7 @@ void * CosmSharedMemAlloc( cosm_SHARED_MEM * shared_mem,
 {
   u32 unique_found = 0;
   u64 key;
-  void * addr;
+  void * addr = NULL;
 
   if ( ( NULL == shared_mem ) || ( NULL == name ) || ( 0 == bytes )
     || ( COSM_SHARED_MEM_STATE_ALLOC == shared_mem->state )
@@ -291,7 +291,7 @@ void * CosmSharedMemAlloc( cosm_SHARED_MEM * shared_mem,
   }
 #endif
 
-  key = (u64) shared_mem;
+  key = (unsigned long) shared_mem;
   key = CosmProcessID() ^ ( ( key << 32 ) & ( key >> 32 ) );
   
   do
