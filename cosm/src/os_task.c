@@ -895,7 +895,7 @@ s32 CosmSemaphoreInit( cosm_SEMAPHORE * sem, cosm_SEMAPHORE_NAME * name,
     return COSM_FAIL;
   }
   
-  key = (u64) sem;
+  key = (unsigned long) sem;
   key = CosmProcessID() ^ ( ( key << 32 ) & ( key >> 32 ) ); 
   do
   {    
@@ -921,7 +921,7 @@ s32 CosmSemaphoreInit( cosm_SEMAPHORE * sem, cosm_SEMAPHORE_NAME * name,
 #elif ( defined( POSIX_SEMAPHORES ) )
     CosmPrintStr( sem->name, sizeof( cosm_SEMAPHORE_NAME ), "/sem%Y", key );
 
-    if ( SEM_FAILED == ( sem->os_sem = sem_open( sem->name,
+    if ( (void *) SEM_FAILED == ( sem->os_sem = sem_open( sem->name,
       O_CREAT | O_EXCL, S_IRWXU, initial_count ) ) )
     {
       if ( EEXIST != errno )
@@ -987,7 +987,7 @@ s32 CosmSemaphoreOpen( cosm_SEMAPHORE * sem, cosm_SEMAPHORE_NAME * name )
     return COSM_FAIL;
   }
 #elif ( defined( POSIX_SEMAPHORES ) )
-  if ( SEM_FAILED == ( sem->os_sem = sem_open( (char *) name, 0 ) ) )
+  if ( (void *) SEM_FAILED == ( sem->os_sem = sem_open( (char *) name, 0 ) ) )
   {
     return COSM_FAIL;
   }
