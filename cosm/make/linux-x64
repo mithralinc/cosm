@@ -1,5 +1,5 @@
 ## OS        : Linux
-## CPU       : AMD64
+## CPU       : x64
 ## Compiler  : GNU
 
 CC      = gcc
@@ -21,7 +21,7 @@ LDFLAGS = -m64
 LDLIBS  = -lpthread -lm -ldl $(EXTRA_LIBS)
 
 # Cosm Defines
-COSM_DEFS = -DCPU_64BIT -DOS_TYPE=OS_LINUX -DCPU_TYPE=CPU_AMD64
+COSM_DEFS = -DCPU_64BIT -DOS_TYPE=OS_LINUX -DCPU_TYPE=CPU_X64
 
 .c.$(OBJ):
 	@echo "Compiling $<"

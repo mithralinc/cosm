@@ -233,6 +233,9 @@ foreach $file ( @ARGV )
     # parameter 2 and 3 switched
     &replace( $line, 0, 'CosmNetOpen', '"CosmNetOpen-API-CHANGE-SEE-DOCS"' );
 
+    # CPU_AMD64 renamed
+    &replace( $line, 0, 'CPU_AMD64', '"CPU_X64"' );
+
     print FILE $line;
   }
   close FILE;
