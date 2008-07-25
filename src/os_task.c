@@ -1233,7 +1233,7 @@ void CosmSleep( u32 millisec )
 void CosmYield( void )
 {
 #if ( ( OS_TYPE == OS_WIN32 ) || ( OS_TYPE == OS_WIN64 ) )
-  Sleep( 0 );
+  SwitchToThread();
 #elif ( OS_TYPE == OS_SUNOS )
   /* This doesn't do what you think it does... */
   /* (this will only yeild to the same lwp priority group) */

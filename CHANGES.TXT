@@ -144,6 +144,7 @@ Development Environment
 - Memory tracking (for -DMEM_LEAK_FIND) is now threadsafe.
 - NONPORTABLE_CODE is now ALLOW_UNSAFE_C, which is much clearer.
 - NO_TRHEADS has been removed, all OS's now have threads.
+- CPU_AMD64 is now CPU_X64. Intel is doing AMD64 too, thus the generic term.
 
 Format and Style
 ----------------

@@ -52,7 +52,8 @@
 #undef COSM_FILE64
 #endif
 
-s32 CosmFileOpen( cosm_FILE * file, const ascii * filename, u32 mode, u32 lock )
+s32 CosmFileOpen( cosm_FILE * file, const ascii * filename,
+  u32 mode, u32 lock )
 {
   struct stat file_stats;
   cosm_FILENAME native_filename;
@@ -588,9 +589,9 @@ s32 CosmFileDelete( const ascii * filename )
 s32 CosmFileInfo( cosm_FILE_INFO * info, const ascii * filename )
 {
 #if ( ( OS_TYPE == OS_WIN32 ) || ( OS_TYPE == OS_WIN64 ) )
-  struct _stat buf;
+  struct __stat64 buf;
 #else
-  struct stat buf;
+  struct stat64 buf;
 #endif
   cosm_FILENAME native_filename;
   cosmtime unix_epoc;
@@ -607,9 +608,9 @@ s32 CosmFileInfo( cosm_FILE_INFO * info, const ascii * filename )
   }
 
 #if ( ( OS_TYPE == OS_WIN32 ) || ( OS_TYPE == OS_WIN64 ) )
-  if ( _stat( (const char *) native_filename, &buf ) != 0 )
+  if ( _stat64( (const char *) native_filename, &buf ) != 0 )
 #else
-  if ( stat( (const char *) native_filename, &buf ) != 0 )
+  if ( stat64( (const char *) native_filename, &buf ) != 0 )
 #endif
   {
     switch( errno )
@@ -624,7 +625,7 @@ s32 CosmFileInfo( cosm_FILE_INFO * info, const ascii * filename )
   }
 
   /* length */
-  info->length = (u64) buf.st_size;
+  info->length = buf.st_size;
 
 #if ( ( OS_TYPE == OS_WIN32 ) || ( OS_TYPE == OS_WIN64 ) )
   /* type */
@@ -765,7 +766,7 @@ void * CosmFileMap( cosm_FILE_MEMORY_MAP * map, cosm_FILE * file,
   }
 
   if ( NULL == ( addr = MapViewOfFile( map->file_mapping,
-    map_mode, (DWORD) ( offset >> 32 ), (u32) offset, (SIZE_T) length ) ) )
+    map_mode, (u32) ( offset >> 32 ), (u32) offset, (SIZE_T) length ) ) )
   {
     CloseHandle( map->file_mapping );
     return NULL;
@@ -1485,7 +1486,6 @@ s32 Cosm_FileNativePath( void * native, const utf8 * path )
 {
   /* map to utf8char, then to whatever we need */
   ascii * ptr, * src, * dest;
-  utf8char ch;
   u32 length;
 
   length = (u64) COSM_FILE_MAX_FILENAME;

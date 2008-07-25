@@ -2264,7 +2264,7 @@ s32 Cosm_TestOSNet( void )
 #if ( ( OS_TYPE != OS_WIN32 ) && ( OS_TYPE != OS_WIN64 ) && \
   ( OS_TYPE != OS_FREEBSD ) && \
   ( ( OS_TYPE != OS_MACOSX ) || ( CPU_TYPE != CPU_X86 ) ) && \
-  ( ( OS_TYPE != OS_MACOSX ) || ( CPU_TYPE != CPU_AMD64 ) ) )
+  ( ( OS_TYPE != OS_MACOSX ) || ( CPU_TYPE != CPU_X64 ) ) )
   /* this one is tricky, it should fail on the second call, NOT coredump */
   if ( ( CosmNetSend( &netclient2, &bytes, buf1, 10 ) == COSM_PASS )
     && ( CosmNetSend( &netclient2, &bytes, buf1, 10 ) == COSM_PASS ) )

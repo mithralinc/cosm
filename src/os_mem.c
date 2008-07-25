@@ -44,7 +44,7 @@
 #if ( ( OS_TYPE == OS_TRU64 ) || ( OS_TYPE == OS_IRIX64 ) \
   || ( ( OS_TYPE == OS_SOLARIS ) && ( defined( CPU_64BIT ) ) ) \
   || ( CPU_TYPE == CPU_ALPHA ) || ( CPU_TYPE == CPU_IA64 ) \
-  || ( CPU_TYPE == CPU_AMD64 ) )
+  || ( CPU_TYPE == CPU_X64 ) )
 #define COSM_MEM_SIZE COSM_MEM_64BITS
 #else
 #define COSM_MEM_SIZE COSM_MEM_32BITS

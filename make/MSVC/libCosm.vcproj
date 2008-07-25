@@ -552,10 +552,82 @@
 				</Filter>
 			</Filter>
 		</Filter>
-		<File
-			RelativePath="..\..\build"
+		<Filter
+			Name="UNIX Build"
 			>
-		</File>
+			<File
+				RelativePath="..\..\build"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\Makefile"
+				>
+			</File>
+			<Filter
+				Name="make"
+				>
+				<File
+					RelativePath="..\common"
+					>
+				</File>
+				<File
+					RelativePath="..\fake"
+					>
+				</File>
+				<File
+					RelativePath="..\linux-x64"
+					>
+				</File>
+				<File
+					RelativePath="..\linux-x86"
+					>
+				</File>
+				<File
+					RelativePath="..\macosx-ppc"
+					>
+				</File>
+				<File
+					RelativePath="..\macosx-ppc64"
+					>
+				</File>
+				<File
+					RelativePath="..\macosx-universal"
+					>
+				</File>
+				<File
+					RelativePath="..\macosx-x64"
+					>
+				</File>
+				<File
+					RelativePath="..\macosx-x86"
+					>
+				</File>
+				<File
+					RelativePath="..\TEMPLATE"
+					>
+				</File>
+			</Filter>
+		</Filter>
+		<Filter
+			Name="UNIX Scripts"
+			>
+			<File
+				RelativePath="..\..\utils\file2hex"
+				>
+			</File>
+			<File
+				RelativePath="..\..\utils\indent.pro"
+				>
+			</File>
+			<File
+				RelativePath="..\..\utils\longlines.pl"
+				>
+			</File>
+			<File
+				RelativePath="..\..\utils\p2update.pl"
+				>
+			</File>
+		</Filter>
 		<File
 			RelativePath="..\..\CHANGES.TXT"
 			>
@@ -566,14 +638,6 @@
 		</File>
 		<File
 			RelativePath="..\..\LICENSE.TXT"
-			>
-		</File>
-		<File
-			RelativePath="..\..\src\Makefile"
-			>
-		</File>
-		<File
-			RelativePath="..\..\apps\p2update.pl"
 			>
 		</File>
 		<File

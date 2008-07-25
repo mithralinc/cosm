@@ -37,14 +37,14 @@
 #define CPU_CELL        13
 /*#define CPU_S390      14 depreciated */
 #define CPU_PPC64       15
-#define CPU_AMD64       16
+#define CPU_X64         16
 #define COSM_CPU_TYPE_MAX 16
 
 #define COSM_CPU_TYPES { "UNKNOWN", \
   "x86", "PowerPC", "MIPS", "MIPS64", "Alpha", \
   "undef", "68K", "Sparc", "Sparc64", "undef", \
   "IA64",  "ARM", "Cell", "undef", "PowerPC64", \
-  "AMD64", NULL }
+  "x64", NULL }
 
 /* CPU_TYPE must be defined by now */
 #if ( !defined( CPU_TYPE ) || ( CPU_TYPE == CPU_UNKNOWN ) \
@@ -90,7 +90,7 @@
 #define COSM_ENDIAN_BIG     4321
 #define COSM_ENDIAN_LITTLE  1234
 
-#if ( ( CPU_TYPE == CPU_X86 ) || ( CPU_TYPE == CPU_AMD64 ) \
+#if ( ( CPU_TYPE == CPU_X86 ) || ( CPU_TYPE == CPU_X64 ) \
   || ( CPU_TYPE == CPU_IA64 ) || ( CPU_TYPE == CPU_ALPHA ) )
 #define COSM_ENDIAN_CURRENT COSM_ENDIAN_LITTLE
 #else

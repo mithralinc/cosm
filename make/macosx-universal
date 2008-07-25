@@ -25,12 +25,12 @@ LDLIBS  = $(EXTRA_LIBS)
 #COSM_DEFS =  < no generic setting this time >
 
 .c.$(OBJ):
-	@echo "Compiling $< X86"
+	@echo "Compiling $< x86"
 	@$(CC) $(CC_FLAGS) -DOS_TYPE=OS_MACOSX \
 	  -DCPU_32BIT -DCPU_TYPE=CPU_X86 -arch i386 -o $@.i386 -c $<
-	@echo "Compiling $< AMD64"
+	@echo "Compiling $< x64"
 	@$(CC) $(CC_FLAGS) -DOS_TYPE=OS_MACOSX \
-	  -DCPU_64BIT -DCPU_TYPE=CPU_AMD64 -arch x86_64 -o $@.x86_64 -c $<
+	  -DCPU_64BIT -DCPU_TYPE=CPU_X64 -arch x86_64 -o $@.x86_64 -c $<
 	@echo "Compiling $< PPC"
 	@$(CC) $(CC_FLAGS) -DOS_TYPE=OS_MACOSX \
 	  -DCPU_32BIT -DCPU_TYPE=CPU_PPC -arch ppc -o $@.ppc -c $<

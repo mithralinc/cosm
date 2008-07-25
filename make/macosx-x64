@@ -1,5 +1,5 @@
 ## OS        : MacOS X
-## CPU       : AMD64
+## CPU       : x64
 ## Compiler  : GNU
 
 CC      = gcc
@@ -22,7 +22,7 @@ LDFLAGS = -Wl,-syslibroot /Developer/SDKs/MacOSX10.5.sdk \
 LDLIBS  = $(EXTRA_LIBS)
 
 # Cosm Defines
-COSM_DEFS = -DCPU_64BIT -DOS_TYPE=OS_MACOSX -DCPU_TYPE=CPU_AMD64
+COSM_DEFS = -DCPU_64BIT -DOS_TYPE=OS_MACOSX -DCPU_TYPE=CPU_X64
 
 .c.$(OBJ):
 	@echo "Compiling $<"
