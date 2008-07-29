@@ -5,7 +5,7 @@
 CC      = gcc
 FC      = g77
 LD      = gcc -arch ppc64 -o 
-DYLIB   = gcc -dynamiclib -o 
+DYLIB   = gcc -dynamiclib -arch ppc64 -o 
 AR      = ar rc 
 RM      = rm -f
 RNLIB   = ranlib
