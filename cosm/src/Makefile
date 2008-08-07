@@ -80,7 +80,7 @@ clean:
 	@echo Cleaning...
 	-@$(RM) $(BINARIES)
 	-@$(RM) $(LIBRARIES)
-	-@$(RM) $(OBJECTS) testlib.$(OBJ) $(CLEAN_SUFFIX)
+	-@$(RM) $(OBJECTS) testlib.$(OBJ)
 	@for dir in $(SUBDIRS); do \
           echo "-- Entering subdirectory $$dir"; \
 	  $(MAKE) -C $$dir clean; \

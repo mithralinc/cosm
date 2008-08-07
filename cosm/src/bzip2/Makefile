@@ -14,7 +14,7 @@ all: $(OBJECTS)
 
 clean:
 	@echo Cleaning...
-	-@$(RM) $(OBJECTS) $(CLEAN_SUFFIX)
+	-@$(RM) $(OBJECTS)
 
 blocksort.$(OBJ): blocksort.c bzlib_private.h bzlib.h
 bzlib.$(OBJ): bzlib.c bzlib_private.h bzlib.h
