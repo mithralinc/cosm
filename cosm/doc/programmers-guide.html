@@ -200,7 +200,7 @@ similar manner e.g. Cosm_Bar( ... );
     <p>
 <strong>Local Variables and Function Arguments</strong><br>
 Loop variables can be one letter, e.g. u32 x, y, z; anything else should be
-descriptive and lower case "_" should be used between words in local
+descriptive and lower case. "_" should be used between words in local
 variables. e.g. u64 word_count;
     </p>
     <p>
@@ -229,6 +229,12 @@ In general #if defined(...) is prefered over #ifdef since there is no
 <strong>Macros</strong><br>
 Macros are in all upper case beginning with "_COSM_" e.g.<br>
 #define _COSM_BAR( x ) Bar( x, 42 ); return;
+    </p>
+    <p>
+<strong>Types and enums</strong><br>
+All lowercase no underscores. e.g. u32, utf8char, cosmtime. Usage
+makes them clearly different from variables. The enum values should
+be named like defines, uppercase with "_".
     </p>
 
     <h3>
