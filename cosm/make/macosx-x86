@@ -5,7 +5,7 @@
 CC      = gcc
 FC      = g77
 LD      = gcc -arch i386 -o 
-DYLIB   = libtool -dynamic -arch i386 -o 
+DYLIB   = gcc -dynamiclib -arch i386 -o 
 AR      = ar rc 
 RM      = rm -f
 RNLIB   = ranlib
