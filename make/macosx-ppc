@@ -3,6 +3,7 @@
 ## Compiler  : GNU
 
 CC      = gcc
+CXX     = g++
 FC      = g77
 LD      = gcc -arch ppc -o 
 DYLIB   = gcc -dynamiclib -arch ppc -o 
@@ -27,3 +28,7 @@ COSM_DEFS = -DCPU_32BIT -DOS_TYPE=OS_MACOSX -DCPU_TYPE=CPU_PPC
 .c.$(OBJ):
 	@echo "Compiling $<"
 	@$(CC) $(CC_FLAGS) $(COSM_DEFS) -arch ppc -o $@ -c $<
+
+.cpp.$(OBJ):
+	@echo "Compiling $<"
+	@$(CXX) $(CC_FLAGS) $(COSM_DEFS) -arch ppc -o $@ -c $<
