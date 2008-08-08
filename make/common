@@ -7,7 +7,7 @@ COSM_INC = $(COSM_ROOT)/include
 COSM_MAN = $(COSM_ROOT)/man
 
 .SUFFIXES:
-.SUFFIXES: .c .h .$(OBJ)
+.SUFFIXES: .c .cpp .h .$(OBJ)
 
 # make these spit out errors if undefined
 CC_FLAGS = ; echo "ERROR - define CC_FLAGS, follow the templates" ; false

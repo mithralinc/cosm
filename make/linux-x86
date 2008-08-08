@@ -3,6 +3,7 @@
 ## Compiler  : GNU
 
 CC      = gcc
+CXX     = g++
 FC      = g77
 LD      = gcc -o 
 DYLIB   = gcc -shared -o 
@@ -26,4 +27,8 @@ COSM_DEFS = -DCPU_32BIT -DOS_TYPE=OS_LINUX -DCPU_TYPE=CPU_X86
 .c.$(OBJ):
 	@echo "Compiling $<"
 	@$(CC) $(CC_FLAGS) $(COSM_DEFS) -o $@ -c $<
+
+.cpp.$(OBJ):
+	@echo "Compiling $<"
+	@$(CXX) $(CC_FLAGS) $(COSM_DEFS) -o $@ -c $<
 
