@@ -173,7 +173,7 @@ s32 CosmFileRead( void * buffer, u64 * bytes_read, cosm_FILE * file,
   u64 length );
   /*
     Read length bytes from the file into the buffer. bytes_read is set to the
-    number of bytes actually read.
+    number of bytes actually read, which may be non-zero even on an error.
     Returns: COSM_PASS on success, or an error code on failure.
   */
 
@@ -181,7 +181,8 @@ s32 CosmFileWrite( cosm_FILE * file, u64 * bytes_written,
   const void * const buffer, u64 length );
   /*
     Write length bytes to the file from the buffer. bytes_written is set to
-    the number of bytes actually written.
+    the number of bytes actually written, which may be non-zero even on
+    an error.
     Returns: COSM_PASS on success, or an error code on failure.
   */
 

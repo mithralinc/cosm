@@ -2465,8 +2465,7 @@ s32 Cosm_PrintChar( u32 * bytes, cosm_FILE * file, void * string, u32 max_bytes,
   }
   else if ( file != NULL )
   {
-    CosmFileWrite( file, &written, array, (u64) length );
-    if ( written != (u64) length )
+    if ( COSM_PASS != CosmFileWrite( file, &written, array, length ) )
     {
       return COSM_FAIL;
     }

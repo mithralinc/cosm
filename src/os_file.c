@@ -340,13 +340,12 @@ s32 CosmFileRead( void * buffer, u64 * bytes_read, cosm_FILE * file, u64 length 
   u64 tmp;
   s32 error;
 
-  *bytes_read = (u64) 0;
+  *bytes_read = 0;
 
   if ( ( file == NULL ) || ( bytes_read == NULL ) )
   {
     return COSM_FILE_ERROR_PARAM;
   }
-
 
   if ( file->status != COSM_FILE_STATUS_OPEN )
   {
@@ -383,12 +382,7 @@ s32 CosmFileRead( void * buffer, u64 * bytes_read, cosm_FILE * file, u64 length 
     return error;
   }
 
-#if ( defined( COSM_FILE64 ) )
   *bytes_read = real_read;
-#else
-  *bytes_read = (u64) real_read;
-#endif
-
 #endif /* OS */
 
   return COSM_PASS;
@@ -1557,14 +1551,13 @@ s32 Cosm_FileWrite( cosm_FILE * file, u64 * bytes_written,
 
   ptr = (u8 *) buffer;
 
-  /* we can only write a DWORD at a time due to Win API*/
+  /* we can only write a DWORD at a time due to Win API */
   while ( remaining > 0 )
   {
     /* use 1GiB chunks */
     chunk = ( remaining > 0x40000000LL ) ? 0x40000000 : (u32) remaining;
     if ( WriteFile( file->handle, ptr, chunk, &this_write, NULL ) == 0 )
     {
-      u32 error = GetLastError();
       *bytes_written = total_write;
       return COSM_FILE_ERROR_DENIED;
     }
@@ -1615,12 +1608,7 @@ s32 Cosm_FileWrite( cosm_FILE * file, u64 * bytes_written,
 #endif
   }
 
-#if ( defined( COSM_FILE64 ) )
   *bytes_written = real_write;
-#else
-  *bytes_written = (u64) real_write;
-#endif
-
 #endif /* OS */
 
   return COSM_PASS;
@@ -2043,9 +2031,9 @@ s32 Cosm_TestOSFile( void )
 
   for ( i = 0 ; i < 20 ; i++ )
   {
-    CosmFileWrite( testfile, &real_write, (testpattern1 + i), token_len );
-    if ( real_write != token_len )
-    { /* Write was not succesful */
+    if ( COSM_PASS != CosmFileWrite( testfile, &real_write,
+      testpattern1 + i, token_len ) )
+    {
       return -2;
     }
     CosmMemCopy ( &testfileimg[i * 10], &testpattern1[i], token_len );
@@ -2166,9 +2154,9 @@ s32 Cosm_TestOSFile( void )
 
   token_len = 26LL;
 
-  CosmFileWrite( testfile, &real_write, &testfileimg[100], token_len );
-  if ( real_write != token_len )
-  { /* Write was not succesful */
+  if ( COSM_PASS != CosmFileWrite( testfile, &real_write,
+    &testfileimg[100], token_len ) )
+  {
     return -17;
   }
 
@@ -2252,9 +2240,9 @@ s32 Cosm_TestOSFile( void )
 
   token_len = 13LL;
 
-  CosmFileWrite( testfile, &real_write, hello, token_len );
-  if ( real_write != token_len )
-  { /* Write was not succesful */
+  if ( COSM_PASS != CosmFileWrite( testfile, &real_write, hello,
+    token_len ) )
+  {
     return -28;
   }
   CosmMemCopy( testfileimg, hello, token_len );
@@ -2440,8 +2428,8 @@ bcdefg
 
   token_len = 13LL;
 
-  CosmFileWrite( testfile, &real_write, hello, token_len );
-  if ( real_write != token_len )
+  if ( COSM_PASS != CosmFileWrite( testfile, &real_write, hello,
+    token_len ) )
   {
     /* Write was not succesful */
     return -46;
