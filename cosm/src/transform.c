@@ -501,8 +501,7 @@ s32 Cosm_TransformToFile( cosm_TRANSFORM * transform,
   u64 written;
   s32 result;
 
-  if ( ( CosmFileWrite( file, &written, data, length ) != COSM_PASS )
-    || ( written != length ) )
+  if ( CosmFileWrite( file, &written, data, length ) != COSM_PASS )
   {
     return COSM_TRANSFORM_ERROR_FATAL;
   }

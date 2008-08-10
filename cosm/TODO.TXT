@@ -53,8 +53,15 @@ src/cputypes
 
 src/os_file
   Memory mapped file tests
-  Remove special file prefix processing - Add CosmDirSpecial.
-  Make file whipe optional.
+  Remove special file prefix processing
+  Add CosmDirSpecial()
+    cosm_root ( /bin, include, lib, etc)
+    cosm_apps ( cosm/apps/<apps end up here> )
+    config
+    home
+    documents
+    temp
+  Make file whipe optional on truncates?
   Issue - Set file permissions and date...
   Add buffered I/O?
   CosmDirGet - translating paths missing!!!
@@ -67,7 +74,8 @@ src/os_file
     generic file lock system
   CosmFileTruncate and all lock tests need to be added
   format and code audit (tests memory leak, not always freed)
-
+  Figure out __USE_LARGEFILE64 and other flags for linux 64-bit files
+  
 src/os_io
   %-n. not working for strings
   StrStr, make sure that it cant run off either string...

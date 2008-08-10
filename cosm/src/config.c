@@ -78,8 +78,8 @@ s32 CosmConfigLoad( cosm_CONFIG * config, const ascii * filename )
       return COSM_FILE_ERROR_DENIED;
     }
 
-    CosmFileRead( config->memory, &bytes_read, &file, length );
-    if ( bytes_read != length )
+    if ( COSM_PASS != CosmFileRead( config->memory, &bytes_read, &file,
+      length ) )
     {
       CosmFileClose( &file );
       CosmMemFree( config->memory );
