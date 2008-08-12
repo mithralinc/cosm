@@ -41,9 +41,9 @@
 #define COSM_CPU_TYPE_MAX 16
 
 #define COSM_CPU_TYPES { "UNKNOWN", \
-  "x86", "PowerPC", "MIPS", "MIPS64", "Alpha", \
+  "x86", "PPC", "MIPS", "MIPS64", "Alpha", \
   "undef", "68K", "Sparc", "Sparc64", "undef", \
-  "IA64",  "ARM", "Cell", "undef", "PowerPC64", \
+  "IA64",  "ARM", "Cell", "undef", "PPC64", \
   "x64", NULL }
 
 /* CPU_TYPE must be defined by now */
