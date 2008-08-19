@@ -23,6 +23,7 @@
 #if ( ( OS_TYPE == OS_WIN32 ) || ( OS_TYPE == OS_WIN64 ) )
 #include <winsock2.h>
 #include <ws2tcpip.h>
+#include <wspiapi.h>
 #include <iphlpapi.h>
 #define close closesocket
 #else
