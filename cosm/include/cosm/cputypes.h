@@ -277,7 +277,7 @@ typedef enum vector_type
   && ( ( OS_TYPE == OS_WIN32 ) || ( OS_TYPE == OS_WIN64 ) )
 #define EXPORT __declspec( dllexport )
 #else
-#define EXPORT #undef
+#define EXPORT
 #endif
 
 /* universal pass/fail */
