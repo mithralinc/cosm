@@ -273,14 +273,11 @@ typedef enum vector_type
 #endif
 
 /* Dynamic Library export */
-#ifdef USE_EXPORTS
-#if ( ( OS_TYPE == OS_WIN32 ) || ( OS_TYPE == OS_WIN64 ) )
+#if defined( USE_EXPORTS ) \
+  && ( ( OS_TYPE == OS_WIN32 ) || ( OS_TYPE == OS_WIN64 ) )
 #define EXPORT __declspec( dllexport )
-#else /* not win32 */
-#define EXPORT
-#endif /* OS */
 #else
-#define EXPORT
+#define EXPORT #undef
 #endif
 
 /* universal pass/fail */
