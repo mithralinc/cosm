@@ -426,7 +426,7 @@ s32 CosmBNModInv( cosm_BN * x, const cosm_BN * a, const cosm_BN * m )
   cosm_BN big, little, q, r, t0, t, temp;
   s32 result;
 
-  if ( ( NULL == x ) || ( NULL == a ) || ( NULL == a )
+  if ( ( x == NULL ) || ( a == NULL ) || ( m == NULL )
    || CosmBNZero( a ) || CosmBNZero( m ) || ( -1 != CosmBNCmp( a, m ) ) )
   {
     return COSM_FAIL;

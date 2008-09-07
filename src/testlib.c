@@ -379,8 +379,8 @@ int main( int argc, char * argv[] )
   }
   else
   {
-    if ( NULL == ( dl_function = CosmDynamicLibGet( &dylib,
-      "TestDynamicLib" ) ) )
+    if ( ( dl_function = CosmDynamicLibGet( &dylib,
+      "TestDynamicLib" ) ) == NULL )
     {
       CosmPrint( "Failed to load TestDynamicLib.\n" );
     }

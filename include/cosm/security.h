@@ -24,10 +24,12 @@
 
 /* Hash Functions */
 
+PACKED_STRUCT_BEGIN
 typedef struct cosm_HASH
 {
   u8 hash[32]; /* max 256 bits, big endian, aligned left */
 } cosm_HASH;
+PACKED_STRUCT_END
 
 s32 CosmHashEq( const cosm_HASH * hashA, const cosm_HASH * hashB );
   /*
@@ -93,7 +95,7 @@ typedef struct cosm_PKI_KEY
   cosm_BN iqmp;   /* bits/2, inverse of q mod p */
   u8 iv[16];      /* 128 bits of IV for AES, [size*9+64] */
   u8 checksum[4]; /* CRC32 to see if we properly decrypted, [size*9+80] */
-} cosm_PKI_KEY; /* total = size*9+84 */
+} cosm_PKI_KEY; /* total = size*9+84 on disk */
 
 typedef struct cosm_PKI_SIG
 {
@@ -106,7 +108,7 @@ typedef struct cosm_PKI_SIG
   u8 type;
   u8 shared;
   cosm_BN sig;
-} cosm_PKI_SIG; /* 34 + bits/8 bytes */
+} cosm_PKI_SIG; /* 34 + bits/8 bytes on disk */
 
 #define COSM_PKI_VERSION  1
 

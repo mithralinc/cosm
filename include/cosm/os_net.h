@@ -53,15 +53,16 @@
 #define COSM_NET_IPV4 4
 #define COSM_NET_IPV6 6
 
+PACKED_STRUCT_BEGIN
 typedef struct cosm_NET_ADDR
 {
   u32 type;
+  u32 port;
   union
   {
     u32  v4;
     u128 v6;
   } ip;
-  u16 port;
 } cosm_NET_ADDR;
 
 typedef struct cosm_NET
@@ -72,8 +73,9 @@ typedef struct cosm_NET
   cosm_NET_ADDR addr;
   cosm_NET_ADDR my_addr;
 } cosm_NET;
+PACKED_STRUCT_END
 
-#define COSM_NET_MAX_HOSTNAME 1025
+#define COSM_NET_MAX_HOSTNAME 1024
 
 typedef ascii cosm_NET_HOSTNAME[COSM_NET_MAX_HOSTNAME];
 

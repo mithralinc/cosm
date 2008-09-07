@@ -85,7 +85,7 @@
 #error "Define OS_TYPE - see cputypes.h"
 #endif
 
-/* Endian settings for big endian or idiot endian */
+/* Endian settings for big endian or little endian */
 #undef  COSM_ENDIAN_CURRENT
 #define COSM_ENDIAN_BIG     4321
 #define COSM_ENDIAN_LITTLE  1234
@@ -182,7 +182,19 @@ typedef u32 utf8char; /* single Unicode codepoint */
 /* Time type */
 typedef s128 cosmtime;
 
+/* Packed structure macros */
+#if defined( __GNUC__ )
+#define PACKED_STRUCT_BEGIN _Pragma( "pack(1)" )
+#define PACKED_STRUCT_END _Pragma( "pack()" )
+#elif defined( _MSC_VER )
+#define PACKED_STRUCT_BEGIN __pragma( pack(push,1) )
+#define PACKED_STRUCT_END __pragma( pack(pop) )
+#else
+#error "need correct struct packing macro, see cputypes.h"
+#endif
+
 /* Vector types */
+PACKED_STRUCT_BEGIN
 typedef struct f32x2 { f32 a, b; } f32x2;
 typedef struct f32x3 { f32 a, b, c; } f32x3;
 typedef struct f32x4 { f32 a, b, c, d; } f32x4;
@@ -215,6 +227,7 @@ typedef struct u32x4 { u32 a, b, c, d; } u32x4;
 typedef struct u64x2 { u64 a, b; } u64x2;
 typedef struct u64x3 { u64 a, b, c; } u64x3;
 typedef struct u64x4 { u64 a, b, c, d; } u64x4;
+PACKED_STRUCT_END
 
 typedef enum vector_type
 {

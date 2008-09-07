@@ -59,7 +59,7 @@ s32 CosmNetOpen( cosm_NET * net, cosm_NET_ADDR * my_addr,
   struct sockaddr_in local_addr4, remote_addr4;
   struct sockaddr_in6 local_addr6, remote_addr6;
 
-  if ( ( NULL == net ) || ( NULL == addr )
+  if ( ( net == NULL ) || ( addr == NULL )
     || ( ( COSM_NET_MODE_TCP != mode ) && ( COSM_NET_MODE_UDP != mode ) ) )
   {
     return COSM_NET_ERROR_PARAM;
@@ -124,8 +124,8 @@ s32 CosmNetOpen( cosm_NET * net, cosm_NET_ADDR * my_addr,
       CosmMemSet( &local_addr4, sizeof( local_addr4 ), 0 );
       local_addr_length = sizeof( local_addr4 );
       local_addr4.sin_family = PF_INET;
-      local_addr4.sin_addr.s_addr = htonl( my_addr->ip.v4 );
       local_addr4.sin_port = htons( (u16) my_addr->port );
+      local_addr4.sin_addr.s_addr = htonl( my_addr->ip.v4 );
 
       /* allow us to bind more than one socket to the same local port */
       option = 1;
@@ -151,8 +151,8 @@ s32 CosmNetOpen( cosm_NET * net, cosm_NET_ADDR * my_addr,
       CosmMemSet( &local_addr6, sizeof( local_addr6 ), 0 );
       local_addr_length = sizeof( local_addr6 );
       local_addr6.sin6_family = AF_INET6;
+      local_addr6.sin6_port = htons( (u16) my_addr->port );
       CosmU128Save( &local_addr6.sin6_addr.s6_addr, &my_addr->ip.v6 );
-      CosmU16Save( &local_addr6.sin6_port, &my_addr->port );
 
       /* allow us to bind more than one socket to the same local port */
       option = 1;
@@ -213,8 +213,8 @@ s32 CosmNetOpen( cosm_NET * net, cosm_NET_ADDR * my_addr,
         return COSM_NET_ERROR_SOCKET;
       }
       net->my_addr.type = COSM_NET_IPV4;
-      net->my_addr.ip.v4 = ntohl( local_addr4.sin_addr.s_addr );
       net->my_addr.port = ntohs( local_addr4.sin_port );
+      net->my_addr.ip.v4 = ntohl( local_addr4.sin_addr.s_addr );
     }
   }
   else /* IPv6 */
@@ -225,8 +225,8 @@ s32 CosmNetOpen( cosm_NET * net, cosm_NET_ADDR * my_addr,
       CosmMemSet( &remote_addr6, sizeof( remote_addr6 ), 0 );
       remote_addr_length = sizeof( remote_addr6 );
       remote_addr6.sin6_family = AF_INET6;
+      remote_addr6.sin6_port = htons( (u16) my_addr->port );
       CosmU128Save( &local_addr6.sin6_addr.s6_addr, &my_addr->ip.v6 );
-      CosmU16Save( &local_addr6.sin6_port, &my_addr->port );
 
       if ( -1 == connect( socket_descriptor, (struct sockaddr *) &remote_addr6,
         remote_addr_length ) )
@@ -251,8 +251,9 @@ s32 CosmNetOpen( cosm_NET * net, cosm_NET_ADDR * my_addr,
         return COSM_NET_ERROR_SOCKET;
       }
       net->my_addr.type = COSM_NET_IPV6;
+      my_addr->type = COSM_NET_IPV6;
+      my_addr->port = ntohs( remote_addr6.sin6_port );
       CosmU128Load( &my_addr->ip.v6, &remote_addr6.sin6_addr.s6_addr );
-      CosmU16Load( &my_addr->port, &remote_addr6.sin6_port );
     }
   }
 
@@ -279,7 +280,7 @@ s32 CosmNetOpenSocks( cosm_NET * net, const cosm_NET_ADDR * host,
   s32 error;
   u32 bytes;
 
-  if ( ( NULL == net ) || ( NULL == host ) )
+  if ( ( net == NULL ) || ( host == NULL ) )
   {
     return COSM_NET_ERROR_PARAM;
   }
@@ -295,7 +296,7 @@ s32 CosmNetOpenSocks( cosm_NET * net, const cosm_NET_ADDR * host,
     return COSM_NET_ERROR_NO_NET;
   }
 
-  if ( ( NULL == firehost ) || ( NULL == firepass ) )
+  if ( ( firehost == NULL ) || ( firepass == NULL ) )
   {
     return COSM_NET_ERROR_PARAM;
   }
@@ -1564,7 +1565,7 @@ u32 CosmNetMyIP( cosm_NET_ADDR * addr, u32 count )
     error = ERROR_SUCCESS;
   }
 
-  if ( ERROR_SUCCESS == error )
+  if ( error == ERROR_SUCCESS )
   {
     /* get addresses */
     if ( ERROR_SUCCESS == GetAdaptersAddresses( AF_INET6,
@@ -1594,23 +1595,23 @@ u32 CosmNetMyIP( cosm_NET_ADDR * addr, u32 count )
   /* platforms with getifaddrs */
   struct ifaddrs * head, * current;
 
-  if ( ( NULL == addr ) || ( 0 == count ) )
+  if ( ( addr == NULL ) || ( count == 0 ) )
   {
     return 0;
   }
 
-  if ( -1 == getifaddrs( &head ) )
+  if ( getifaddrs( &head ) == -1 )
   {
     return 0;
   }
 
   found = 0;
   current = head;
-  while ( NULL != current )
+  while ( current != NULL )
   {
     if ( current->ifa_flags & IFF_UP )
     {
-      if ( AF_INET == current->ifa_addr->sa_family )
+      if ( current->ifa_addr->sa_family == AF_INET )
       {
         addr[found].type = COSM_NET_IPV4;
         addr[found].port = 0;
@@ -1618,7 +1619,7 @@ u32 CosmNetMyIP( cosm_NET_ADDR * addr, u32 count )
           &( ( (struct sockaddr_in *) current->ifa_addr )->sin_addr ) );
         found++;
       }
-      else if ( AF_INET6 == current->ifa_addr->sa_family )
+      else if ( current->ifa_addr->sa_family == AF_INET6 )
       {
         addr[found].type = COSM_NET_IPV6;
         addr[found].port = 0;

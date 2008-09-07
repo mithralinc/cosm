@@ -1652,15 +1652,15 @@ typedef struct thread_data
   s32 exit_src;
   s32 exit_dest;
   cosm_MUTEX lock;
-} thread_data;
+} thread_DATA;
 
 void Cosm_ThreadTestSrc( void * arg )
 {
-  thread_data *data;
+  thread_DATA *data;
   u32 done;
   u32 count;
 
-  data = (thread_data *) arg;
+  data = (thread_DATA *) arg;
 
   data->tid_src = CosmThreadID();
   done = 0;
@@ -1699,12 +1699,12 @@ void Cosm_ThreadTestSrc( void * arg )
 
 void Cosm_ThreadTestDest( void * arg )
 {
-  thread_data *data;
+  thread_DATA *data;
   u32 done;
   u32 count;
   u8 value;
 
-  data = (thread_data *) arg;
+  data = (thread_DATA *) arg;
 
   data->tid_dest = CosmThreadID();
   done = 0;
@@ -1752,7 +1752,7 @@ void Cosm_ThreadTestDest( void * arg )
 
 s32 Cosm_TestOSTask( void )
 {
-  thread_data data;
+  thread_DATA data;
   u64 thread_id[2];
   u32 done;
   cosm_MUTEX mutex;
@@ -1822,7 +1822,7 @@ s32 Cosm_TestOSTask( void )
   /* Tests the Thread functions */
   thread_id[0] = 0x0000000000000000LL;
   thread_id[1] = 0x0000000000000000LL;
-  CosmMemSet( &data, sizeof( thread_data ), 0 );
+  CosmMemSet( &data, sizeof( thread_DATA ), 0 );
 
   /* tell things not to proceed yet */
   CosmMutexInit( &data.lock );
