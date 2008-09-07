@@ -24,8 +24,7 @@ Review #define/switch standard method?
 Fix indent.pro
 Unicode throughout? DNS + ...
 Change all send/recv type functions to be 64b length?
-Propogate the on left of comparisons throughout code, doc, examples.
-Need #pragma pack() for all saveable/network structs
+undo left-comparisons, readability outways other advantages.
 
 src/
   header audit - not all system headers may be needed

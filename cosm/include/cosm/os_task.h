@@ -97,6 +97,7 @@ typedef struct cosm_MUTEX
 #endif
 
 typedef ascii cosm_SEMAPHORE_NAME[32];
+
 typedef struct cosm_SEMAPHORE
 {
   u32 state;
