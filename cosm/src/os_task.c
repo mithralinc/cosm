@@ -81,10 +81,12 @@ void Cosm_SignalWaitThread( void * arg );
 #endif
 
 /* Setup the size of Process ID */
+#if ( ( OS_TYPE != OS_WIN32 ) && ( OS_TYPE != OS_WIN64 ) )
 #if ( 0 )
 #define COSM_PROCESSID_64
 #else
 #undef COSM_PROCESSID_64
+#endif
 #endif
 
 /* Solaris lacks PRIO_MAX and PRIO_MIN. */
@@ -308,7 +310,7 @@ s32 CosmCPULock( u64 process_id, u32 cpu )
 {
 #if ( ( OS_TYPE == OS_WIN32 ) || ( OS_TYPE == OS_WIN64 ) )
   HANDLE process;
-  DWORD proc_mask, sys_mask;
+  DWORD_PTR proc_mask, sys_mask;
 
   if ( ( process = OpenProcess( PROCESS_QUERY_INFORMATION
     | PROCESS_SET_INFORMATION, 0, (u32) process_id ) ) == NULL )
@@ -325,7 +327,7 @@ s32 CosmCPULock( u64 process_id, u32 cpu )
     /* catch old versions where SetProcessAffinityMask() always fails */
     if ( ( sys_mask != 1 ) || ( cpu != 0 ) )
     {
-      proc_mask = 1 << cpu;
+      proc_mask = ( (DWORD_PTR) 1 ) << cpu;
       if ( SetProcessAffinityMask( process, proc_mask ) == 0 )
       {
         CloseHandle( process );
@@ -372,7 +374,7 @@ s32 CosmCPUUnlock( u64 process_id )
 {
 #if ( ( OS_TYPE == OS_WIN32 ) || ( OS_TYPE == OS_WIN64 ) )
   HANDLE process;
-  DWORD proc_mask, sys_mask;
+  DWORD_PTR proc_mask, sys_mask;
 
   if ( ( process = OpenProcess( PROCESS_SET_INFORMATION
     | PROCESS_QUERY_INFORMATION, 0, (u32) process_id ) ) == NULL )
@@ -1938,7 +1940,7 @@ s32 Cosm_TestOSTask( void )
   }
 #endif /* CPULock/Unlock */
 
-#if ( ( OS_TYPE != OS_WIN32 ) && ( OS_TYPE == OS_WIN64 ) )
+#if ( ( OS_TYPE != OS_WIN32 ) && ( OS_TYPE != OS_WIN64 ) )
 #if ( defined( COSM_PROCESSID_64 ) )
   if ( sizeof( pid_t ) != 8 )
 #else

@@ -27,6 +27,7 @@
 #include <iphlpapi.h>
 #define close closesocket
 #else
+#define SOCKET int
 #include <errno.h>
 #include <unistd.h>
 #include <fcntl.h>
@@ -553,7 +554,7 @@ s32 CosmNetSend( cosm_NET * net, u32 * bytes_sent, const void * data,
   *bytes_sent = 0;
   return COSM_NET_ERROR_NO_NET;
 #else
-  int socket_descriptor;
+  SOCKET socket_descriptor;
   int result;
 
   *bytes_sent = 0;
@@ -605,7 +606,8 @@ s32 CosmNetRecv( void * buffer, u32 * bytes_received, cosm_NET * net,
   *bytes_received = 0;
   return COSM_NET_ERROR_NO_NET;
 #else
-  int socket_descriptor, flags, result;
+  SOCKET socket_descriptor;
+  int flags, result;
   struct timeval select_time;
   fd_set descriptors_settings;
   u8 * data;
@@ -676,7 +678,7 @@ s32 CosmNetRecv( void * buffer, u32 * bytes_received, cosm_NET * net,
       select_time.tv_usec = 0;
     }
 
-    result = select( socket_descriptor + 1, &descriptors_settings,
+    result = select( (int) socket_descriptor + 1, &descriptors_settings,
       (fd_set *) NULL, (fd_set *) NULL, &select_time );
     if ( result < 1 )
     {
@@ -729,7 +731,7 @@ s32 CosmNetSendUDP( cosm_NET * net, const cosm_NET_ADDR * addr,
 #if ( defined( NO_NETWORKING ) )
   return COSM_NET_ERROR_NO_NET;
 #else
-  int socket_descriptor;
+  SOCKET socket_descriptor;
   int result;
   int addr_length;
   struct sockaddr_in addr4;
@@ -821,7 +823,7 @@ s32 CosmNetRecvUDP( void * buffer, u32 * bytes_read, cosm_NET_ADDR * from,
 #if ( defined( NO_NETWORKING ) )
   return COSM_NET_ERROR_NO_NET;
 #else
-  int socket_descriptor;
+  SOCKET socket_descriptor;
   int received;
   s32 result;
   struct timeval select_time;
@@ -901,7 +903,7 @@ s32 CosmNetRecvUDP( void * buffer, u32 * bytes_read, cosm_NET_ADDR * from,
 
     FD_ZERO( &descriptors );
     FD_SET( socket_descriptor, &descriptors );
-    result = select( socket_descriptor + 1, &descriptors,
+    result = select( (int) socket_descriptor + 1, &descriptors,
       (fd_set *) NULL, (fd_set *) NULL, &select_time );
     if ( result < 1 )
     {
@@ -1142,7 +1144,7 @@ s32 CosmNetAccept( cosm_NET * new_connection, cosm_NET * net,
 #if ( defined( NO_NETWORKING ) )
   return COSM_NET_ERROR_NO_NET;
 #else
-  int socket_descriptor, new_socket_descriptor;
+  SOCKET socket_descriptor, new_socket_descriptor;
   struct sockaddr_in client_address, local_address;
   unsigned int client_address_length, local_address_length;
   fd_set descriptors_settings;
@@ -1188,7 +1190,7 @@ s32 CosmNetAccept( cosm_NET * new_connection, cosm_NET * net,
 
     FD_ZERO( &descriptors_settings );
     FD_SET( socket_descriptor, &descriptors_settings );
-    result = select( socket_descriptor + 1, &descriptors_settings,
+    result = select( (int) socket_descriptor + 1, &descriptors_settings,
       (fd_set *) NULL, (fd_set *) NULL, &select_time );
 
     if ( result < 1 )
@@ -1880,7 +1882,7 @@ s32 Cosm_NetClose( cosm_NET * net )
 #if ( defined( NO_NETWORKING ) )
   return COSM_NET_ERROR_NO_NET;
 #else
-  int socket_descriptor;
+  SOCKET socket_descriptor;
   s32 error;
 
   /* make sure it's not already closed */

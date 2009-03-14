@@ -169,7 +169,7 @@ s32 CosmBNBits( u32 * x, const cosm_BN * a )
     mask = mask << 1;
   } while ( ( word >= mask ) && ( mask != 0 ) );
 
-  *x = bits;
+  *x = (u32) bits;
 
   return COSM_PASS;
 }
@@ -402,7 +402,7 @@ s32 CosmBNModExp( cosm_BN * x, const cosm_BN * a, const cosm_BN * e,
   for ( i = 0 ; i < bits ; i++ )
   {
     /* if e(bit) is 1, multiply and mod tmp_x */
-    if ( e->n[i / COSM_BN_BITS] & ( 1 << ( i % COSM_BN_BITS ) ) )
+    if ( e->n[i / COSM_BN_BITS] & (COSM_BN_WORD) ( 1 << ( i % COSM_BN_BITS ) ) )
     {
       CosmBNMul( &tmp_x, &tmp_x, &a_n );
       Cosm_BNDivMod( NULL, &tmp_x, &tmp_x, m );
@@ -1749,7 +1749,7 @@ s32 Cosm_BNRsh1( cosm_BN * x )
   COSM_BN_WORD * px;
 
   px = x->n;
-  d1 = x->digits - 1;
+  d1 = (u32) x->digits - 1;
 
   if ( d1 >= 0 )
   {
