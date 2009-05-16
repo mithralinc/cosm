@@ -193,85 +193,126 @@ typedef s128 cosmtime;
 #error "need correct struct packing macro, see cputypes.h"
 #endif
 
-/* Vector types */
+/* Vector types, up to 512 bits */
 PACKED_STRUCT_BEGIN
-typedef struct f32x2 { f32 a, b; } f32x2;
-typedef struct f32x3 { f32 a, b, c; } f32x3;
-typedef struct f32x4 { f32 a, b, c, d; } f32x4;
-typedef struct f64x2 { f64 a, b; } f64x2;
-typedef struct f64x3 { f64 a, b, c; } f64x3;
-typedef struct f64x4 { f64 a, b, c, d; } f64x4;
+typedef f32 f32x2[2];
+typedef f32 f32x4[4];
+typedef f32 f32x8[8];
+typedef f32 f32x16[16];
+typedef f64 f64x2[2];
+typedef f64 f64x4[4];
+typedef f64 f64x8[8];
 
-typedef struct s8x2  { s8 a, b; } s8x2;
-typedef struct s8x3  { s8 a, b, c; } s8x3;
-typedef struct s8x4  { s8 a, b, c, d; } s8x4;
-typedef struct s16x2 { s16 a, b; } s16x2;
-typedef struct s16x3 { s16 a, b, c; } s16x3;
-typedef struct s16x4 { s16 a, b, c, d; } s16x4;
-typedef struct s32x2 { s32 a, b; } s32x2;
-typedef struct s32x3 { s32 a, b, c; } s32x3;
-typedef struct s32x4 { s32 a, b, c, d; } s32x4;
-typedef struct s64x2 { s64 a, b; } s64x2;
-typedef struct s64x3 { s64 a, b, c; } s64x3;
-typedef struct s64x4 { s64 a, b, c, d; } s64x4;
+typedef s8  s8x2[2];
+typedef s8  s8x4[4];
+typedef s8  s8x8[8];
+typedef s8  s8x16[16];
+typedef s8  s8x32[32];
+typedef s8  s8x64[64];
 
-typedef struct u8x2  { u8 a, b; } u8x2;
-typedef struct u8x3  { u8 a, b, c; } u8x3;
-typedef struct u8x4  { u8 a, b, c, d; } u8x4;
-typedef struct u16x2 { u16 a, b; } u16x2;
-typedef struct u16x3 { u16 a, b, c; } u16x3;
-typedef struct u16x4 { u16 a, b, c, d; } u16x4;
-typedef struct u32x2 { u32 a, b; } u32x2;
-typedef struct u32x3 { u32 a, b, c; } u32x3;
-typedef struct u32x4 { u32 a, b, c, d; } u32x4;
-typedef struct u64x2 { u64 a, b; } u64x2;
-typedef struct u64x3 { u64 a, b, c; } u64x3;
-typedef struct u64x4 { u64 a, b, c, d; } u64x4;
+typedef s16 s16x2[2];
+typedef s16 s16x4[4];
+typedef s16 s16x8[8];
+typedef s16 s16x16[16];
+typedef s16 s16x32[32];
+
+typedef s32 s32x2[2];
+typedef s32 s32x4[4];
+typedef s32 s32x8[8];
+typedef s32 s32x16[16];
+
+typedef s64 s64x2[2];
+typedef s64 s64x4[4];
+typedef s64 s64x8[8];
+
+typedef u8  u8x2[2];
+typedef u8  u8x4[4];
+typedef u8  u8x8[8];
+typedef u8  u8x16[16];
+typedef u8  u8x32[32];
+typedef u8  u8x64[64];
+
+typedef u16 u16x2[2];
+typedef u16 u16x4[4];
+typedef u16 u16x8[8];
+typedef u16 u16x16[16];
+typedef u16 u16x32[32];
+
+typedef u32 u32x2[2];
+typedef u32 u32x4[4];
+typedef u32 u32x8[8];
+typedef u32 u32x16[16];
+
+typedef u64 u64x2[2];
+typedef u64 u64x4[4];
+typedef u64 u64x8[8];
 PACKED_STRUCT_END
 
 typedef enum vector_type
 {
   /* 3 bytes = type (float, signed, unsigned), bytes, vector width */
-  VECTOR_F32   = 0x010401,
-  VECTOR_F32X2 = 0x010402,
-  VECTOR_F32X3 = 0x010403,
-  VECTOR_F32X4 = 0x010404,
-  VECTOR_F64   = 0x010801,
-  VECTOR_F64X2 = 0x010802,
-  VECTOR_F64X3 = 0x010803,
-  VECTOR_F64X4 = 0x010804,
-  VECTOR_S8    = 0x020101,
-  VECTOR_S8X2  = 0x020102,
-  VECTOR_S8X3  = 0x020103,
-  VECTOR_S8X4  = 0x020104,
-  VECTOR_S16   = 0x020201,
-  VECTOR_S16X2 = 0x020202,
-  VECTOR_S16X3 = 0x020203,
-  VECTOR_S16X4 = 0x020204,
-  VECTOR_S32   = 0x020401,
-  VECTOR_S32X2 = 0x020402,
-  VECTOR_S32X3 = 0x020403,
-  VECTOR_S32X4 = 0x020404,
-  VECTOR_S64   = 0x020801,
-  VECTOR_S64X2 = 0x020802,
-  VECTOR_S64X3 = 0x020803,
-  VECTOR_S64X4 = 0x020804,
-  VECTOR_U8    = 0x030101,
-  VECTOR_U8X2  = 0x030102,
-  VECTOR_U8X3  = 0x030103,
-  VECTOR_U8X4  = 0x030104,
-  VECTOR_U16   = 0x030201,
-  VECTOR_U16X2 = 0x030202,
-  VECTOR_U16X3 = 0x030203,
-  VECTOR_U16X4 = 0x030204,
-  VECTOR_U32   = 0x030401,
-  VECTOR_U32X2 = 0x030402,
-  VECTOR_U32X3 = 0x030403,
-  VECTOR_U32X4 = 0x030404,
-  VECTOR_U64   = 0x030801,
-  VECTOR_U64X2 = 0x030802,
-  VECTOR_U64X3 = 0x030803,
-  VECTOR_U64X4 = 0x030804
+  VECTOR_F32    = 0x010401,
+  VECTOR_F32X2  = 0x010402,
+  VECTOR_F32X4  = 0x010404,
+  VECTOR_F32X8  = 0x010408,
+  VECTOR_F32X16 = 0x010410,
+
+  VECTOR_F64    = 0x010801,
+  VECTOR_F64X2  = 0x010802,
+  VECTOR_F64X4  = 0x010804,
+  VECTOR_F64X8  = 0x010808,
+
+  VECTOR_S8     = 0x020101,
+  VECTOR_S8X2   = 0x020102,
+  VECTOR_S8X4   = 0x020104,
+  VECTOR_S8X8   = 0x020108,
+  VECTOR_S8X16  = 0x020110,
+  VECTOR_S8X32  = 0x020120,
+  VECTOR_S8X64  = 0x020140,
+
+  VECTOR_S16    = 0x020201,
+  VECTOR_S16X2  = 0x020202,
+  VECTOR_S16X4  = 0x020204,
+  VECTOR_S16X8  = 0x020208,
+  VECTOR_S16X16 = 0x020210,
+  VECTOR_S16X32 = 0x020220,
+
+  VECTOR_S32    = 0x020401,
+  VECTOR_S32X2  = 0x020402,
+  VECTOR_S32X4  = 0x020404,
+  VECTOR_S32X8  = 0x020408,
+  VECTOR_S32X16 = 0x020410,
+
+  VECTOR_S64    = 0x020801,
+  VECTOR_S64X2  = 0x020802,
+  VECTOR_S64X4  = 0x020804,
+  VECTOR_S64X8  = 0x020808,
+
+  VECTOR_U8     = 0x030101,
+  VECTOR_U8X2   = 0x030102,
+  VECTOR_U8X4   = 0x030104,
+  VECTOR_U8X8   = 0x030108,
+  VECTOR_U8X16  = 0x030110,
+  VECTOR_U8X32  = 0x030120,
+  VECTOR_U8X64  = 0x030140,
+
+  VECTOR_U16    = 0x030201,
+  VECTOR_U16X2  = 0x030202,
+  VECTOR_U16X4  = 0x030204,
+  VECTOR_U16X8  = 0x030208,
+  VECTOR_U16X16 = 0x030210,
+  VECTOR_U16X32 = 0x030220,
+
+  VECTOR_U32    = 0x030401,
+  VECTOR_U32X2  = 0x030402,
+  VECTOR_U32X4  = 0x030404,
+  VECTOR_U32X8  = 0x030408,
+  VECTOR_U32X16 = 0x030410,
+
+  VECTOR_U64    = 0x030801,
+  VECTOR_U64X2  = 0x030802,
+  VECTOR_U64X4  = 0x030804,
+  VECTOR_U64X8  = 0x030808
 } vector_type;
 
 #define _VECTOR_TYPE_BYTES( type ) \
