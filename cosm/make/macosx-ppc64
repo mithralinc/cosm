@@ -15,11 +15,9 @@ INSTALL = install
 OBJ     = o
 
 CCFLAGS  = -O2 -mtune=G5 -mpowerpc64 -maltivec -Wall -pedantic \
-  -Wno-long-long -Wno-long-double \
-  -isysroot /Developer/SDKs/MacOSX10.5.sdk $(EXTRA_FLAGS)
+  -Wno-long-long -isysroot /Developer/SDKs/MacOSX10.5.sdk $(EXTRA_FLAGS)
 FCFLAGS  = -O2 -mtune=G5 -mpowerpc64 -maltivec -Wall -pedantic \
-  -Wno-long-long -Wno-long-double \
-  -isysroot /Developer/SDKs/MacOSX10.5.sdk $(EXTRA_FLAGS)
+  -Wno-long-long -isysroot /Developer/SDKs/MacOSX10.5.sdk $(EXTRA_FLAGS)
 LDFLAGS = -Wl,-syslibroot /Developer/SDKs/MacOSX10.5.sdk \
   -mmacosx-version-min=10.4
 LDLIBS  = $(EXTRA_LIBS)

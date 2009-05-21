@@ -14,9 +14,9 @@ STRIP   = strip
 INSTALL = install
 OBJ     = o
 
-CCFLAGS  = -O2 -no-common -Wall -pedantic -Wno-long-long -Wno-long-double \
+CCFLAGS  = -O2 -no-common -Wall -pedantic -Wno-long-long \
   -isysroot /Developer/SDKs/MacOSX10.4u.sdk $(EXTRA_FLAGS)
-FCFLAGS  = -O2 -no-common -Wall -pedantic -Wno-long-long -Wno-long-double \
+FCFLAGS  = -O2 -no-common -Wall -pedantic -Wno-long-long \
   -isysroot /Developer/SDKs/MacOSX10.4u.sdk $(EXTRA_FLAGS)
 LDFLAGS = -Wl,-syslibroot /Developer/SDKs/MacOSX10.4u.sdk \
   -mmacosx-version-min=10.4
