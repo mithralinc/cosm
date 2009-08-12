@@ -1,4 +1,4 @@
-include ../Makefile.cosm
+include ../include/cosm/Makefile.cosm
 CC_FLAGS = -I../include $(CCFLAGS)
 FC_FLAGS = -I../include $(FCFLAGS)
 LD_FLAGS = -L../lib $(LDFLAGS)
@@ -61,15 +61,15 @@ test_dl.dylib: test_dl.$(OBJ)
 testlib.exe: testlib.$(OBJ) $(LIBRARIES)
 	@echo Linking $@
 	@$(LD)$@ $(LD_FLAGS) testlib.$(OBJ) $(LD_LIBS)
+	@echo Striping $@
+	@$(STRIP) $@
 
 install: $(LIBRARIES) install-header install-lib
 
-install-header: ../Makefile.cosm
+install-header: ../include/cosm/Makefile.cosm
 	mkdir -p $(COSM_INC)
 	cp -r ../include/ $(COSM_INC)
-	chmod -R 644 `find $(COSM_INC) -name "*.h"`
-	cp ../Makefile.cosm $(COSM_INC)
-	chmod 644 $(COSM_INC)/Makefile.cosm
+	chmod -R 644 $(COSM_INC)/cosm
 
 install-lib: $(LIBRARIES)
 	mkdir -p $(COSM_LIB)
@@ -105,7 +105,6 @@ os_task.o: os_task.c ../include/cosm/os_task.h ../include/cosm/cputypes.h \
   ../include/cosm/os_math.h ../include/cosm/os_file.h \
   ../include/cosm/os_io.h ../include/cosm/os_mem.h \
   ../include/cosm/os_net.h
-
 
 bignum.o: bignum.c ../include/cosm/bignum.h ../include/cosm/cputypes.h \
   ../include/cosm/os_mem.h ../include/cosm/os_file.h \
