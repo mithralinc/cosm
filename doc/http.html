@@ -456,19 +456,18 @@ s32 CosmHTTPDStop( cosm_HTTPD * httpd, u32 timeout_ms );
     <h4>Syntax</h4>
 </font>
 <pre>
-s32 CosmHTTPDSendInit( cosm_HTTPD_REQUEST * request, ascii * code,
-  ascii * string, ascii * content_type );
+s32 CosmHTTPDSendInit( cosm_HTTPD_REQUEST * request, u32 status_code,
+  ascii * status_string, ascii * mime_type );
 </pre>
 <font face="Verdana,Arial,Helvetica" size="-1">
 
     <h4>Description</h4>
     <p>
       This is the first function that should be called in any handler.
-      <em>code</em> is the 3 digit HTTP status ("200", "404") for the
-      result. <em>string</em> is the text associated with the that code
-      ("OK", "Not Found"). <em>content_type</em> is the media type of data to
-      be sent, "text/http" for tunneling purposes, or a type based on the
-      content like "image/jpeg". Further information on these parameters can
+      <em>status_code</em> is the 3 digit HTTP status code.
+      <em>status_string</em> is the text associated with the that code, 
+      for 200 it is "OK". <em>mime_type</em> is the media type of data to be
+      sent based on the content. Further information on these parameters can
       be found in the HTTP/1.1 documentation (RFC 2616).
     </p>
 

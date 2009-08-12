@@ -238,8 +238,7 @@ s32 CosmHTTPDSendInit( cosm_HTTPD_REQUEST * request, u32 status_code,
     This is the first function that should be called in any handler.
     status_code is the 3 digit HTTP status code. status_string is the text
     associated with the that code - for 200 it is "OK".
-    mime_type is the media type of data to be sent, "text/http" for
-    tunneling purposes, or a type based on the content like "image/jpeg".
+    mime_type is the media type of data to be sent based on the content.
     Further information on these parameters can be found in the HTTP/1.1
     documentation (RFC 2616).
     Returns: COSM_PASS on success, or an error code on failure.
