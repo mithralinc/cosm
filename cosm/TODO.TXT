@@ -190,7 +190,7 @@ src/hashtable
   *
 
 src/http
-  Re-test
+  Re-test!
   SECURITY: Cosm_HTTPDParseRequest
     path decoder can run off beyond input
     first line may not be long enough for the tmp[4] etc.
@@ -211,6 +211,7 @@ src/security
   CosmPRNG - replace with Mersenne Twister.
   CosmPKIPassCheck() - checks that passphrase is enterable ascii only.
   CosmEntropy, Cosm_SystemEntropy (in os_task)
+  Need all operations to be constant time
   format audit
   code audit
 

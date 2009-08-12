@@ -788,13 +788,15 @@ s32 CosmHTTPDStop( cosm_HTTPD * httpd, u32 timeout_ms )
   return COSM_HTTPD_ERROR_TIMEOUT;
 }
 
-s32 CosmHTTPDSendInit( cosm_HTTPD_REQUEST * request, ascii * code,
-  ascii * string, ascii * content_type )
+s32 CosmHTTPDSendInit( cosm_HTTPD_REQUEST * request, u32 status_code,
+  ascii * status_string, ascii * mime_type )
 {
   u32 sent;
-
-  if ( ( request == NULL ) || ( code == NULL ) || ( string == NULL )
-    || ( content_type == NULL ) )
+  u32 bytes;
+  ascii * header;
+  
+  if ( ( request == NULL ) || ( status_code < 100 ) || ( status_code > 999 )
+    || ( mime_type == NULL ) || ( mime_type == NULL ) )
   {
     return COSM_HTTPD_ERROR_PARAM;
   }
@@ -812,38 +814,31 @@ s32 CosmHTTPDSendInit( cosm_HTTPD_REQUEST * request, ascii * code,
   }
 
   /*
-    HTTP/1.x <code> <str>\r\n
-    Content-Type: <type>\r\n
+    HTTP/1.x <status_code> <status_string>\r\n
+    Content-Type: <mime_type>\r\n
+    
+    length = 9 + 3 + 1 + status_string + 2
+      + 14 + mime_type + 2 ( + 1 for the \0 )
   */
-  if ( request->version == COSM_HTTP_VERSION_1_1 )
+  bytes = 32 + CosmStrBytes( status_string ) + CosmStrBytes( mime_type );
+  if ( ( header = CosmMemAlloc( bytes ) ) == NULL )
   {
-    if ( CosmNetSend( request->net, &sent, "HTTP/1.1 ", 9 ) != COSM_PASS )
-    {
-      return COSM_HTTPD_ERROR_NET;
-    }
-  }
-  else if ( request->version == COSM_HTTP_VERSION_1_0 )
-  {
-    if ( CosmNetSend( request->net, &sent, "HTTP/1.0 ", 9 ) != COSM_PASS )
-    {
-      return COSM_HTTPD_ERROR_NET;
-    }
+    return COSM_HTTPD_ERROR_MEMORY;
   }
 
-  /* common 1.0 and 1.1 rest of header */
-  if ( ( CosmNetSend( request->net, &sent, code, 3 ) != COSM_PASS )
-    || ( CosmNetSend( request->net, &sent, " ", 1 ) != COSM_PASS )
-    || ( CosmNetSend( request->net, &sent, string,
-    CosmStrBytes( string ) ) != COSM_PASS )
-    || ( CosmNetSend( request->net, &sent, "\r\n", 2 ) != COSM_PASS )
-    || ( CosmNetSend( request->net, &sent, "Content-Type: ", 14 )
-    != COSM_PASS )
-    || ( CosmNetSend( request->net, &sent, content_type,
-    CosmStrBytes( content_type ) ) != COSM_PASS )
-    || ( CosmNetSend( request->net, &sent, "\r\n", 2 ) != COSM_PASS ) )
+  CosmPrintStr( header, bytes,
+    "HTTP/1.%c %u %.*s\r\n"
+    "Content-Type: %.*s\r\n",
+    ( request->version == COSM_HTTP_VERSION_1_1 ) ? '1' : '0', status_code,
+    CosmStrBytes( status_string ), status_string,
+    CosmStrBytes( mime_type ), mime_type );
+
+  if ( CosmNetSend( request->net, &sent, header, bytes - 1 ) != COSM_PASS )
   {
+    CosmMemFree( header );
     return COSM_HTTPD_ERROR_NET;
   }
+  CosmMemFree( header );
 
   return COSM_PASS;
 }
