@@ -91,15 +91,15 @@ case $maketarget in
     if [ -f make/fake ]; then
       cat make/fake > Makefile
     fi
-    rm -f Makefile.cosm
+    rm -f include/cosm/Makefile.cosm
     if [ -f make/$maketarget ]; then
-      cat > Makefile.cosm <<EOF
+      cat > include/cosm/Makefile.cosm <<EOF
 EXTRA_FLAGS = $makeargs
 EXTRA_LIBS = $makelibs
 
 EOF
-      cat make/$maketarget >> Makefile.cosm
-      cat make/common >> Makefile.cosm
+      cat make/$maketarget >> include/cosm/Makefile.cosm
+      cat make/common >> include/cosm/Makefile.cosm
     fi
     echo "Making libraries"
     cd src 

@@ -1,4 +1,4 @@
-include ../../Makefile.cosm
+include ../../include/cosm/Makefile.cosm
 CC_FLAGS = -I../../include $(CCFLAGS)
 LD_FLAGS = -L.. $(LDFLAGS)
 

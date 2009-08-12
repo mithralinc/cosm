@@ -130,11 +130,12 @@ Development Environment
   licenses has to be used. The header and lib should be installed to the same
   dir as the main Cosm headers and libs. Of course GPL, patented, or
   commerical code still cannot be used.
-- All Cosm related files when installed now go into /usr/local/cosm/
-  This means Phase 2 compatible files go into /usr/local/cosm/lib
-  and .../include. Examples of adding non-libCosm libraries will be given.
+- All Cosm related files when installed now go into /usr/local/
+  This means Phase 2 compatible files go into /usr/local/lib and
+  /usr/local/include/cosm/.
   In Makefile.cosm COSM_LIB, COSM_INC, and COSM_MAN are defined and will
   always be consistent with whatever version you are writing for.
+- The Makefile.cosm is created in the same dir as the headers.
 - Adding makefiles for Intel's compiler on systems where it is free (Linux).
   The results only run on Pentium+/Itanium systems of course. Other build
   targets will be added over time as we migrate from phase 1.
