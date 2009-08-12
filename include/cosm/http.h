@@ -232,13 +232,13 @@ s32 CosmHTTPDStop( cosm_HTTPD * httpd, u32 timeout_ms );
     Returns: COSM_PASS on success, or an error code on failure.
   */
 
-s32 CosmHTTPDSendInit( cosm_HTTPD_REQUEST * request, ascii * code,
-  ascii * string, ascii * content_type );
+s32 CosmHTTPDSendInit( cosm_HTTPD_REQUEST * request, u32 status_code,
+  ascii * status_string, ascii * mime_type );
   /*
     This is the first function that should be called in any handler.
-    code is the 3 digit HTTP status ("200", "404") for the result.
-    string is the text associated with the that code ("OK", "Not Found").
-    type is the media type of data to be sent, "text/http" for
+    status_code is the 3 digit HTTP status code. status_string is the text
+    associated with the that code - for 200 it is "OK".
+    mime_type is the media type of data to be sent, "text/http" for
     tunneling purposes, or a type based on the content like "image/jpeg".
     Further information on these parameters can be found in the HTTP/1.1
     documentation (RFC 2616).
