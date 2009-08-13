@@ -117,7 +117,7 @@ s32 CosmLog( cosm_LOG * log, u32 level, u32 echo, const utf8 * format, ... )
       /* We're using 'number' */
       if ( level > log->level )
       {
-        /* Then we don't log */
+        /* Then we do not log */
         CosmMutexUnlock( &log->lock );
         return COSM_PASS;
       }
@@ -127,7 +127,7 @@ s32 CosmLog( cosm_LOG * log, u32 level, u32 echo, const utf8 * format, ... )
       /* We're using 'bits' */
       if ( ( level & log->level ) == 0 )
       {
-        /* Then we don't log */
+        /* Then we do not log */
         CosmMutexUnlock( &log->lock );
         return COSM_PASS;
       }
