@@ -842,7 +842,7 @@ s32 CosmNetRecvUDP( void * buffer, u32 * bytes_read, cosm_NET_ADDR * from,
     return COSM_NET_ERROR_PARAM;
   }
 
-  if ( net->status != COSM_NET_STATUS_OPEN )
+  if ( net->status != COSM_NET_STATUS_LISTEN )
   {
     return COSM_NET_ERROR_CLOSED;
   }
@@ -940,20 +940,22 @@ s32 CosmNetRecvUDP( void * buffer, u32 * bytes_read, cosm_NET_ADDR * from,
       return error;
     }
 
-    /* set from !!! */
-
-    /* only accept this data if host passes acl masks */
-    /*
-    if ( CosmNetACLCheck( acl, ntohl( client_addr.sin_addr.s_addr ) )
-      != COSM_NET_ALLOW )
+    /* have data, set from */
+    from->type = COSM_NET_IPV4;
+    from->port = ntohs( client_addr.sin_port );
+    from->ip.v4 = ntohl( client_addr.sin_addr.s_addr );
+    
+    /* only accept this data if host passes acl masks, otherwise discard */
+    if ( CosmNetACLCheck( acl, from ) != COSM_NET_ALLOW )
     {
       received = 0;
     }
-    */
 #if ( defined( NET_LOG_PACKETS ) )
     Cosm_NetLogPacket( &net->host, "UDP Recv:", buffer, received );
 #endif
   }
+
+  *bytes_read = received;
 
   return COSM_PASS;
 #endif
@@ -1087,53 +1089,54 @@ s32 CosmNetListen( cosm_NET * net, const cosm_NET_ADDR * addr, u32 mode,
   /* For UDP connection we're done now */
   if ( mode == COSM_NET_MODE_UDP )
   {
-    return COSM_PASS;
-  }
-
-  if ( listen( socket_descriptor, queue ) == -1 )
-  {
-    /* unable to listen to the socket */
-    Cosm_NetClose( net );
-    return COSM_NET_ERROR_SOCKET;
-  }
-
-  if ( addr->port == 0 )
-  {
-    if ( addr->type == COSM_NET_IPV4 )
-    {
-      if ( getsockname( socket_descriptor, (struct sockaddr *)
-        &addr4, &addr_length ) == -1 )
-      {
-        /* unable to get the port the socket is listenning on */
-        Cosm_NetClose( net );
-        return COSM_NET_ERROR_SOCKET;
-      }
-      net->my_addr.port = ntohs( addr4.sin_port );
-    }
-    else /* IPv6 */
-    {
-      if ( getsockname( socket_descriptor, (struct sockaddr *)
-        &addr6, &addr_length ) == -1 )
-      {
-        /* unable to get the port the socket is listenning on */
-        Cosm_NetClose( net );
-        return COSM_NET_ERROR_SOCKET;
-      }
-      net->my_addr.port = ntohs( addr6.sin6_port );
-    }
-  }
-  else
-  {
     net->my_addr.port = addr->port;
+  }
+  else /* TCP */
+  {
+    if ( listen( socket_descriptor, queue ) == -1 )
+    {
+      /* unable to listen to the socket */
+      Cosm_NetClose( net );
+      return COSM_NET_ERROR_SOCKET;
+    }
+
+    if ( addr->port == 0 )
+    {
+      if ( addr->type == COSM_NET_IPV4 )
+      {
+        if ( getsockname( socket_descriptor, (struct sockaddr *)
+          &addr4, &addr_length ) == -1 )
+        {
+          /* unable to get the port the socket is listenning on */
+          Cosm_NetClose( net );
+          return COSM_NET_ERROR_SOCKET;
+        }
+        net->my_addr.port = ntohs( addr4.sin_port );
+      }
+      else /* IPv6 */
+      {
+        if ( getsockname( socket_descriptor, (struct sockaddr *)
+          &addr6, &addr_length ) == -1 )
+        {
+          /* unable to get the port the socket is listenning on */
+          Cosm_NetClose( net );
+          return COSM_NET_ERROR_SOCKET;
+        }
+        net->my_addr.port = ntohs( addr6.sin6_port );
+      }
+    }
+    else
+    {
+      net->my_addr.port = addr->port;
+    }
   }
 
   net->my_addr.type = addr->type;
   net->my_addr.ip.v6 = addr->ip.v6; /* ip.v6 copies both */
-
   net->handle = (u64) socket_descriptor;
-
   net->mode = mode;
   net->status = COSM_NET_STATUS_LISTEN;
+
   return COSM_PASS;
 #endif /* NO_NETWORKING */
 }
