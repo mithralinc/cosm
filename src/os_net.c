@@ -753,7 +753,8 @@ s32 CosmNetSendUDP( cosm_NET * net, const cosm_NET_ADDR * addr,
     return COSM_PASS;
   }
 
-  if ( net->status != COSM_NET_STATUS_OPEN )
+  if ( ( net->status != COSM_NET_STATUS_LISTEN )
+    && ( net->status != COSM_NET_STATUS_OPEN ) )
   {
     return COSM_NET_ERROR_CLOSED;
   }
@@ -842,7 +843,8 @@ s32 CosmNetRecvUDP( void * buffer, u32 * bytes_read, cosm_NET_ADDR * from,
     return COSM_NET_ERROR_PARAM;
   }
 
-  if ( net->status != COSM_NET_STATUS_LISTEN )
+  if ( ( net->status != COSM_NET_STATUS_LISTEN )
+    && ( net->status != COSM_NET_STATUS_OPEN ) )
   {
     return COSM_NET_ERROR_CLOSED;
   }

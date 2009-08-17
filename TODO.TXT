@@ -25,6 +25,8 @@ Fix indent.pro
 Unicode throughout? DNS + ...
 Change all send/recv type functions to be 64b length?
 undo left-comparisons, readability outways other advantages.
+sizeof needs to use the variable, not the types when possible.
+change state/error codes to enums.
 
 src/
   header audit - not all system headers may be needed
