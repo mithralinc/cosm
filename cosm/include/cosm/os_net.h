@@ -58,7 +58,7 @@ typedef struct cosm_NET_ADDR
 {
   u32 type;
   u32 port;
-  union
+  union cosm_NET_ADDR_IP
   {
     u32  v4;
     u128 v6;
