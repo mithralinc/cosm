@@ -178,7 +178,7 @@ int main( int argc, char * argv[] )
   utf8 buffer[256];
   cosmtime mytime;
   cosm_TIME_UNITS myunits;
-  u64 milli;
+  u64 milli = COSM_TIME_MILLISECOND;
   u32 count, i;
   cosm_NET_ADDR addr[16];
   cosm_LOG log;
@@ -415,7 +415,6 @@ int main( int argc, char * argv[] )
 
   CosmPrint(
    "\nThe following 6 times should be about 1/2 second apart:\n" );
-  milli = 0x004189374BC6A7EFLL;
   for ( count = 0 ; count < 6 ; count++ )
   {
     if ( CosmSystemClock( &mytime ) == COSM_PASS )
