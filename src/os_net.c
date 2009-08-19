@@ -742,15 +742,10 @@ s32 CosmNetSendUDP( cosm_NET * net, const cosm_NET_ADDR * addr,
     return COSM_NET_ERROR_NO_NET;
   }
 
-  if ( net == NULL )
+  if ( ( net == NULL ) || ( addr == NULL )
+    || ( ( data == NULL ) && ( length > 0 ) ) )
   {
     return COSM_NET_ERROR_PARAM;
-  }
-
-  if ( ( data == NULL ) || ( length == 0 ) )
-  {
-    /* no data to send is OK */
-    return COSM_PASS;
   }
 
   if ( ( net->status != COSM_NET_STATUS_LISTEN )
@@ -803,13 +798,21 @@ s32 CosmNetSendUDP( cosm_NET * net, const cosm_NET_ADDR * addr,
     return COSM_NET_ERROR_ADDRTYPE;
   }
 
+#if ( ( OS_TYPE == OS_WIN32 ) || ( OS_TYPE == OS_WIN64 ) )
+  /*
+    Windows can generate WSAECONNRESET errors
+    http://support.microsoft.com/kb/263823/en-us
+  */
+  if ( ( result == -1 ) && ( WSAGetLastError() != WSAECONNRESET ) )
+#else
   if ( result == -1 )
+#endif
   {
     /* connection has been closed, or other error */
-    close( socket_descriptor );
-    net->status = COSM_NET_STATUS_CLOSED;
-    return COSM_NET_ERROR_CLOSED;
+    Cosm_NetClose( net );
+    return COSM_NET_ERROR_SOCKET;
   }
+
 #if ( defined( NET_LOG_PACKETS ) )
   Cosm_NetLogPacket( &net->host, "UDP Send:", (u8 *) data, result );
 #endif
@@ -833,7 +836,6 @@ s32 CosmNetRecvUDP( void * buffer, u32 * bytes_read, cosm_NET_ADDR * from,
   u64 tmp_u64;
   struct sockaddr_in client_addr;
   unsigned int client_addr_len;
-  s32 error;
 
   *bytes_read = 0;
 
@@ -926,20 +928,19 @@ s32 CosmNetRecvUDP( void * buffer, u32 * bytes_read, cosm_NET_ADDR * from,
       length - received, 0, (struct sockaddr *) &client_addr,
       &client_addr_len );
 
-    if ( received < 1 )
+#if ( ( OS_TYPE == OS_WIN32 ) || ( OS_TYPE == OS_WIN64 ) )
+    /*
+      Windows can generate WSAECONNRESET errors
+      http://support.microsoft.com/kb/263823/en-us
+    */
+    if ( ( received == -1 ) && ( WSAGetLastError() != WSAECONNRESET ) )
+#else
+    if ( received == -1 )
+#endif
     {
-      if ( received == 0 )
-      {
-        /* connection terminated */
-        net->status = COSM_NET_STATUS_CLOSED;
-        error = COSM_NET_ERROR_CLOSED;
-      }
-      else
-      {
-        /* error while receiving data */
-        error = COSM_NET_ERROR_SOCKET;
-      }
-      return error;
+      /* error while receiving data */
+      Cosm_NetClose( net );
+      return COSM_NET_ERROR_SOCKET;
     }
 
     /* have data, set from */
@@ -973,13 +974,6 @@ s32 CosmNetListen( cosm_NET * net, const cosm_NET_ADDR * addr, u32 mode,
   unsigned int addr_length;
   struct sockaddr_in addr4;
   struct sockaddr_in6 addr6;
-
-#if 0
-#if ( ( defined( SO_REUSEADDR ) ) \
-  && ( ( OS_TYPE == OS_WIN32 ) || ( OS_TYPE == OS_WIN64 ) ) )
-  int option;
-#endif
-#endif
 
   if ( net == NULL )
   {
@@ -1035,25 +1029,6 @@ s32 CosmNetListen( cosm_NET * net, const cosm_NET_ADDR * addr, u32 mode,
     net->status = COSM_NET_STATUS_CLOSED;
     return COSM_NET_ERROR_SOCKET;
   }
-
-#if 0
-#if ( ( defined( SO_REUSEADDR ) ) \
-  && ( ( OS_TYPE == OS_WIN32 ) || ( OS_TYPE == OS_WIN64 ) ) )
-  /*
-    This allows us to reuse the same UNIX port if it's still closing.
-    Win32 (others?) doesn't do this correctly since it does SO_REUSEPORT as
-    well, which will not give an error if we have an open listener already.
-  */
-  option = 1;
-  if ( setsockopt( socket_descriptor, SOL_SOCKET, SO_REUSEADDR,
-    (void *) &option, sizeof( option ) ) == -1 )
-  {
-    /* unable to set the socket REUSEADDR option */
-    Cosm_NetClose( net );
-    return COSM_NET_ERROR_SOCKET;
-  }
-#endif
-#endif
 
   if ( addr->type == COSM_NET_IPV4 )
   {
