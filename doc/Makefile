@@ -1,4 +1,4 @@
-include ../Makefile.cosm
+include ../include/cosm/Makefile.cosm
 
 PAGES = cosm.html \
   os_file.html os_io.html os_math.html os_mem.html os_net.html os_task.html \
