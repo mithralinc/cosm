@@ -1510,7 +1510,7 @@ void CosmDynamicLibFree( cosm_DYNAMIC_LIB * dylib )
 
 /* Time */
 
-s32 CosmSystemClock( cosmtime * local_time )
+s32 CosmSystemClock( cosmtime * clock )
 {
   s128 os_local_time, unix_epoc;
 
@@ -1521,7 +1521,7 @@ s32 CosmSystemClock( cosmtime * local_time )
   struct timeval time_value;
 #endif
 
-  if ( local_time == NULL )
+  if ( clock == NULL )
   {
     return COSM_FAIL;
   }
@@ -1560,7 +1560,7 @@ s32 CosmSystemClock( cosmtime * local_time )
   */
   _COSM_SET128( unix_epoc, 00000000386D4380, 0000000000000000 );
 
-  *local_time = CosmS128Sub( os_local_time, unix_epoc );
+  *clock = CosmS128Sub( os_local_time, unix_epoc );
 
   return COSM_PASS;
 }

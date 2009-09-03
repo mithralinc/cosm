@@ -55,6 +55,7 @@ src/cputypes
   -
 
 src/os_file
+  Don't make files executable by default, need flag setting functions.
   Memory mapped file tests
   Remove special file prefix processing
   Add CosmDirSpecial()
@@ -139,6 +140,7 @@ src/os_net
     UDP tests
 
 src/os_task
+  FIX process/thread priority system - broken in windows.
   Semaphore tests in testlib Parent/Child
   Semaphores need to allow for nameless as well?
   Affinity needs to be per thread.

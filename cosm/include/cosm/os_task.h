@@ -22,7 +22,7 @@
 #include "cosm/os_math.h"
 
 #if ( ( OS_TYPE == OS_WIN32 ) || ( OS_TYPE == OS_WIN64 ) )
-#define _WIN32_WINNT 0x0501 /* XP+, Server 2003+ */
+#define _WIN32_WINNT 0x0501 /* User: XP+, Server: 2003+ */
 #define WIN32_LEAN_AND_MEAN /* no old winsock */
 #include <windows.h>
 #include <signal.h>
@@ -363,9 +363,9 @@ void CosmDynamicLibFree( cosm_DYNAMIC_LIB * dylib );
 
 /* Time */
 
-s32 CosmSystemClock( cosmtime * local_time );
+s32 CosmSystemClock( cosmtime * clock );
   /*
-    Get the time from the system clock and set local_time.
+    Sets the value of clock from the system clock.
     cosmtime is a signed number (s128) of seconds in 64b.64b fixed point
     format based on the time 0 = 00:00:00 UTC, Jan 1, 2000 AD.
     Returns: COSM_PASS on success, or COSM_FAIL on failure.

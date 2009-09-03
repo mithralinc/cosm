@@ -2,7 +2,7 @@
 Modifications Since Phase 1
 ---------------------------
 
-If you did not use the phase 1 Cosm API, then you do not read to read this
+If you did not use the phase 1 Cosm API, then you do not need to read this
 document, and should insted consult the current documentation.
 
 It's been 10 years since the innitial 1995/6 design of the Cosm APIs. Since
@@ -168,8 +168,8 @@ Other
 - The GUI API layer has been removed. GUIs will be native w/OpenGL. PERIOD.
 - Incomplete MacOS 9 support dropped. MaxOS X still fully supported.
 - Incomplete OS/2 and BeOS support was dropped.
-- Support for Win95/98 and WinME dropped. With no Microsoft support, and
-  Cosm's need for security, 99%+ of those will have spyware and rootkits.
+- Support for Win95/98, WinME, Win2000 dropped. With no Microsoft support, and
+  Cosm's need for security, these are no longer safe systems.
 
 MANUAL CHANGES NEEDED:
 ----------------------

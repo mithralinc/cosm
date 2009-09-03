@@ -1024,13 +1024,13 @@ s32 CosmSignalRegister( u32 signal_type, void (*handler)(int) );
 </font>
 <pre>
 #include "cosm/os_task.h"
-s32 CosmSystemClock( cosmtime * local_time );
+s32 CosmSystemClock( cosmtime * clock );
 </pre>
 <font face="Verdana,Arial,Helvetica" size="-1">
 
     <h4>Description</h4>
     <p>
-      Get the time from the system clock and set <em>local_time</em>.
+      Sets the value of <em>clock</em> from the system clock.
       cosmtime is a signed number (s128) of seconds in 64b.64b fixed point
       format based on the time 0 = 00:00:00 UTC, Jan 1, 2000 AD.
     </p>
