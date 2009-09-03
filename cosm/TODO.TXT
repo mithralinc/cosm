@@ -110,6 +110,7 @@ src/os_mem
     Win32: SecureZeroMemory()
 
 src/os_net
+  Refactor ACL API
   Add a CosmNetSendFile zero copy sendfile function
   Add CosmNetStrAddr( utf8 string[40], cosm_NET_ADDR * addr )
   Fix ACL functions

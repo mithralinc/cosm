@@ -1694,7 +1694,8 @@ s32 CosmNetACLAdd( cosm_NET_ACL * acl, const cosm_NET_ADDR * addr,
   acl->list[i].mask.port = addr->port;
   if ( addr->type == COSM_NET_IPV4 )
   {
-    acl->list[i].mask.ip.v4 = ( 0xFFFFFFFF << ( 32 - mask_bits ) );
+    acl->list[i].mask.ip.v4 =
+      ( mask_bits == 0 ) ? 0 : ( 0xFFFFFFFF << ( 32 - mask_bits ) );
   }
   else
   {
@@ -1782,7 +1783,7 @@ s32 CosmNetACLCheck( cosm_NET_ACL * acl, const cosm_NET_ADDR * addr )
     do
     {
       /* expired? */
-      if ( CosmS128Gt( list[i].expires, time ) )
+      if ( CosmS128Lt( list[i].expires, time ) )
       {
         for ( j = i ; j < ( acl->count - 1 ) ; j++ )
         {
