@@ -2,11 +2,11 @@
 ## CPU       : Universal Binaries
 ## Compiler  : GNU
 
-CC      = gcc
+CC      = gcc-4.0
 CXX     = g++
 FC      = g77
-LD      = gcc -arch i386 -arch x86_64 -arch ppc -arch ppc64 -o 
-DYLIB   = gcc -dynamiclib -arch i386 -arch x86_64 -arch ppc -arch ppc64 -o 
+LD      = $(CC) -arch i386 -arch x86_64 -arch ppc -o 
+DYLIB   = $(CC) -dynamiclib -arch i386 -arch x86_64 -arch ppc -o 
 AR      = ar rc 
 RM      = rm -f
 RNLIB   = ranlib
@@ -35,11 +35,8 @@ LDLIBS  = $(EXTRA_LIBS)
 	@echo "Compiling $< PPC"
 	@$(CC) $(CC_FLAGS) -DOS_TYPE=OS_MACOSX \
 	  -DCPU_32BIT -DCPU_TYPE=CPU_PPC -arch ppc -o $@.ppc -c $<
-	@echo "Compiling $< PPC64"
-	@$(CC) $(CC_FLAGS) -DOS_TYPE=OS_MACOSX \
-	  -DCPU_64BIT -DCPU_TYPE=CPU_PPC64 -arch ppc64 -o $@.ppc64 -c $<
-	@lipo $@.i386 $@.x86_64 $@.ppc $@.ppc64 -create -output $@ 
-	@$(RM) $@.i386 $@.x86_64 $@.ppc $@.ppc64
+	@lipo $@.i386 $@.x86_64 $@.ppc -create -output $@ 
+	@$(RM) $@.i386 $@.x86_64 $@.ppc
 
 .cpp.$(OBJ):
 	@echo "Compiling $< x86"
@@ -51,8 +48,5 @@ LDLIBS  = $(EXTRA_LIBS)
 	@echo "Compiling $< PPC"
 	@$(CXX) $(CC_FLAGS) -DOS_TYPE=OS_MACOSX \
 	  -DCPU_32BIT -DCPU_TYPE=CPU_PPC -arch ppc -o $@.ppc -c $<
-	@echo "Compiling $< PPC64"
-	@$(CXX) $(CC_FLAGS) -DOS_TYPE=OS_MACOSX \
-	  -DCPU_64BIT -DCPU_TYPE=CPU_PPC64 -arch ppc64 -o $@.ppc64 -c $<
-	@lipo $@.i386 $@.x86_64 $@.ppc $@.ppc64 -create -output $@ 
-	@$(RM) $@.i386 $@.x86_64 $@.ppc $@.ppc64
+	@lipo $@.i386 $@.x86_64 $@.ppc -create -output $@ 
+	@$(RM) $@.i386 $@.x86_64 $@.ppc

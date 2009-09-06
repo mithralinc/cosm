@@ -2,11 +2,11 @@
 ## CPU       : x86
 ## Compiler  : GNU
 
-CC      = gcc
+CC      = gcc-4.0
 CXX     = g++
 FC      = g77
-LD      = gcc -arch i386 -o 
-DYLIB   = gcc -dynamiclib -arch i386 -o 
+LD      = $(CC) -arch i386 -o 
+DYLIB   = $(CC) -dynamiclib -arch i386 -o 
 AR      = ar rc 
 RM      = rm -f
 RNLIB   = ranlib
