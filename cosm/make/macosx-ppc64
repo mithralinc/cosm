@@ -2,11 +2,11 @@
 ## CPU       : PPC
 ## Compiler  : GNU
 
-CC      = gcc
+CC      = gcc-4.0
 CXX     = g++
 FC      = g77
-LD      = gcc -arch ppc64 -o 
-DYLIB   = gcc -dynamiclib -arch ppc64 -o 
+LD      = $(CC) -arch ppc64 -o 
+DYLIB   = $(CC) -dynamiclib -arch ppc64 -o 
 AR      = ar rc 
 RM      = rm -f
 RNLIB   = ranlib
@@ -15,10 +15,10 @@ INSTALL = install
 OBJ     = o
 
 CCFLAGS  = -O2 -mtune=G5 -mpowerpc64 -maltivec -Wall -pedantic \
-  -Wno-long-long -isysroot /Developer/SDKs/MacOSX10.5.sdk $(EXTRA_FLAGS)
+  -Wno-long-long -isysroot /Developer/SDKs/MacOSX10.4u.sdk $(EXTRA_FLAGS)
 FCFLAGS  = -O2 -mtune=G5 -mpowerpc64 -maltivec -Wall -pedantic \
-  -Wno-long-long -isysroot /Developer/SDKs/MacOSX10.5.sdk $(EXTRA_FLAGS)
-LDFLAGS = -Wl,-syslibroot /Developer/SDKs/MacOSX10.5.sdk \
+  -Wno-long-long -isysroot /Developer/SDKs/MacOSX10.4u.sdk $(EXTRA_FLAGS)
+LDFLAGS = -Wl,-syslibroot /Developer/SDKs/MacOSX10.4u.sdk \
   -mmacosx-version-min=10.4
 LDLIBS  = $(EXTRA_LIBS)
 
