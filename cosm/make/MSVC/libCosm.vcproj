@@ -18,8 +18,8 @@
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory="Debug"
-			IntermediateDirectory="Debug"
+			OutputDirectory="$(PlatformName)\$(ConfigurationName)"
+			IntermediateDirectory="$(PlatformName)\$(ConfigurationName)"
 			ConfigurationType="4"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
 			UseOfMFC="0"
@@ -48,11 +48,7 @@
 				PreprocessorDefinitions="_DEBUG;MEM_LEAK_FIND;WIN32;_LIB;CPU_32BIT;CPU_TYPE=CPU_X86;OS_TYPE=OS_WIN32"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="1"
-				UsePrecompiledHeader="0"
-				PrecompiledHeaderFile=".\Debug/libCosm.pch"
-				AssemblerListingLocation=".\Debug/"
-				ObjectFile=".\Debug/"
-				ProgramDataBaseFileName=".\Debug/"
+				ProgramDataBaseFileName="$(IntDir)\$(ProjectName).pdb"
 				WarningLevel="3"
 				SuppressStartupBanner="true"
 				DebugInformationFormat="3"
@@ -121,14 +117,10 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="../../include"
-				PreprocessorDefinitions="_DEBUG;MEM_LEAK_FIND;WIN32;_LIB;CPU_64BIT;CPU_TYPE=CPU_X64;OS_TYPE=OS_WIN64"
+				PreprocessorDefinitions="_DEBUG;MEM_LEAK_FIND;_LIB;CPU_64BIT;CPU_TYPE=CPU_X64;OS_TYPE=OS_WIN64"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="1"
-				UsePrecompiledHeader="0"
-				PrecompiledHeaderFile=".\Debug/libCosm.pch"
-				AssemblerListingLocation=".\Debug/"
-				ObjectFile=".\Debug/"
-				ProgramDataBaseFileName=".\Debug/"
+				ProgramDataBaseFileName="$(IntDir)\$(ProjectName).pdb"
 				WarningLevel="3"
 				SuppressStartupBanner="true"
 				DebugInformationFormat="3"
@@ -148,7 +140,7 @@
 			<Tool
 				Name="VCLibrarianTool"
 				AdditionalDependencies="Iphlpapi.lib"
-				OutputFile="../../lib/libCosmUtil_d.lib"
+				OutputFile="../../lib/libCosmUtil64_d.lib"
 				SuppressStartupBanner="true"
 			/>
 			<Tool
@@ -169,8 +161,8 @@
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory="Release"
-			IntermediateDirectory="Release"
+			OutputDirectory="$(PlatformName)\$(ConfigurationName)"
+			IntermediateDirectory="$(PlatformName)\$(ConfigurationName)"
 			ConfigurationType="4"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
 			UseOfMFC="0"
@@ -201,11 +193,7 @@
 				StringPooling="true"
 				RuntimeLibrary="0"
 				EnableFunctionLevelLinking="true"
-				UsePrecompiledHeader="0"
-				PrecompiledHeaderFile=".\Release/libCosm.pch"
-				AssemblerListingLocation=".\Release/"
-				ObjectFile=".\Release/"
-				ProgramDataBaseFileName=".\Release/"
+				ProgramDataBaseFileName="$(IntDir)\$(ProjectName).pdb"
 				WarningLevel="3"
 				SuppressStartupBanner="true"
 				CompileAs="1"
@@ -274,15 +262,11 @@
 				Optimization="3"
 				InlineFunctionExpansion="1"
 				AdditionalIncludeDirectories="../../include"
-				PreprocessorDefinitions="NDEBUG;WIN32;_LIB;CPU_64BIT;CPU_TYPE=CPU_X64;OS_TYPE=OS_WIN64"
+				PreprocessorDefinitions="NDEBUG;_LIB;CPU_64BIT;CPU_TYPE=CPU_X64;OS_TYPE=OS_WIN64"
 				StringPooling="true"
 				RuntimeLibrary="0"
 				EnableFunctionLevelLinking="true"
-				UsePrecompiledHeader="0"
-				PrecompiledHeaderFile=".\Release/libCosm.pch"
-				AssemblerListingLocation=".\Release/"
-				ObjectFile=".\Release/"
-				ProgramDataBaseFileName=".\Release/"
+				ProgramDataBaseFileName="$(IntDir)\$(ProjectName).pdb"
 				WarningLevel="3"
 				SuppressStartupBanner="true"
 				CompileAs="1"
@@ -301,7 +285,7 @@
 			<Tool
 				Name="VCLibrarianTool"
 				AdditionalDependencies="Iphlpapi.lib"
-				OutputFile="../../lib/libCosmUtil.lib"
+				OutputFile="../../lib/libCosmUtil64.lib"
 				SuppressStartupBanner="true"
 			/>
 			<Tool
@@ -341,25 +325,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug|x64"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						ObjectFile="$(IntDir)\$(InputName)1.obj"
-						XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
 					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						ObjectFile="$(IntDir)\$(InputName)1.obj"
-						XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
