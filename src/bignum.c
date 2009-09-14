@@ -88,7 +88,7 @@ s32 CosmBNGets32( s32 * x, const cosm_BN * a )
   }
   else
   {
-    *x = a->n[0] & 0x7FFFFFFF;
+    *x = (u32) a->n[0] & (u32) 0x7FFFFFFF;
     if ( a->neg )
     {
       *x = -*x;
