@@ -54,7 +54,7 @@
 
 #define OS_UNKNOWN      0
 #define OS_WIN32        1  /* 32bit WinNT 4, Win2000, XP and up */
-/*#define OS_MACOS      2  depreciated, never completed */
+#define OS_WIN64        2  /* 64bit XP/2003+/Vista */
 #define OS_MACOSX       3
 #define OS_LINUX        4
 /*#define OS_BSDI       5  depreciated */
@@ -70,14 +70,13 @@
 #define OS_SONYPS3      15 /* !!!this must have a name */
 #define OS_QNX          16
 #define OS_TRU64        17 /* Dec UNIX, OSF1 */
-#define OS_WIN64        18 /* 64bit XP/2003+/Vista */
-#define COSM_OS_TYPE_MAX  18
+#define COSM_OS_TYPE_MAX  17
 
 #define COSM_OS_TYPES { "UNKNOWN", \
-  "Win32", "undef", "MacOSX", "Linux", "undef", \
+  "Win32", "Win64", "MacOSX", "Linux", "undef", \
   "NetBSD", "FreeBSD", "OpenBSD", "undef", "undef", \
   "Irix", "Irix64", "SunOS", "Solaris", "SonyPS3", \
-  "QNX", "Tru64", "Win64", NULL }
+  "QNX", "Tru64", NULL }
 
 /* OS_TYPE must be defined by now */
 #if ( !defined( OS_TYPE ) || ( OS_TYPE == OS_UNKNOWN ) \
