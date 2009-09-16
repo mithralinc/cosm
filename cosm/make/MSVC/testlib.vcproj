@@ -164,6 +164,7 @@
 				AdditionalLibraryDirectories="../../lib"
 				GenerateDebugInformation="true"
 				SubSystem="1"
+				LargeAddressAware="2"
 				TargetMachine="17"
 			/>
 			<Tool
@@ -340,6 +341,7 @@
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories="../../lib"
 				SubSystem="1"
+				LargeAddressAware="2"
 				TargetMachine="17"
 			/>
 			<Tool
