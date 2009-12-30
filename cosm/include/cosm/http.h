@@ -151,7 +151,7 @@ s32 CosmHTTPOpen( cosm_HTTP * http, const ascii * uri,
   */
 
 #define _COSM_HTTPOPEN( http, uri ) \
-  CosmHTTPOpen( http, uri, 0, 0, NULL, NULL, NULL, NULL )
+  CosmHTTPOpen( http, uri, NULL, NULL, NULL, NULL, NULL )
   /*
     Since CosmHTTPOpen is rather complex, a macro for simpler cases is also
     defined. _COSM_HTTPOPEN(...) allows just the first 2 parameters to be
