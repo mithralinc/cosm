@@ -73,7 +73,7 @@
 #define COSM_OS_TYPE_MAX  17
 
 #define COSM_OS_TYPES { "UNKNOWN", \
-  "Win32", "Win64", "MacOSX", "Linux", "undef", \
+  "Win32", "Win64", "OSX", "Linux", "undef", \
   "NetBSD", "FreeBSD", "OpenBSD", "undef", "undef", \
   "Irix", "Irix64", "SunOS", "Solaris", "SonyPS3", \
   "QNX", "Tru64", NULL }

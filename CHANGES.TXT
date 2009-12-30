@@ -29,6 +29,7 @@ general:
   - Endian defines can now be used at compile time and/or run time.
   - v3_time is now cosmtime.
   - CPU and OS types updated, many removed.
+  - The COSM_OS_TYPES string "MacOSX" is now just "OSX".
   - fixed the _V3_ (now _COSM_) macro's to allow nested expansion.
   - DynamicLib (aka DLL, shared library) functions have been added (os_task).
 os_file:
