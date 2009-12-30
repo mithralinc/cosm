@@ -81,6 +81,7 @@ src/os_file
   Figure out __USE_LARGEFILE64 and other flags for linux 64-bit files
   
 src/os_io
+  Fix -2147483648, prints and scans
   %-n. not working for strings
   StrStr, make sure that it cant run off either string...
   check: proper +127 to -128 ranges on numbers.
