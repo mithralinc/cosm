@@ -13,8 +13,9 @@
   http://www.mithral.com/
 */
 
-#include "cosm.h"
+#include "cosm/cosm.h"
 
+void Notice( void );
 void Usage( void );
 s32 CommandKeygen( s32 argc, utf8 * argv[] );
 s32 CommandSign( s32 argc, utf8 * argv[] );
@@ -36,6 +37,13 @@ const COMMAND commands[] =
   { NULL, 0, NULL }
 };
 
+void Notice( void )
+{
+  CosmPrint(
+    "Cosm(R) PKI Tool.\n"
+    "Copyright Mithral Communications & Design, Inc. 1995-2010.\n" );
+}
+
 void Usage( void )
 {
   CosmPrint(
@@ -48,6 +56,21 @@ void Usage( void )
     "  Sign the file with the private key and put the sig into sigfile.sig\n"
     "pki-tool verify <sigfile> <file> <public-keyfile>\n"
     "  Verify that the sigfile is a signature on the file with key.\n\n" );
+}
+
+s32 CommandKeygen( s32 argc, utf8 * argv[] )
+{
+  return COSM_PASS;
+}
+
+s32 CommandSign( s32 argc, utf8 * argv[] )
+{
+  return COSM_PASS;
+}
+
+s32 CommandVerify( s32 argc, utf8 * argv[] )
+{
+  return COSM_PASS;
 }
 
 int main( int argc, char *argv[] )
