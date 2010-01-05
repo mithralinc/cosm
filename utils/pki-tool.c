@@ -25,7 +25,7 @@ typedef struct
 {
   const utf8 * command;
   const s32 min_params;
-  const s32 (*function)( s32, utf8 ** );
+  s32 (*function)( s32, utf8 ** );
   /* const utf8 * help_string; */
 } COMMAND;
 
@@ -84,7 +84,7 @@ void my_progress( s32 type, s32 count, void *param )
 s32 GetHashPhrase( cosm_HASH * hash )
 {
   cosm_TRANSFORM transform;
-  u8 input[1024];
+  ascii input[1024];
   u32 len;
 
   CosmMemSet( hash, sizeof( cosm_HASH ), 0 );

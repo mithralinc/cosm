@@ -85,7 +85,7 @@ static const ascii hex_table[16] =
 #define COSM_IO_NO 0
 #define COSM_IO_YES 1
 
-u32 CosmInputRaw( u8 * buffer, u32 length, u32 echo )
+u32 CosmInputRaw( utf8 * buffer, u32 length, u32 echo )
 {
   u32 chars_read;
   int tmp;

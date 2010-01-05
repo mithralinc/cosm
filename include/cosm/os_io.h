@@ -91,7 +91,7 @@
 #define _ANSI_BACK( count ) \
   CosmPrint( "\033[%uD", count )
 
-u32 CosmInputRaw( u8 * buffer, u32 length, u32 echo );
+u32 CosmInputRaw( utf8 * buffer, u32 length, u32 echo );
   /*
     Read length bytes from stdin into the buffer. If echo is
     COSM_IO_NOECHO then the typed characters will not be echoed in any way,
