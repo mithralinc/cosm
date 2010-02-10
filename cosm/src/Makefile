@@ -39,7 +39,6 @@ all: $(LIBRARIES) $(BINARIES)
 
 ../lib/libCosmUtil.a: $(OBJECTS) sub-dirs
 	@echo Creating library $@
-	@echo $(SUBDEPS)
 	@$(RM) $@
 	@$(AR)$@ $(OBJECTS)
 	@for dir in $(SUBDIRS); do \
