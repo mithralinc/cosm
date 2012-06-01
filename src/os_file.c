@@ -1279,7 +1279,10 @@ s32 CosmDirGet( cosm_FILENAME * dirname )
     return COSM_DIR_ERROR_PARAM;
   }
 
-  getcwd( (char *) native_dirname, COSM_FILE_MAX_FILENAME - 1 );
+  if ( NULL == getcwd( (char *) native_dirname, COSM_FILE_MAX_FILENAME - 1 ) )
+  {
+    return COSM_FAIL;
+  }
 
   /* !!! translate back */
   CosmMemCopy( dirname, native_dirname, (u64) COSM_FILE_MAX_FILENAME );

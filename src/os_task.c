@@ -1045,7 +1045,7 @@ s32 CosmSemaphoreDown( cosm_SEMAPHORE * sem, u32 wait )
 #endif
 
   if ( ( sem == NULL ) || ( ( sem->state != COSM_SEMAPHORE_STATE_INIT ) 
-    && ( sem->state != COSM_SEMAPHORE_STATE_INIT ) ) )
+    && ( sem->state != COSM_SEMAPHORE_STATE_OPEN ) ) )
   {
     return COSM_FAIL;
   }
@@ -1155,7 +1155,7 @@ s32 CosmSemaphoreUp( cosm_SEMAPHORE * sem )
 #endif
 
   if ( ( sem == NULL ) || ( ( sem->state != COSM_SEMAPHORE_STATE_INIT ) 
-    && ( sem->state != COSM_SEMAPHORE_STATE_INIT ) ) )
+    && ( sem->state != COSM_SEMAPHORE_STATE_OPEN ) ) )
   {
     return COSM_FAIL;
   }
@@ -1399,7 +1399,7 @@ s32 CosmSignalRegister( u32 signal_type, void (*handler)(int) )
     CosmPrintStr( name, (u64) 128, "%016Y-SIGTERM",
       CosmProcessID() );
     win32_sigterm_handle = CreateSemaphore( NULL, 0, 1, (const char *) name );
-    if ( ( win32_sigint_handle == NULL ) || ( win32_sigint_handle == NULL ) )
+    if ( win32_sigint_handle == NULL )
     {
       return COSM_FAIL;
     }

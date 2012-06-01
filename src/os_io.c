@@ -862,7 +862,7 @@ s32 Cosm_ParseInt( void * number, utf8 ** end, const utf8 * string,
       /* eat numbers */
       while ( ( val >= 0 ) && ( val < (s32) radix ) )
       {
-        if ( ( tmp_u32 >= max_u32s ) ||
+        if ( ( tmp_u32 > max_u32s ) ||
           ( ( tmp_u32 == max_u32s ) && ( val > (s32) max_rem ) ) )
         {
           /* too many characters */
@@ -893,8 +893,8 @@ s32 Cosm_ParseInt( void * number, utf8 ** end, const utf8 * string,
       /* eat numbers */
       while ( ( val >= 0 ) && ( val < (s32) radix ) )
       {
-        if ( ( !( tmp_u64 < max_u64s ) ) ||
-          ( ( ( tmp_u64 == max_u64s ) ) && ( val > (s32) max_rem ) ) )
+        if ( ( tmp_u64 > max_u64s ) ||
+          ( ( tmp_u64 == max_u64s ) && ( val > (s32) max_rem ) ) )
         {
           /* too many characters */
           return COSM_FAIL;
@@ -923,7 +923,7 @@ s32 Cosm_ParseInt( void * number, utf8 ** end, const utf8 * string,
       /* eat numbers */
       while ( ( val >= 0 ) && ( val < (s32) radix ) )
       {
-        if ( ( !CosmU128Lt( tmp_u128, max_u128S ) ) ||
+        if ( ( CosmU128Gt( tmp_u128, max_u128S ) ) ||
           ( ( CosmU128Eq( tmp_u128, max_u128S ) ) && ( val > (s32) max_rem ) ) )
         {
           /* too many characters */
@@ -2004,8 +2004,6 @@ u32 Cosm_Print( cosm_FILE * file, void * string, u32 max_bytes,
         {
           for ( i = precision - 1 ; i >= 0 ; i-- )
           {
-            f64 tmp_whole_f64;
-
             if ( tmp_f64 > 0 )
             {
               tmp_f64 = tmp_f64 * 10.0;
