@@ -368,6 +368,7 @@ Win32
   replace mkdir() with Win32 API function
   CosmFileEOF doesn't work over shared drives (probably not fixable)
   CosmFileInfo access flags
+  Update usertypes.dat with array types
 
 Solaris/SunOS
   CPULock for solaris is buggy
