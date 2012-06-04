@@ -61,11 +61,13 @@ void ChildTERM( int arg )
 
 void Child( void )
 {
+  /*
   cosm_SEMAPHORE sem;
   cosm_SEMAPHORE_NAME sem_name;
   cosm_SHARED_MEM mem;
   cosm_SHARED_MEM_NAME mem_name;
   cosm_FILE file;
+  */
 
   CosmPrint( "    Hello from child process %v\n", CosmProcessID() );
 
@@ -90,11 +92,13 @@ void Child( void )
 void Parent( char * self )
 {
   u64 child_id;
+  /*
   cosm_SEMAPHORE sem;
   cosm_SEMAPHORE_NAME sem_name;
   cosm_SHARED_MEM mem;
   cosm_SHARED_MEM_NAME mem_name;
   cosm_FILE file;
+  */
   
   CosmPrint( "Spawning - %.256s -child\n", self );
   if ( CosmProcessSpawn( &child_id, self, "-child", NULL ) != COSM_PASS )
@@ -185,7 +189,11 @@ int main( int argc, char * argv[] )
   cosm_FILE file;
   cosm_FILENAME filename;
   cosm_FILE_INFO info;
-  utf8 * correct, * incorrect, buf[512];
+  utf8 * correct;
+#if ( defined( MEM_LEAK_FIND ) )
+  utf8 * incorrect;
+#endif
+  utf8 buf[512];
   u64 bytesread;
   u64 process_id;
   const u8 endian_bytes[16] =

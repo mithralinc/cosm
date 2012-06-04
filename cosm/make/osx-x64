@@ -2,7 +2,7 @@
 ## CPU       : x64
 ## Compiler  : GNU
 
-CC      = gcc-4.0
+CC      = gcc
 CXX     = g++
 FC      = g77
 LD      = $(CC) -arch x86_64 -o 
@@ -14,12 +14,9 @@ STRIP   = strip
 INSTALL = install
 OBJ     = o
 
-CCFLAGS  = -O2 -Wall -pedantic -Wno-long-long \
-  -isysroot /Developer/SDKs/MacOSX10.4u.sdk $(EXTRA_FLAGS)
-FCFLAGS  = -O2 -Wall -pedantic -Wno-long-long \
-  -isysroot /Developer/SDKs/MacOSX10.4u.sdk $(EXTRA_FLAGS)
-LDFLAGS = -Wl,-syslibroot /Developer/SDKs/MacOSX10.4u.sdk \
-  -mmacosx-version-min=10.4
+CCFLAGS  = -O2 -Wall -pedantic -Wno-long-long $(EXTRA_FLAGS)
+FCFLAGS  = -O2 -Wall -pedantic -Wno-long-long $(EXTRA_FLAGS)
+LDFLAGS = -mmacosx-version-min=10.4
 LDLIBS  = $(EXTRA_LIBS)
 
 # Cosm Defines

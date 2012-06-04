@@ -137,7 +137,8 @@ EOF
 
   dist)
     ./build clean
-    rm -f Makefile*
+    rm -f Makefile
+    rm -f include/cosm/Makefile.cosm
     rm -f build.hlp
     ;;
 

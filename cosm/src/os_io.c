@@ -2483,6 +2483,7 @@ s32 Cosm_PrintChar( u32 * bytes, cosm_FILE * file, void * string, u32 max_bytes,
 
 /* testing */
 
+#if 0 /* unused */
 #if ( !defined( NO_FLOATING_POINT ) )
 typedef struct cosm_FLOAT_TEST
 {
@@ -2521,6 +2522,7 @@ static cosm_SU32_TEST su32_tests[] =
   { (u32) 0xFFFFFFFF, "%X", "FFFFFFFF" },
   { (u32) 0.0,  NULL,  NULL }
 };
+#endif /* unused */
 
 /* testing */
 
