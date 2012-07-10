@@ -1,0 +1,334 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="..\..\src\bignum.c">
+      <Filter>Source Files\Utility Layer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\bzip2\blocksort.c">
+      <Filter>Source Files\Utility Layer\bzip2</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\bzip2\bzip2.c">
+      <Filter>Source Files\Utility Layer\bzip2</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\bzip2\bzlib.c">
+      <Filter>Source Files\Utility Layer\bzip2</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\os_file.c">
+      <Filter>Source Files\CPU/OS Layer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\os_io.c">
+      <Filter>Source Files\CPU/OS Layer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\os_math.c">
+      <Filter>Source Files\CPU/OS Layer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\os_mem.c">
+      <Filter>Source Files\CPU/OS Layer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\os_net.c">
+      <Filter>Source Files\CPU/OS Layer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\os_task.c">
+      <Filter>Source Files\CPU/OS Layer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\bzip2\compress.c">
+      <Filter>Source Files\Utility Layer\bzip2</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\bzip2\crctable.c">
+      <Filter>Source Files\Utility Layer\bzip2</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\bzip2\decompress.c">
+      <Filter>Source Files\Utility Layer\bzip2</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\bzip2\huffman.c">
+      <Filter>Source Files\Utility Layer\bzip2</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\bzip2\randtable.c">
+      <Filter>Source Files\Utility Layer\bzip2</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\buffer.c">
+      <Filter>Source Files\Utility Layer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\config.c">
+      <Filter>Source Files\Utility Layer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\crypto.c">
+      <Filter>Source Files\Utility Layer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\email.c">
+      <Filter>Source Files\Utility Layer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\http.c">
+      <Filter>Source Files\Utility Layer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\language.c">
+      <Filter>Source Files\Utility Layer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\log.c">
+      <Filter>Source Files\Utility Layer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\security.c">
+      <Filter>Source Files\Utility Layer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\time.c">
+      <Filter>Source Files\Utility Layer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\transform.c">
+      <Filter>Source Files\Utility Layer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\cosmtest.c">
+      <Filter>Source Files\Utility Layer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\hashtable.c">
+      <Filter>Source Files\Utility Layer</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\include\cosm\bignum.h">
+      <Filter>Header Files\Utility Layer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\cosm\bzip2\bzip2.h">
+      <Filter>Header Files\Utility Layer\bzip2</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\bzip2\bzlib.h">
+      <Filter>Header Files\Utility Layer\bzip2</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\bzip2\bzlib_private.h">
+      <Filter>Header Files\Utility Layer\bzip2</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\cosm\os_file.h">
+      <Filter>Header Files\CPU/OS Layer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\cosm\os_io.h">
+      <Filter>Header Files\CPU/OS Layer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\cosm\os_math.h">
+      <Filter>Header Files\CPU/OS Layer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\cosm\os_mem.h">
+      <Filter>Header Files\CPU/OS Layer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\cosm\os_net.h">
+      <Filter>Header Files\CPU/OS Layer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\cosm\os_task.h">
+      <Filter>Header Files\CPU/OS Layer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\cosm\buffer.h">
+      <Filter>Header Files\Utility Layer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\cosm\config.h">
+      <Filter>Header Files\Utility Layer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\cosm\hashtable.h">
+      <Filter>Header Files\Utility Layer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\cosm\http.h">
+      <Filter>Header Files\Utility Layer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\cosm\language.h">
+      <Filter>Header Files\Utility Layer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\cosm\log.h">
+      <Filter>Header Files\Utility Layer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\cosm\security.h">
+      <Filter>Header Files\Utility Layer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\cosm\time.h">
+      <Filter>Header Files\Utility Layer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\cosm\transform.h">
+      <Filter>Header Files\Utility Layer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\cosm\cosm.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\cosm\email.h">
+      <Filter>Header Files\Utility Layer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\cosm\cputypes.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\CHANGES.TXT" />
+    <None Include="..\..\CREDITS.TXT" />
+    <None Include="..\..\LICENSE.TXT" />
+    <None Include="..\..\README.txt" />
+    <None Include="..\..\TODO.TXT" />
+    <None Include="..\..\doc\bignum.html">
+      <Filter>Documentation\Utility Layer</Filter>
+    </None>
+    <None Include="..\..\doc\bzip2.html">
+      <Filter>Documentation\Utility Layer\bzip2</Filter>
+    </None>
+    <None Include="..\..\doc\os_file.html">
+      <Filter>Documentation\CPU/OS Layer</Filter>
+    </None>
+    <None Include="..\..\doc\os_task.html">
+      <Filter>Documentation\CPU/OS Layer</Filter>
+    </None>
+    <None Include="..\..\doc\os_io.html">
+      <Filter>Documentation\CPU/OS Layer</Filter>
+    </None>
+    <None Include="..\..\doc\os_math.html">
+      <Filter>Documentation\CPU/OS Layer</Filter>
+    </None>
+    <None Include="..\..\doc\os_mem.html">
+      <Filter>Documentation\CPU/OS Layer</Filter>
+    </None>
+    <None Include="..\..\doc\os_net.html">
+      <Filter>Documentation\CPU/OS Layer</Filter>
+    </None>
+    <None Include="..\..\doc\buffer.html">
+      <Filter>Documentation\Utility Layer</Filter>
+    </None>
+    <None Include="..\..\doc\config.html">
+      <Filter>Documentation\Utility Layer</Filter>
+    </None>
+    <None Include="..\..\doc\email.html">
+      <Filter>Documentation\Utility Layer</Filter>
+    </None>
+    <None Include="..\..\doc\http.html">
+      <Filter>Documentation\Utility Layer</Filter>
+    </None>
+    <None Include="..\..\doc\language.html">
+      <Filter>Documentation\Utility Layer</Filter>
+    </None>
+    <None Include="..\..\doc\log.html">
+      <Filter>Documentation\Utility Layer</Filter>
+    </None>
+    <None Include="..\..\doc\security.html">
+      <Filter>Documentation\Utility Layer</Filter>
+    </None>
+    <None Include="..\..\doc\time.html">
+      <Filter>Documentation\Utility Layer</Filter>
+    </None>
+    <None Include="..\..\doc\transform.html">
+      <Filter>Documentation\Utility Layer</Filter>
+    </None>
+    <None Include="..\..\doc\cosm.html">
+      <Filter>Documentation</Filter>
+    </None>
+    <None Include="..\..\doc\functions.html">
+      <Filter>Documentation</Filter>
+    </None>
+    <None Include="..\..\doc\index.html">
+      <Filter>Documentation</Filter>
+    </None>
+    <None Include="..\..\doc\programmers-guide.html">
+      <Filter>Documentation</Filter>
+    </None>
+    <None Include="..\..\doc\template.html">
+      <Filter>Documentation</Filter>
+    </None>
+    <None Include="..\..\build">
+      <Filter>Miscellaneous\UNIX Makefiles</Filter>
+    </None>
+    <None Include="..\common">
+      <Filter>Miscellaneous\UNIX Makefiles</Filter>
+    </None>
+    <None Include="..\fake">
+      <Filter>Miscellaneous\UNIX Makefiles</Filter>
+    </None>
+    <None Include="..\linux-x64">
+      <Filter>Miscellaneous\UNIX Makefiles</Filter>
+    </None>
+    <None Include="..\linux-x86">
+      <Filter>Miscellaneous\UNIX Makefiles</Filter>
+    </None>
+    <None Include="..\macosx-ppc">
+      <Filter>Miscellaneous\UNIX Makefiles</Filter>
+    </None>
+    <None Include="..\macosx-ppc64">
+      <Filter>Miscellaneous\UNIX Makefiles</Filter>
+    </None>
+    <None Include="..\macosx-universal">
+      <Filter>Miscellaneous\UNIX Makefiles</Filter>
+    </None>
+    <None Include="..\macosx-x64">
+      <Filter>Miscellaneous\UNIX Makefiles</Filter>
+    </None>
+    <None Include="..\macosx-x86">
+      <Filter>Miscellaneous\UNIX Makefiles</Filter>
+    </None>
+    <None Include="..\..\src\Makefile">
+      <Filter>Miscellaneous\UNIX Makefiles</Filter>
+    </None>
+    <None Include="..\..\src\bzip2\Makefile">
+      <Filter>Miscellaneous\UNIX Makefiles</Filter>
+    </None>
+    <None Include="..\..\doc\Makefile">
+      <Filter>Miscellaneous\UNIX Makefiles</Filter>
+    </None>
+    <None Include="..\..\src\bzip2\README.TXT">
+      <Filter>Documentation\Utility Layer\bzip2</Filter>
+    </None>
+    <None Include="..\TEMPLATE">
+      <Filter>Miscellaneous\UNIX Makefiles</Filter>
+    </None>
+    <None Include="..\..\utils\file2hex">
+      <Filter>Miscellaneous</Filter>
+    </None>
+    <None Include="..\..\doc\html2man.pl">
+      <Filter>Miscellaneous</Filter>
+    </None>
+    <None Include="..\..\utils\indent.pro">
+      <Filter>Miscellaneous</Filter>
+    </None>
+    <None Include="..\..\utils\p2update.pl">
+      <Filter>Miscellaneous</Filter>
+    </None>
+    <None Include="..\..\utils\longlines.pl">
+      <Filter>Miscellaneous</Filter>
+    </None>
+    <None Include="usertype.dat">
+      <Filter>Miscellaneous</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Documentation">
+      <UniqueIdentifier>{feb863e1-a966-45cf-97b8-e9c95d5584c7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{827873e8-a2c8-4ef3-9cd2-2e3e8c92c8e0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{27802f60-1a9f-4166-bef1-617cfe835a9e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Documentation\Utility Layer">
+      <UniqueIdentifier>{9d5a0bd5-5d10-4385-bd42-68fe8c41f638}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Documentation\CPU/OS Layer">
+      <UniqueIdentifier>{c34ec20f-f683-49ef-a68c-dc16887e73ad}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\CPU/OS Layer">
+      <UniqueIdentifier>{38804ac5-1aa2-416c-9e82-d7ba42aedc64}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Utility Layer">
+      <UniqueIdentifier>{48d9fde5-988b-428b-8bb5-e865362a6c7e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\CPU/OS Layer">
+      <UniqueIdentifier>{cd83f68d-af0f-4ef4-bc32-283a71a50996}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Utility Layer">
+      <UniqueIdentifier>{2dc90255-a2a8-474c-859b-5dc71e9b07da}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Documentation\Utility Layer\bzip2">
+      <UniqueIdentifier>{3d6a84aa-4b35-4dbd-a72e-f6e749633b96}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Utility Layer\bzip2">
+      <UniqueIdentifier>{3082528e-b88e-4648-93ec-eb77280d3ab1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Utility Layer\bzip2">
+      <UniqueIdentifier>{4a2fe27c-ddac-4443-96cf-6b8659cd1c35}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Miscellaneous">
+      <UniqueIdentifier>{9bf51e64-45cf-4a40-b837-d8ae45d30166}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Miscellaneous\UNIX Makefiles">
+      <UniqueIdentifier>{5b009211-d28a-4a6b-b6c0-e6af150b5d4d}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>
