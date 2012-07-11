@@ -113,7 +113,6 @@ typedef struct cosm_HTTPD_THREAD
   void * httpd;
   cosm_NET net;
   cosm_SEMAPHORE semaphore;
-  cosm_SEMAPHORE_NAME semaphore_name;
 } cosm_HTTPD_THREAD;
 
 typedef struct cosm_HTTPD

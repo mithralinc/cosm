@@ -249,12 +249,9 @@ void CosmMutexFree( cosm_MUTEX * mutex );
 
 /* Semaphores */
 
-s32 CosmSemaphoreInit( cosm_SEMAPHORE * sem, cosm_SEMAPHORE_NAME * name,
-  u32 initial_count );
+s32 CosmSemaphoreInit( cosm_SEMAPHORE * sem, u32 initial_count );
   /*
-    Create a semaphore with initial value of initial_count. The value of
-    name is set to a unique value, and can be given to other processes to
-    open.
+    Create a semaphore with initial value of initial_count.
     Note: Picking a name is not allowed due to platform specific naming
     conventions.
     Returns: COSM_PASS on success, or COSM_FAIL on failure.
