@@ -1,0 +1,22 @@
+=================
+CS-SDK To Do List
+=================
+
+This is a fine grained list of coding and documenting tasks that need
+to be done.
+
+------
+CODING
+------
+
+client.c
+  checkpointing examples
+
+server.c
+  -
+
+-------------
+DOCUMENTATION
+-------------
+
+Done.

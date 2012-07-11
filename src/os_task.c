@@ -884,13 +884,12 @@ void CosmMutexFree( cosm_MUTEX * mutex )
   mutex->state = 0;
 }
 
-s32 CosmSemaphoreInit( cosm_SEMAPHORE * sem, cosm_SEMAPHORE_NAME * name,
-  u32 initial_count )
+s32 CosmSemaphoreInit( cosm_SEMAPHORE * sem, u32 initial_count )
 {
   u32 unique_found = 0;
   u64 key;
   
-  if ( ( NULL == sem ) || ( NULL == name )
+  if ( ( NULL == sem )
     || ( sem->state == COSM_SEMAPHORE_STATE_INIT )
     || ( sem->state == COSM_SEMAPHORE_STATE_OPEN ) )
   {
@@ -964,7 +963,6 @@ s32 CosmSemaphoreInit( cosm_SEMAPHORE * sem, cosm_SEMAPHORE_NAME * name,
     key++;
   } while ( 0 == unique_found );
   
-  CosmStrCopy( (utf8 *) name, sem->name, sizeof( cosm_SEMAPHORE_NAME ) );
   sem->state = COSM_SEMAPHORE_STATE_INIT;
   return COSM_PASS;
 }
@@ -1759,7 +1757,6 @@ s32 Cosm_TestOSTask( void )
   u32 done;
   cosm_MUTEX mutex;
   cosm_SEMAPHORE semaphore, semaphore2;
-  cosm_SEMAPHORE_NAME semaphore_name;
   u32 cpu_count;
 
 #if ( ( OS_TYPE == OS_WIN32 ) || ( OS_TYPE == OS_WIN64 ) \
@@ -1789,7 +1786,7 @@ s32 Cosm_TestOSTask( void )
   /* Semaphore tests, 2 Downs only, then we should fail. */
 
   CosmMemSet( &semaphore, sizeof( semaphore ), 0 );
-  if ( CosmSemaphoreInit( &semaphore, &semaphore_name, 2 ) != COSM_PASS )
+  if ( CosmSemaphoreInit( &semaphore, 2 ) != COSM_PASS )
   {
     return -4;
   }
@@ -1814,7 +1811,7 @@ s32 Cosm_TestOSTask( void )
     return -9;
   }
   CosmMemSet( &semaphore2, sizeof( semaphore2 ), 0 );
-  if ( COSM_PASS != CosmSemaphoreOpen( &semaphore2, &semaphore_name ) )
+  if ( COSM_PASS != CosmSemaphoreOpen( &semaphore2, &semaphore.name ) )
   {
     return -10;
   }

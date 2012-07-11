@@ -1620,8 +1620,7 @@ void Cosm_HTTPDMain( void * arg )
   for ( i = 0 ; i < httpd->thread_count ; i++ )
   {
     /* start them idle */
-    if ( CosmSemaphoreInit( &threads[i].semaphore, &threads[i].semaphore_name,
-	  0 ) != COSM_PASS )
+    if ( CosmSemaphoreInit( &threads[i].semaphore, 0 ) != COSM_PASS )
     {
       /* !!! this is a possible error under load */
     }

@@ -1,0 +1,816 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<html>
+  <head>
+    <title>
+      Mithral CS-SDK Documentation
+    </title>
+    <style type="text/css"><!-- a {text-decoration: none} --></style>
+  </head>
+  <body background="../../doc/images/docbg.jpg" bgcolor="#000000"
+    text="#cccccc" link="#9999ff" vlink="#9999ff" alink="#ffcc66">
+
+  <table border="0" cellspacing="0" cellpadding="0">
+    <tr valign="top">
+      <td width="30"></td>
+      <td width="570">
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+<!-- 678901234567890123456789012345678901234567890123456789012345678901234 -->
+
+    <h2 align="center">
+      Mithral Client-Server<br>
+      Software Development Kit
+    </h2>
+
+    <h3>
+      Setup (before you code)
+    </h3>
+    <ul>
+      <li><a href="#Reading">Read this first</a>
+      <li><a href="#Structures">Structures</a>
+      <li><a href="#Filenames">Filenames</a>
+      <li><a href="#Logging">Logging</a>
+      <li><a href="#Networking">Networking</a>
+      <li><a href="#Examples">Examples</a>
+    </ul>
+
+    <h3>
+      Server Functions
+    </h3>
+    <ul>
+      <li><a href="#srv_catch_signal">catch_signal</a>
+      <li><a href="#srv_Initialize">Initialize</a>
+      <li><a href="#srv_Shutdown">Shutdown</a>
+      <li><a href="#srv_Assign">Assign</a>
+      <li><a href="#srv_Accept">Accept</a>
+    </ul>
+
+    <h3>
+      Client Functions
+    </h3>
+    <ul>
+      <li><a href="#cli_catch_signal">catch_signal</a>
+      <li><a href="#cli_Load">Load</a>
+      <li><a href="#cli_Save">Save</a>
+      <li><a href="#cli_GetWork">GetWork</a>
+      <li><a href="#cli_PutWork">PutWork</a>
+      <li><a href="#cli_Connect">Connect</a>
+      <li><a href="#cli_Run">Run</a>
+      <li><a href="#cli_Speed">Speed</a>
+      <li><a href="#cli_Test">Test</a>
+      <li><a href="#cli_Config">Config</a>
+    </ul>
+
+    <hr>
+
+    <a name="Reading"></a>
+    <h3>
+      Read this first
+    </h3>
+    <p>
+      The Mithral Client-Server Software Development Kit allows people
+      to quickly and easily write large scale client-server applications
+      including "distributed computing" and "GRID" applications.
+      Examples of what this will allow you to build with this technology are
+      distributed.net, SETI@Home, Napster, Gnutella, and hundreds of other
+      applications. The example code is an instance of an application
+      that hands out work for the clients to do, then collects the results.
+    </p>
+    <p>
+      The CS-SDK is a kit that should allow a first-year programmer
+      to take an application and make it into a client-server application
+      in a weekend. Naturally, if your application doesn't already
+      exist, than you have a few months of project design and development
+      ahead of you. Also, if your application was not written
+      to be portable, you will also have additional work to do integrating
+      the Cosm CPU/OS layer with your application.
+    </p>
+    <p>
+      The first thing you will have to do to use this kit is get familiar
+      with client-server architectures. If you're not familiar with
+      client-server models, find someone who is to help you with your
+      project. Your mistakes can cause untold headaches for network
+      adminitrators if you design your project incorrectly.
+    </p>
+    <p>
+      Next you will need to install the Cosm libraries, read the
+      Programmers Guide, license, and API documentation. These can all be
+      found on the Mithral web site. Read them. You will also need to be
+      familiar with the correct use of ANSI C. In general you should avoid
+      use of the C standard library, unsafe functions have been replaced with
+      functions in the Cosm API. Not following the documentation will
+      result in non-portable and error-prone applications. Reading all the
+      documentaiton and getting the libraries installed should take a few
+      hours.
+    </p>
+    <p>
+      After that reading, return to this document and finish reading it.
+      It will make little sense until you read the previously mentioned
+      documentation. Now go do the reading, which we all know you didn't
+      do yet ;) If you skipped even this "read this first" reading, then
+      eventually you'll be back looking for a reason your project doesn't
+      work.
+    </p>
+    <p>
+      The rest should be relatively straitforward, if not let us know.
+      Read this document, read the three .h and two .c files, `make` the
+      example and play with it. Look at how the code does what it does.
+      The example should run without changes since it's configured to run
+      on localhost.
+    </p>
+    <p>
+      Now you should be ready to rip out the example code, and put in
+      your own. Join us in the IRC channel #cosm on Open Projects Net IRC for
+      help and to chat with others working on projects - someone may just
+      be awake when you /join.
+    </p>
+
+    <hr>
+
+    <a name="Structures"></a>
+    <h3>
+      Structures
+    </h3>
+    <p>
+      There are 5 structures in common.h that you need to know about and
+      modify for your project.
+    </p>
+
+    <dl>
+      <dt>PACKET_REQUEST
+      <dd>A request from the client to the server for some work. The
+        only read data needed is the amount of work the client expects to do
+        in a day.
+      <dt>PACKET_ASSIGNMENT
+      <dd>Assignment from the server to the client containing all the data
+        needed to do a piece of work. Number ranges, raw data, etc.
+      <dt>PACKET_RESULTS
+      <dd>Results of the work, sent back to the server. Should contain the
+        results as well as who did the work and other data you need for
+        statistics.
+      <dt>PACKET_ACCEPT
+      <dd>Acknowledgement from the server that the work results were
+        recieved and saved. This allows the client to delete the work.
+        A simple PASS/FAIL is enough.
+      <dt>PACKET_ACTIVE
+      <dd>This isn't so much a packet, since it only exists on the client,
+        but it needs to be treated as such (endian issues etc.) when saved
+        to the CLIENT_DATAFILE. This contains the work assignments along
+        with any temporary data. Work may be in an unstarted, unfinished
+        (checkpointed), or finished state ready to go back to the server
+        when in this structure.
+    </dl>
+
+    <hr>
+
+    <a name="Filenames"></a>
+    <h3>
+      Filenames
+    </h3>
+    <p>
+      <strong>Client files</strong> (client.h)
+    </p>
+    <dl>
+      <dt>CLIENT_DATAFILE
+      <dd>File that temporary data and work data will be saved to.
+      <dt>CLIENT_CONFIG
+      <dd>Client configuration file.
+      <dt>CLIENT_LOG
+      <dd>File for client log.
+    </dl>
+    <p>
+      <strong>Server files</strong> (server.h)
+    </p>
+    <dl>
+      <dt>SERVER_DATAFILE
+      <dd>Datafile(s) that the server needs for assignment/work data.
+      <dt>SERVER_CONFIG
+      <dd>Server configuration data (optional).
+      <dt>WORK_LOG
+      <dd>Log of completed work, along with statistical data.
+      <dt>ACTIVITY_LOG
+      <dd>Log for other activity like network and debug information.
+    </dl>
+
+    <hr>
+
+    <a name="Logging"></a>
+    <h3>
+      Logging
+    </h3>
+    <p>
+      <strong>Client logging</strong>
+    </p>
+    <p>
+      On the client the CLIENT_LOG should include everything that
+      you would send to the screen. At lower log levels this may just
+      be the work being received and sent. At higher levels you may want
+      to include additional things like networking logs, or progress
+      indicators.
+    </p>
+    <p>
+      <strong>Server logging</strong>
+    </p>
+    <p>
+      For the server there are (at least) two logs. The WORK_LOG should
+      log work recieved as done, along with the time, user, and other data
+      needed for statistics processing. The ACTIVITY_LOG is for all other
+      logging, including network connections, startup/shutdown messages,
+      diagnostics, or other debug information.
+    </p>
+
+    <hr>
+
+    <a name="Networking"></a>
+    <h3>
+      Networking
+    </h3>
+    <p>
+      You will need to change both NETPACKET_SERVER and NETPACKET_PORT in
+      common.h for the full hostname and port your server will run on.
+      Anything above port 1024 will work, but 10204 is recommended,
+      becasue nothing else is assigned in the 10200-10300 range.
+      NETPACKET_HTTPSERVER and NETPACKET_HTTPPORT also need to be sent
+      projects that will tunnel through HTTP. NETPACKET_HTTPPORT should
+      usually be 80 or 8080.
+    </p>
+    <p>
+      If you are going to use HTTP tunneling on port 80, you need
+      to first be sure your servers dont already have web servers running.
+      You may only want HTTP modes, or you can keep both, which will
+      preaty much get through any firewall.
+    <hr>
+
+    <a name="Examples"></a>
+    <h3>
+      Examples
+    </h3>
+    <p>
+      The example code is part of the standard files. This was done because
+      most all of what you have to do to customize for your own project is
+      to simply replace what's done in the example. If you want a "clean"
+      version, just delete everything but the defines and function
+      declarations.
+    </p>
+
+    <hr>
+
+<!-- functions stuff - jrt -->
+
+    <a name="srv_catch_signal"></a>
+    <h3>
+      catch_signal
+    </h3>
+
+    <h4>Syntax</h4>
+</font>
+<pre>
+void catch_signal( int arg );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Description</h4>
+    <p>
+      Sets <em>__shutdown_flag</em> to 1 on signal. In the example it shuts
+      down immediately, but with multi-connection or multi-thread versions
+      you may want to delay shutdown.
+    </p>
+
+    <h4>Return Values</h4>
+    <p>
+      None.
+    </p>
+
+    <h4>Errors</h4>
+    <p>
+      None.
+    </p>
+
+    <h4>Example</h4>
+    <p>
+      See server.c
+    </p>
+
+    <hr>
+
+    <a name="srv_Initialize"></a>
+    <h3>
+      Initialize
+    </h3>
+
+    <h4>Syntax</h4>
+</font>
+<pre>
+s32 Initialize( cosm_NET * net );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Description</h4>
+    <p>
+      This function is responsible for loading in the unassigned work,
+      assigned work, and other state information needed for the server. It
+      also sets up the network listening port, and any other initial setup.
+    </p>
+
+    <h4>Return Values</h4>
+    <p>
+      COSM_PASS on success, or COSM_FAIL on failure.
+    </p>
+
+    <h4>Errors</h4>
+    <p>
+      None.
+    </p>
+
+    <h4>Example</h4>
+    <p>
+      See server.c
+    </p>
+
+    <hr>
+
+    <a name="srv_Shutdown"></a>
+    <h3>
+      Shutdown
+    </h3>
+
+    <h4>Syntax</h4>
+</font>
+<pre>
+s32 Shutdown( void );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Description</h4>
+    <p>
+      This function closes any network connections, and saves all the state
+      data such as unassigned work.
+    </p>
+
+    <h4>Return Values</h4>
+    <p>
+      COSM_PASS on success, or COSM_FAIL on failure.
+    </p>
+
+    <h4>Errors</h4>
+    <p>
+      None.
+    </p>
+
+    <h4>Example</h4>
+    <p>
+      See server.c
+    </p>
+
+    <hr>
+
+    <a name="srv_Assign"></a>
+    <h3>
+      Assign
+    </h3>
+
+    <h4>Syntax</h4>
+</font>
+<pre>
+void Assign( cosm_NET * net );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Description</h4>
+    <p>
+      This function takes the open network connection <em>net</em> and reads
+      the remainder of a PACKET_REQUEST packet, assigns the client
+      some work, tracks the assigned work, and then sends a
+      PACKET_ASSIGNMENT packet to the client with the assigned work.
+    </p>
+
+    <h4>Return Values</h4>
+    <p>
+      None.
+    </p>
+
+    <h4>Errors</h4>
+    <p>
+      None.
+    </p>
+
+    <h4>Example</h4>
+    <p>
+      See server.c
+    </p>
+
+    <hr>
+
+    <a name="srv_Accept"></a>
+    <h3>
+      Accept
+    </h3>
+
+    <h4>Syntax</h4>
+</font>
+<pre>
+void Accept( cosm_NET * net );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Description</h4>
+    <p>
+      This function takes the open network connection <em>net</em> and reads
+      the remainder of a PACKET_RESULTS packet, saves the completed
+      work, logs it, and then returns a PACKET_ACCEPT packet to the
+      client for acknowledgement.
+    </p>
+
+    <h4>Return Values</h4>
+    <p>
+      None.
+    </p>
+
+    <h4>Errors</h4>
+    <p>
+      None.
+    </p>
+
+    <h4>Example</h4>
+    <p>
+      See server.c
+    </p>
+
+    <hr>
+
+    <a name="cli_catch_signal"></a>
+    <h3>
+      catch_signal
+    </h3>
+
+    <h4>Syntax</h4>
+</font>
+<pre>
+void catch_signal( int arg );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Description</h4>
+    <p>
+      Sets <em>__shutdown_flag</em> to 1 on signal.
+    </p>
+
+    <h4>Return Values</h4>
+    <p>
+      None.
+    </p>
+
+    <h4>Errors</h4>
+    <p>
+      None.
+    </p>
+
+    <h4>Example</h4>
+    <p>
+      See client.c
+    </p>
+
+    <hr>
+
+    <a name="cli_Load"></a>
+    <h3>
+      Load
+    </h3>
+
+    <h4>Syntax</h4>
+</font>
+<pre>
+u32 Load( void );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Description</h4>
+    <p>
+      Load in all the PACKET_ACTIVE's from SUSPEND_FILENAME.
+      Usually only done at startup.
+    </p>
+
+    <h4>Return Values</h4>
+    <p>
+      Number of PACKET_ACTIVE structures loaded.
+    </p>
+
+    <h4>Errors</h4>
+    <p>
+      None.
+    </p>
+
+    <h4>Example</h4>
+    <p>
+      See client.c
+    </p>
+
+    <hr>
+
+    <a name="cli_Save"></a>
+    <h3>
+      Save
+    </h3>
+
+    <h4>Syntax</h4>
+</font>
+<pre>
+s32 Save( void );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Description</h4>
+    <p>
+      Save all the valid (active, done) PACKET_ACTIVE's to
+      SUSPEND_FILENAME. This is done both at shutdown and for
+      checkpointing.
+    </p>
+
+    <h4>Return Values</h4>
+    <p>
+      COSM_PASS on success, or COSM_FAIL on failure.
+    </p>
+
+    <h4>Errors</h4>
+    <p>
+      None.
+    </p>
+
+    <h4>Example</h4>
+    <p>
+      See client.c
+    </p>
+
+    <hr>
+
+    <a name="cli_GetWork"></a>
+    <h3>
+      GetWork
+    </h3>
+
+    <h4>Syntax</h4>
+</font>
+<pre>
+u32 GetWork( PACKET_ACTIVE * work, u32 count );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Description</h4>
+    <p>
+      Connect to the server, request a days worth of <em>work</em> with a
+      PACKET_REQUEST packet, and read back the
+      PACKET_ASSIGNMENT packet, storing the assigned <em>work</em> locally.
+      If a given <em>work</em> is already loaded, it will not overwrite it.
+    </p>
+
+    <h4>Return Values</h4>
+    <p>
+      Number of PACKET_ACTIVE's received.
+    </p>
+
+    <h4>Errors</h4>
+    <p>
+      None.
+    </p>
+
+    <h4>Example</h4>
+    <p>
+      See client.c
+    </p>
+
+    <hr>
+
+    <a name="cli_PutWork"></a>
+    <h3>
+      PutWork
+    </h3>
+
+    <h4>Syntax</h4>
+</font>
+<pre>
+u32 PutWork( PACKET_ACTIVE * work, u32 count );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Description</h4>
+    <p>
+      Connect to the server, send in a PACKET_RESULTS packet, and
+      expect back a PACKET_ACCEPT packet. Once the <em>work</em> is
+      acknowledged, it can be deleted. Will only send <em>work</em> that
+      is done.
+    </p>
+
+    <h4>Return Values</h4>
+    <p>
+      Number of PACKET_ACTIVE's sent in.
+    </p>
+
+    <h4>Errors</h4>
+    <p>
+      None.
+    </p>
+
+    <h4>Example</h4>
+    <p>
+      See client.c
+    </p>
+
+    <hr>
+
+    <a name="cli_Connect"></a>
+    <h3>
+      Connect
+    </h3>
+
+    <h4>Syntax</h4>
+</font>
+<pre>
+s32 Connect( cosm_NET * net );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Description</h4>
+    <p>
+      This is a helper function used by <a href="#cli_GetWork">GetWork</a>
+      and <a href="#cli_PutWork">PutWork</a> due to the complexity of
+      connecting possibly with a firewall. <em>net</em> will be connected to
+      the server and in a connected state upon return.
+    </p>
+
+    <h4>Return Values</h4>
+    <p>
+      COSM_PASS on successful connect to the server, or COSM_FAIL on failure.
+    </p>
+
+    <h4>Errors</h4>
+    <p>
+      None.
+    </p>
+
+    <h4>Example</h4>
+    <p>
+      See client.c
+    </p>
+
+    <hr>
+
+    <a name="cli_Run"></a>
+    <h3>
+      Run
+    </h3>
+
+    <h4>Syntax</h4>
+</font>
+<pre>
+s32 Run( PACKET_ACTIVE * work, u64 iterations );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Description</h4>
+    <p>
+      Process the <em>work</em> for up to <em>iterations</em> loops.
+      The algorithms used will depend entirely on the project. Before
+      returning (without error) from this function the <em>work</em>
+      must be in a checkpointable state.
+    </p>
+
+    <h4>Return Values</h4>
+    <p>
+      STATE_INVALID on error, STATE_DONE if the work was
+      finished, or STATE_ALIVE if there is more work to be done.
+    </p>
+
+    <h4>Errors</h4>
+    <p>
+      None.
+    </p>
+
+    <h4>Example</h4>
+    <p>
+      See client.c
+    </p>
+
+    <hr>
+
+    <a name="cli_Speed"></a>
+    <h3>
+      Speed
+    </h3>
+
+    <h4>Syntax</h4>
+</font>
+<pre>
+u64 Speed( void );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Description</h4>
+    <p>
+      Benchmark the client speed. This will be used both for checkpointing
+      and to request a days worth of work.
+    </p>
+
+    <h4>Return Values</h4>
+    <p>
+      Number of iterations per second (or the timespan set) that the
+      client can handle, or a default speed on error.
+    </p>
+
+    <h4>Errors</h4>
+    <p>
+      None.
+    </p>
+
+    <h4>Example</h4>
+    <p>
+      See client.c
+    </p>
+
+    <hr>
+
+    <a name="cli_Test"></a>
+    <h3>
+      Test
+    </h3>
+
+    <h4>Syntax</h4>
+</font>
+<pre>
+s32 Test( void );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Description</h4>
+    <p>
+      Run selftests for the client, including CosmTest().
+    </p>
+
+    <h4>Return Values</h4>
+    <p>
+      COSM_PASS on success, or a negative number corresponding to the test
+      that failed.
+    </p>
+
+    <h4>Errors</h4>
+    <p>
+      None.
+    </p>
+
+    <h4>Example</h4>
+    <p>
+      See client.c
+    </p>
+
+    <hr>
+
+    <a name="cli_Config"></a>
+    <h3>
+      Config
+    </h3>
+
+    <h4>Syntax</h4>
+</font>
+<pre>
+s32 Config( void );
+</pre>
+<font face="Verdana,Arial,Helvetica" size="-1">
+
+    <h4>Description</h4>
+    <p>
+      Asks the user for all needed configuration information. This will be
+      logging level, network settings, and other project specific data.
+    </p>
+
+    <h4>Return Values</h4>
+    <p>
+      COSM_PASS on success, or COSM_FAIL on failure.
+    </p>
+
+    <h4>Errors</h4>
+    <p>
+      None.
+    </p>
+
+    <h4>Example</h4>
+    <p>
+      See client.c
+    </p>
+
+<hr>
+
+</font>
+<font face="Verdana,Arial,Helvetica" size="-2" color="#6666cc">
+  <p>
+    &copy; Mithral Communications & Design Inc. 1995-2000.
+    All rights reserved.
+    Mithral&reg; and Cosm&reg; are trademarks of
+    Mithral Communications & Design, Inc.
+    <!--#config timefmt="%b %d, %Y" -->
+    Document last modified: <!--#echo var="LAST_MODIFIED" --><br>
+  </p>
+</font>
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>
