@@ -1,0 +1,32 @@
+## OS        : Linux
+## CPU       : ARM
+## Compiler  : GNU
+
+CC      = gcc
+CXX     = g++
+FC      = g77
+LD      = gcc -o 
+DYLIB   = gcc -shared -o 
+AR      = ar rc 
+RM      = rm -f
+RNLIB   = ranlib
+STRIP   = strip
+INSTALL = install
+OBJ     = o
+
+CCFLAGS = -O2 -fPIC -Wall -pedantic -Wno-long-long -D_REENTRANT $(EXTRA_FLAGS)
+FCFLAGS = -O2 -fPIC -Wall -pedantic -Wno-long-long -D_REENTRANT $(EXTRA_FLAGS)
+LDFLAGS = 
+LDLIBS  = -lpthread -lm -ldl $(EXTRA_LIBS)
+
+# Cosm Defines
+COSM_DEFS = -DCPU_32BIT -DOS_TYPE=OS_LINUX -DCPU_TYPE=CPU_ARM
+
+.c.$(OBJ):
+	@echo "Compiling $<"
+	@$(CC) $(CC_FLAGS) $(COSM_DEFS) -o $@ -c $<
+
+.cpp.$(OBJ):
+	@echo "Compiling $<"
+	@$(CXX) $(CC_FLAGS) $(COSM_DEFS) -o $@ -c $<
+
