@@ -19,6 +19,10 @@ CODING
 
 !!! MITHRAL LICENSE A/B !!! Fix code templates
 
+Doxygen
+Move to common errors.
+CosmErrorStr(), CosmOSStr(), CosmCPUStr()
+Remove all endian specific code, use generic. (Big endian lost)
 Can safely reinit after a free/end without memset? check all functions?
 Review #define/switch standard method?
 Fix indent.pro

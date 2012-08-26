@@ -8,7 +8,7 @@
 
   A copy of the license(s) is enclosed with this Package and by using this
   Package you agree to the license terms. The Package is Copyright (C)
-  1995-2007 by Creator. All rights reserved. Further information about the
+  1995-2012 by Creator. All rights reserved. Further information about the
   Package and pricing information can be found at the Creator's web site:
   http://www.mithral.com/
 */
@@ -172,10 +172,10 @@ int main( int argc, char * argv[] )
 {
   s32 error;
   s32 error2;
-  static const ascii * os_types[] = COSM_OS_TYPES;
-  static const ascii * cpu_types[] = COSM_CPU_TYPES;
-  static const ascii * months[12] = COSM_TIME_MONTHS;
-  static const ascii * days[7] = COSM_TIME_DAYS;
+  const ascii * os_types[] = COSM_OS_TYPES;
+  const ascii * cpu_types[] = COSM_CPU_TYPES;
+  const ascii * months[12] = COSM_TIME_MONTHS;
+  const ascii * days[7] = COSM_TIME_DAYS;
   cosm_DYNAMIC_LIB dylib;
   s32 (*dl_function)( s32 );
   u64 memory;
@@ -360,21 +360,11 @@ int main( int argc, char * argv[] )
     CosmPrint( "IP = UNKNOWN\n" );
   }
 
-  if ( ( __cosm_test_modules[0].name != NULL )
-    || ( __cosm_test_modules[0].function != NULL )
-    || ( __cosm_test_modules[COSM_TEST_MODULE_MAX + 1].name != NULL )
-    || ( __cosm_test_modules[COSM_TEST_MODULE_MAX + 1].function != NULL ) )
-  {
-    CosmPrint( "\nCosmTest module list/defines wrong in cosmtest.c/cosm.h\n" );
-    CosmProcessEnd( -1 );
-  }
-
   CosmPrint( "\nRunning system tests... " );
   if ( CosmTest( &error, &error2, 0 ) != COSM_PASS )
   {
     CosmPrint( "Test failure in module %.16s %i.\n",
-      __cosm_test_modules[( -error > COSM_TEST_MODULE_MAX )
-      ? 0 : -error].name, error2 );
+      __cosm_test_modules[-error].name, error2 );
     CosmProcessEnd( error );
   }
   CosmPrint( "all passed.\n" );

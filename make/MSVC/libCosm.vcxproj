@@ -254,6 +254,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\doc\cosm.html" />
+    <None Include="..\..\doc\Doxygen.cfg" />
     <None Include="..\..\doc\functions.html" />
     <None Include="..\..\doc\html2man.pl" />
     <None Include="..\..\doc\index.html" />
