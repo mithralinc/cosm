@@ -8,7 +8,7 @@
 
   A copy of the license(s) is enclosed with this Package and by using this
   Package you agree to the license terms. The Package is Copyright (C)
-  1995-2007 by Creator. All rights reserved. Further information about the
+  1995-2012 by Creator. All rights reserved. Further information about the
   Package and pricing information can be found at the Creator's web site:
   http://www.mithral.com/
 */
@@ -54,6 +54,15 @@ s32 CosmTest( s32 * failed_module, s32 * failed_test, s32 module_num )
   error = 0;
   *failed_module = 0;
   *failed_test = 0;
+
+  if ( ( __cosm_test_modules[0].name != NULL )
+    || ( __cosm_test_modules[0].function != NULL )
+    || ( __cosm_test_modules[COSM_TEST_MODULE_MAX + 1].name != NULL )
+    || ( __cosm_test_modules[COSM_TEST_MODULE_MAX + 1].function != NULL ) )
+  {
+    CosmPrint( "\nCosmTest module list wrong in cosmtest.c\n" );
+    CosmProcessEnd( -1 );
+  }
 
   if ( module_num == 0 )
   {

@@ -76,11 +76,11 @@
     <ClCompile Include="..\..\src\transform.c">
       <Filter>Source Files\Utility Layer</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\cosmtest.c">
-      <Filter>Source Files\Utility Layer</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\hashtable.c">
       <Filter>Source Files\Utility Layer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\cosmtest.c">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -285,6 +285,9 @@
     </None>
     <None Include="usertype.dat">
       <Filter>Miscellaneous</Filter>
+    </None>
+    <None Include="..\..\doc\Doxygen.cfg">
+      <Filter>Documentation</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>

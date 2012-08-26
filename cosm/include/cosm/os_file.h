@@ -8,9 +8,13 @@
 
   A copy of the license(s) is enclosed with this Package and by using this
   Package you agree to the license terms. The Package is Copyright (C)
-  1995-2007 by Creator. All rights reserved. Further information about the
+  1995-2012 by Creator. All rights reserved. Further information about the
   Package and pricing information can be found at the Creator's web site:
   http://www.mithral.com/
+*/
+/**
+\file os_file.h
+\brief Cosm file and directory operations.
 */
 
 /* CPU/OS Layer - CPU and OS specific code is allowed */
@@ -18,7 +22,7 @@
 #ifndef COSM_OS_FILE_H
 #define COSM_OS_FILE_H
 
-#include "cputypes.h"
+#include "cosm/cputypes.h"
 #include "cosm/os_task.h"
 
 #if ( ( OS_TYPE == OS_WIN32 ) || ( OS_TYPE == OS_WIN64 ) )
@@ -29,23 +33,47 @@
 #include <dirent.h>
 #endif
 
-#define COSM_FILE_STATUS_CLOSED    0
-#define COSM_FILE_STATUS_OPEN  98712
+/**
+\defgroup FILE File Functions
+Functions dealing with files.
+\addtogroup FILE
+@{
+*/
 
-#define COSM_FILE_MODE_NONE     0x00
-#define COSM_FILE_MODE_EXIST    0x01 /* Test for file existence only */
-#define COSM_FILE_MODE_READ     0x02 /* Open for reading */
-#define COSM_FILE_MODE_WRITE    0x04 /* Open for writing */
-#define COSM_FILE_MODE_APPEND   0x08 /* Open at end of file, write only */
-#define COSM_FILE_MODE_CREATE   0x10 /* Create the file if it doesn't exist */
-#define COSM_FILE_MODE_TRUNCATE 0x20 /* Truncate an existing file on open */
-#define COSM_FILE_MODE_SYNC     0x40 /* Write to disk before return */
-#define COSM_FILE_MODE_NOBUFFER 0x80 /* No read/write buffering */
+/** File status closed. */
+enum COSM_FILE_STATUS
+{
+  COSM_FILE_STATUS_CLOSED = 0,    /**< Closed */
+  COSM_FILE_STATUS_OPEN   = 98712 /**< Open */
+};
 
-/* these will probably be made automatic and non-optional */
-#define COSM_FILE_LOCK_NONE       0x00 /* No Locking */
-#define COSM_FILE_LOCK_READ       0x01 /* Shared read lock */
-#define COSM_FILE_LOCK_WRITE      0x02 /* Exclusive write lock */
+/** Modes for opening files. */
+enum COSM_FILE_MODE
+{
+  COSM_FILE_MODE_NONE     = 0x00, /**< Invalid/missing file mode */
+  COSM_FILE_MODE_EXIST    = 0x01, /**< Test for file existence only */
+  COSM_FILE_MODE_READ     = 0x02, /**< Open for reading */
+  COSM_FILE_MODE_WRITE    = 0x04, /**< Open for writing */
+  COSM_FILE_MODE_APPEND   = 0x08, /**< Open at end of file, write only */
+  COSM_FILE_MODE_CREATE   = 0x10, /**< Create the file if it doesn't exist */
+  COSM_FILE_MODE_TRUNCATE = 0x20, /**< Truncate an existing file on open */
+  COSM_FILE_MODE_SYNC     = 0x40, /**< Write to disk before return */
+  COSM_FILE_MODE_NOBUFFER = 0x80  /**< No read/write buffering.
+    This can have negative performance consequences for small read/writes.
+    May requires sector and memory aligned read/writes on some platforms. */
+};
+
+/** Lock types for files. */
+enum COSM_FILE_LOCK
+{
+  COSM_FILE_LOCK_NONE  = 0x00, /**< No file locking needed.
+    Other locks will be observed. */
+  COSM_FILE_LOCK_READ  = 0x01, /**< Shared read lock.
+    Other processes can read the file, or add additional
+    read locks, but none will be allowed to open the file for writing. */
+  COSM_FILE_LOCK_WRITE = 0x02  /**< Exclusive write lock. No other readers or
+    writers will be allowed access to the file while the file is open. */
+};
 
 #define COSM_FILE_ERROR_DENIED    -1   /* Access Denied */
 #define COSM_FILE_ERROR_NOTFOUND  -2   /* File/Handle Not Found */
@@ -68,6 +96,10 @@
 
 #define COSM_FILE_MAX_FILENAME    256
 
+/**
+\typedef cosm_FILENAME
+\brief Internal filename type.
+*/
 typedef ascii cosm_FILENAME[COSM_FILE_MAX_FILENAME];
 
 /*
@@ -82,25 +114,27 @@ typedef ascii cosm_FILENAME[COSM_FILE_MAX_FILENAME];
   portion will be stripped.
 */
 
+/** File structure. */
 typedef struct cosm_FILE
 {
-  cosm_FILENAME filename;
+  cosm_FILENAME filename;  /**< File name. */
 #if ( ( OS_TYPE == OS_WIN32 ) || ( OS_TYPE == OS_WIN64 ) )
-  HANDLE handle;
+  HANDLE handle; /**< OS file handle. */
 #else
   u64 handle;
 #endif
-  u32 status;
-  u32 mode;
-  u32 lockmode;
+  u32 status;   /**< Status of file. */
+  u32 mode;     /**< Mode opened in. */
+  u32 lockmode; /**< Mode locked with. */
 } cosm_FILE;
 
+/** Memory mapped file structure. */
 typedef struct cosm_FILE_MEMORY_MAP
 {
-  void * memory;
-  u64 length;
+  void * memory;        /**< Memory pointer */
+  u64 length;           /**< Status of file. */
 #if ( ( OS_TYPE == OS_WIN32 ) || ( OS_TYPE == OS_WIN64 ) )
-  HANDLE file_mapping;
+  HANDLE file_mapping;  /**< Status of file. */
 #endif
 } cosm_FILE_MEMORY_MAP;
 
@@ -116,6 +150,7 @@ typedef struct cosm_FILE_MEMORY_MAP
 #define COSM_FILE_RIGHTS_APPEND  0x04 /* Appendable */
 #define COSM_FILE_RIGHTS_EXEC    0x08 /* Executeable program */
 
+/** File information structure. */
 typedef struct cosm_FILE_INFO
 {
   u64 length;
@@ -126,48 +161,35 @@ typedef struct cosm_FILE_INFO
   cosmtime access;
 } cosm_FILE_INFO;
 
-#define COSM_DIR_STATUS_CLOSED   0
-#define COSM_DIR_STATUS_OPEN     1
-
-#define COSM_DIR_MODE_NONE       0x00
-#define COSM_DIR_MODE_EXIST      0x04 /* Test for dir existance only */
-#define COSM_DIR_MODE_CREATE     0x08 /* Create the dir if it doesnt exist */
-
-#define COSM_DIR_ERROR_DENIED    -1  /* Access Denied */
-#define COSM_DIR_ERROR_NOTFOUND  -2  /* Directory not found */
-#define COSM_DIR_ERROR_READMODE  -3  /* Read access denied */
-#define COSM_DIR_ERROR_EOF       -4  /* End of Directory */
-#define COSM_DIR_ERROR_CREATE    -5  /* Unable to create new directory */
-#define COSM_DIR_ERROR_NOTEMPTY  -6  /* Directory is not empty (no delete) */
-#define COSM_DIR_ERROR_MODE      -7  /* Open flags conflict */
-#define COSM_DIR_ERROR_CLOSED    -8  /* Directory is closed */
-#define COSM_DIR_ERROR_NAME      -9  /* Invalid Dirname */
-#define COSM_DIR_ERROR_PARAM     -10 /* Parameter error */
-
-typedef struct cosm_DIR
-{
-  cosm_FILENAME dirname;
-  u64 offset;
-  u32 status;
-/* dirctories are handled far differently by every OS */
-#if ( ( OS_TYPE == OS_WIN32 ) || ( OS_TYPE == OS_WIN64 ) )
-  HANDLE handle;
-  WIN32_FIND_DATA find_data;
-#else
-  DIR * handle;
-#endif
-} cosm_DIR;
-
 /*
   File Functions
 */
 
+/**
+Attempt to open the \a filename with the \a mode(s) and \a lock(s) specified.
+\param file File handle to create.
+\param filename Name of file to open.
+\param mode Combination of #COSM_FILE_MODE modes.
+\param lock Combination of #COSM_FILE_LOCK types.
+\return COSM_PASS on success, or an error code on failure.
+\code
+  cosm_FILE * file;
+  s32 result;
+
+  file = CosmMemAlloc( sizeof( cosm_FILE ) );
+
+  result = CosmFileOpen( file, "foo.txt",
+    COSM_FILE_MODE_READ | COSM_FILE_MODE_WRITE,
+    COSM_FILE_LOCK_NONE );
+
+  if ( result == COSM_PASS )
+    CosmPrint( "File open for reading.\n" );
+  else
+    CosmPrint( "Unable to open /etc/fstab for reading.\n" );
+\endcode
+*/
 s32 CosmFileOpen( cosm_FILE * file, const ascii * filename,
   u32 mode, u32 lock );
-  /*
-    Attempt to open the filename in the mode with the lock.
-    Returns: COSM_PASS on success, or an error code on failure.
-  */
 
 s32 CosmFileRead( void * buffer, u64 * bytes_read, cosm_FILE * file,
   u64 length );
@@ -270,15 +292,58 @@ s32 CosmFileInfo( cosm_FILE_INFO * info, const ascii * filename );
     Returns: COSM_PASS on success, or an error code on failure.
   */
 
+/**
+@}
+*/
+
+/**
+\defgroup DIRECTORY Directory Functions
+Functions dealing with directories.
+\addtogroup DIRECTORY
+@{
+*/
+
 /*
   Directory Functions
 */
 
+#define COSM_DIR_STATUS_CLOSED   0
+#define COSM_DIR_STATUS_OPEN     1
+
+#define COSM_DIR_MODE_NONE       0x00
+#define COSM_DIR_MODE_EXIST      0x01 /* Test for dir existance only */
+#define COSM_DIR_MODE_CREATE     0x02 /* Create the dir if it doesnt exist */
+
+#define COSM_DIR_ERROR_DENIED    -1  /* Access Denied */
+#define COSM_DIR_ERROR_NOTFOUND  -2  /* Directory not found */
+#define COSM_DIR_ERROR_READMODE  -3  /* Read access denied */
+#define COSM_DIR_ERROR_EOF       -4  /* End of Directory */
+#define COSM_DIR_ERROR_CREATE    -5  /* Unable to create new directory */
+#define COSM_DIR_ERROR_NOTEMPTY  -6  /* Directory is not empty (no delete) */
+#define COSM_DIR_ERROR_MODE      -7  /* Open flags conflict */
+#define COSM_DIR_ERROR_CLOSED    -8  /* Directory is closed */
+#define COSM_DIR_ERROR_NAME      -9  /* Invalid Dirname */
+#define COSM_DIR_ERROR_PARAM     -10 /* Parameter error */
+
+typedef struct cosm_DIR
+{
+  cosm_FILENAME dirname;
+  u64 offset;
+  u32 status;
+/* dirctories are handled far differently by every OS */
+#if ( ( OS_TYPE == OS_WIN32 ) || ( OS_TYPE == OS_WIN64 ) )
+  HANDLE handle;
+  WIN32_FIND_DATA find_data;
+#else
+  DIR * handle;
+#endif
+} cosm_DIR;
+
+/**
+Attempt to open the dirname with mode.
+\return COSM_PASS on success, or an error code on failure.
+*/
 s32 CosmDirOpen( cosm_DIR * dir, const ascii * dirname, u32 mode );
-  /*
-    Attempt to open the dirname in the mode.
-    Returns: COSM_PASS on success, or an error code on failure.
-  */
 
 s32 CosmDirRead( cosm_FILENAME * buffer, u64 * names_read, u64 length,
   cosm_DIR * dir );
@@ -312,13 +377,18 @@ s32 CosmDirSet( const ascii * dirname );
     Returns: COSM_PASS on success, or an error code on failure.
   */
 
-/*
-  Utility Functions to deal with endian issues and keep
-  everything portable. ALL data must be run through these when moving
-  from the machine to the network or a file. We need to deal with the
-  (normal) case where the pointers are the same memory location.
-  We don't need different functions for signed data types since we're
-  just swapping bytes.
+/**
+@}
+*/
+
+/**
+\defgroup ENDIAN Endian Safe Functions
+\addtogroup ENDIAN
+Utility Functions to deal with endian issues and keep date portable.
+ALL data must be run through these when moving from the machine to the
+network or a file. Functions handle case where the pointers are the same
+or overlapping memory location.
+@{
 */
 
 #if ( COSM_ENDIAN_CURRENT == COSM_ENDIAN_BIG )
@@ -353,6 +423,10 @@ void CosmU128Save( void * bytes, const u128 * num );
 #define CosmS64Save( bytes, num ) CosmU64Save( bytes, (u64 *) num )
 #define CosmS128Load( num, bytes ) CosmU128Load( (u128 *) num, bytes )
 #define CosmS128Save( bytes, num ) CosmU128Save( bytes, (u128 *) num )
+
+/**
+@}
+*/
 
 /* Low level Functions */
 
@@ -418,11 +492,10 @@ s32 Cosm_FileWipe( cosm_FILE * file, u64 length );
 
 /* testing */
 
+/**
+Test functions in os_file.
+\return COSM_PASS, or a negative number corresponding to the test that failed.
+*/
 s32 Cosm_TestOSFile( void );
-  /*
-    Test functions in this header.
-    Returns: COSM_PASS on success, or a negative number corresponding to the
-      test that failed.
-  */
 
 #endif

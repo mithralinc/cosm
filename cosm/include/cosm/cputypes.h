@@ -8,9 +8,13 @@
 
   A copy of the license(s) is enclosed with this Package and by using this
   Package you agree to the license terms. The Package is Copyright (C)
-  1995-2007 by Creator. All rights reserved. Further information about the
+  1995-2012 by Creator. All rights reserved. Further information about the
   Package and pricing information can be found at the Creator's web site:
   http://www.mithral.com/
+*/
+/**
+\file cputypes.h
+\brief Cosm CPU/OS defines, and scalar/vector data types.
 */
 
 /* CPU/OS Layer - CPU and OS specific code is allowed */
@@ -104,22 +108,26 @@
 #endif
 
 /* Define 8bit types and characters */
-#if ( UCHAR_MAX == 0xFF )
-typedef unsigned char u8;
-typedef signed char s8;
-#else
+typedef unsigned char u8; /**< 8-bit unsigned. */
+typedef signed char s8;   /**< 8-bit signed. */
+#if ( UCHAR_MAX != 0xFF )
 #error "char is not 8 bits - serious problem - see cputypes.h"
 #endif
 
 /* Define 16bit types */
-#if ( USHRT_MAX == 0xFFFF )
-typedef unsigned short u16;
-typedef signed short s16;
-#else
+typedef unsigned short u16; /**< 16-bit unsigned. */
+typedef signed short s16;   /**< 16-bit signed. */
+#if ( USHRT_MAX != 0xFFFF )
 #error "Cannot find a 16-bit type - see cputypes.h"
 #endif
 
 /* Define the 32bit types, int most common */
+/**
+\typedef u32
+32-bit unsigned.
+\typedef s32
+32-bit signed.
+*/
 #if ( UINT_MAX == 0xFFFFFFFF )
 typedef unsigned int u32;
 typedef signed int s32;
@@ -133,6 +141,12 @@ typedef signed long s32;
 /*
   Define 64bit types
   On a CPU_32BIT this type is being faked by the compiler.
+*/
+/**
+\typedef u64
+64-bit unsigned.
+\typedef s64
+64-bit signed.
 */
 #if ( defined( CPU_64BIT ) )
 #if ( ULONG_MAX == 0xFFFFFFFF )
@@ -153,15 +167,17 @@ typedef signed long long s64;
 #endif /* 64 or 32 bit ? */
 
 /* We don't support native 128bit CPUs. All systems will fake 128bit */
-typedef struct u128 { u64 hi; u64 lo; } u128;
-typedef struct s128 { s64 hi; u64 lo; } s128;
+typedef struct u128 { u64 hi; u64 lo; } u128; /**< 128-bit unsigned. */
+typedef struct s128 { s64 hi; u64 lo; } s128; /**< 128-bit signed. */
 
 /*
   Define the 128 bit setting and equality macros
   usage: _COSM_SET128( a, fedcba9876543210, 0123456789abcdef );
   usage: if ( _COSM_EQ128( a, fedcba9876543210, 0123456789abcdef ) ) ...
 */
+/** @cond SKIPED */
 #define _COSM_CAT64( a ) 0x##a##LL
+/** @endcond */
 #define _COSM_SET128( dest, a, b ) \
   dest.hi = _COSM_CAT64( a ); dest.lo = _COSM_CAT64( b );
 #define _COSM_EQ128( value, a, b ) \
@@ -169,46 +185,55 @@ typedef struct s128 { s64 hi; u64 lo; } s128;
 
 /* Floating point, not everything has a floating point unit */
 #if ( !defined( NO_FLOATING_POINT ) )
-typedef float f32;
-typedef double f64;
-typedef long double f128;
+typedef float f32;        /**< 32-bit float. */
+typedef double f64;       /**< 64 bit double. */
+typedef long double f128; /**< 128-bit float. */
 #endif
 
 /* Text types */
-typedef char ascii;   /* ASCII 7-bit text */
-typedef char utf8;    /* string of multibyte UTF-8 Unicode */
-typedef u32 utf8char; /* single Unicode codepoint */
+typedef char ascii;   /**< ASCII 7-bit text. */
+typedef char utf8;    /**< String of multibyte UTF-8 Unicode. */
+typedef u32 utf8char; /**< Single Unicode codepoint. */
 
-/* Time type */
+/**
+  Cosm time type. A fixed point 128bit signed number. 64 bit seconds and
+  64 bits of fraction. Zero is January 1, 2000 at 0:00:00.
+*/
 typedef s128 cosmtime;
 
 /* Packed structure macros */
+/**
+\def PACKED_STRUCT_BEGIN
+\brief Begin packed memory struct definition.
+\def PACKED_STRUCT_END
+\brief End packed memory struct definition.
+*/
 #if defined( __GNUC__ )
-#define PACKED_STRUCT_BEGIN _Pragma( "pack(1)" )
-#define PACKED_STRUCT_END _Pragma( "pack()" )
+#define PACKED_STRUCT_BEGIN _Pragma( "pack(1)" );
+#define PACKED_STRUCT_END _Pragma( "pack()" );
 #elif defined( _MSC_VER )
-#define PACKED_STRUCT_BEGIN __pragma( pack(push,1) )
-#define PACKED_STRUCT_END __pragma( pack(pop) )
+#define PACKED_STRUCT_BEGIN __pragma( pack(push,1) );
+#define PACKED_STRUCT_END __pragma( pack(pop) );
 #else
 #error "need correct struct packing macro, see cputypes.h"
 #endif
 
 /* Vector types, up to 512 bits */
 PACKED_STRUCT_BEGIN
-typedef f32 f32x2[2];
-typedef f32 f32x4[4];
-typedef f32 f32x8[8];
-typedef f32 f32x16[16];
-typedef f64 f64x2[2];
-typedef f64 f64x4[4];
-typedef f64 f64x8[8];
+typedef f32 f32x2[2];   /**< f32 vector type. */
+typedef f32 f32x4[4];   /**< f32 vector type. */
+typedef f32 f32x8[8];   /**< f32 vector type. */
+typedef f32 f32x16[16]; /**< f32 vector type. */
+typedef f64 f64x2[2];   /**< f64 vector type. */
+typedef f64 f64x4[4];   /**< f64 vector type. */
+typedef f64 f64x8[8];   /**< f64 vector type. */
 
-typedef s8  s8x2[2];
-typedef s8  s8x4[4];
-typedef s8  s8x8[8];
-typedef s8  s8x16[16];
-typedef s8  s8x32[32];
-typedef s8  s8x64[64];
+typedef s8  s8x2[2];    /**< s8 vector type. */
+typedef s8  s8x4[4];    /**< s8 vector type. */
+typedef s8  s8x8[8];    /**< s8 vector type. */
+typedef s8  s8x16[16];  /**< s8 vector type. */
+typedef s8  s8x32[32];  /**< s8 vector type. */
+typedef s8  s8x64[64];  /**< s8 vector type. */
 
 typedef s16 s16x2[2];
 typedef s16 s16x4[4];
@@ -248,7 +273,7 @@ typedef u64 u64x4[4];
 typedef u64 u64x8[8];
 PACKED_STRUCT_END
 
-typedef enum vector_type
+enum vector_type
 {
   /* 3 bytes = type (float, signed, unsigned), bytes, vector width */
   VECTOR_F32    = 0x010401,
@@ -313,7 +338,7 @@ typedef enum vector_type
   VECTOR_U64X2  = 0x030802,
   VECTOR_U64X4  = 0x030804,
   VECTOR_U64X8  = 0x030808
-} vector_type;
+};
 
 #define _VECTOR_TYPE_BYTES( type ) \
   ( ( ( type >> 8 ) & 0xFF ) * ( type & 0xFF ) )

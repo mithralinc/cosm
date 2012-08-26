@@ -8,9 +8,13 @@
 
   A copy of the license(s) is enclosed with this Package and by using this
   Package you agree to the license terms. The Package is Copyright (C)
-  1995-2007 by Creator. All rights reserved. Further information about the
+  1995-2012 by Creator. All rights reserved. Further information about the
   Package and pricing information can be found at the Creator's web site:
   http://www.mithral.com/
+*/
+/**
+\file cosm.h
+\brief Cosm master include file.
 */
 
 #ifndef COSM_H
@@ -18,7 +22,7 @@
 
 /* include everything users need */
 
-#include "cputypes.h"
+#include "cosm/cputypes.h"
 
 /* CPU/OS layer */
 #include "cosm/os_file.h"
@@ -43,26 +47,56 @@
 
 /* testing */
 
+/**
+\defgroup TEST Unit Test Functions
+Run the Cosm unit tests.
+\addtogroup TEST
+@{
+*/
+
+/**
+Structure for self test name and function.
+*/
 typedef struct cosm_TEST
 {
-  const char * name;
-  s32 (*function)(void);
+  const char * name;     /**< Name of test file. */
+  s32 (*function)(void); /**< Self test function name. */
 } cosm_TEST;
 
 #define COSM_TEST_MODULE_MAX 17
 extern cosm_TEST __cosm_test_modules[COSM_TEST_MODULE_MAX + 2];
 
-s32 CosmTest( s32 * failed_module, s32 * failed_test, s32 module_num );
-  /*
-    If module_num is 0, then test all Cosm functions and return a negative
-    number corresponding to the module that failed. failed_module and
-    failed_test will be set to the corresponding failed functions.
-    Otherwise test only the module corresponding to module_num.
-    Note: the function code is in cosmtest.c
-    Returns: COSM_PASS on success, or a negative number corresponding to the
-      module that failed.
-  */
+/**
+Run all Cosm self tests. The function's code is in cosmtest.c
 
+\param[out] failed_module Set to the failed module.
+\param[out] failed_test Set to the failed test.
+\param[in] module_num If module_num is 0, then test all Cosm functions
+  otherwise test only the module corresponding to module_num.
+\return COSM_PASS on success, or a negative number corresponding to the
+  module that failed.
+\code
+  s32 module;
+  s32 test;
+
+  CosmPrint( "Running system tests... " );
+  if ( CosmTest( &module, &test, 0 ) != COSM_PASS )
+  {
+    CosmPrint( "Test failure in module %.16s %i.\n",
+      __cosm_test_modules[( -module > COSM_TEST_MODULE_MAX ) ?
+      0 : -module].name, test );
+    CosmProcessEnd( module );
+  }
+  CosmPrint( "all passed.\n" );
+\endcode
+*/
+s32 CosmTest( s32 * failed_module, s32 * failed_test, s32 module_num );
+
+/**
+@}
+*/
+
+/** @cond SKIPED */
 #if ( !defined( ALLOW_UNSAFE_C ) )
 /*
   We define macros to catch any unsafe (dangerous) functions used.
@@ -97,5 +131,6 @@ s32 CosmTest( s32 * failed_module, s32 * failed_test, s32 module_num );
 #define vsnprintf( a ) replace_vsnprintf_use_Cosm_Print()
 #define raise( a ) replace_raise_use_CosmSignal()
 #endif /* ALLOW_UNSAFE_C */
+/** @endcond */
 
 #endif

@@ -8,7 +8,7 @@
 
   A copy of the license(s) is enclosed with this Package and by using this
   Package you agree to the license terms. The Package is Copyright (C)
-  1995-2007 by Creator. All rights reserved. Further information about the
+  1995-2012 by Creator. All rights reserved. Further information about the
   Package and pricing information can be found at the Creator's web site:
   http://www.mithral.com/
 */
@@ -2074,7 +2074,7 @@ s32 Cosm_TestOSNet( void )
     return -11;
   }
 
-  CosmYield();
+  CosmSleep(10);
   /* The above connection should be pending. */
   if ( CosmNetAccept( &netsrv1, &netsrv, NULL, COSM_NET_ACCEPT_NOWAIT )
     != COSM_PASS )
