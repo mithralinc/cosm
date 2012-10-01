@@ -209,8 +209,8 @@ typedef s128 cosmtime;
 \brief End packed memory struct definition.
 */
 #if defined( __GNUC__ )
-#define PACKED_STRUCT_BEGIN _Pragma( "pack(1)" );
-#define PACKED_STRUCT_END _Pragma( "pack()" );
+#define PACKED_STRUCT_BEGIN _Pragma( "pack(1)" )
+#define PACKED_STRUCT_END _Pragma( "pack()" )
 #elif defined( _MSC_VER )
 #define PACKED_STRUCT_BEGIN __pragma( pack(push,1) );
 #define PACKED_STRUCT_END __pragma( pack(pop) );
