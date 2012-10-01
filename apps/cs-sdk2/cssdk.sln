@@ -1,0 +1,77 @@
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{2BDA583D-FCE1-4139-88A6-64CA6E621344}"
+	ProjectSection(SolutionItems) = preProject
+		cssdk.h = cssdk.h
+		cssdk_schema.sql = cssdk_schema.sql
+		HISTORY.TXT = HISTORY.TXT
+		TODO.TXT = TODO.TXT
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "cssdk-client", "cssdk-client.vcxproj", "{452A710C-D6BE-428F-B2C2-7C32DF21F2D0}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "cssdk-server", "cssdk-server.vcxproj", "{8CF8EC58-217C-4E77-95BE-9D17E784BB4F}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "cssdk-engine", "cssdk-engine.vcxproj", "{9B768B59-23A8-412D-94F2-594A582D8A8A}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Web Pages", "Web Pages", "{D5B22222-D8A2-404C-9567-0BCA76B26E24}"
+	ProjectSection(SolutionItems) = preProject
+		website\hostadd.php = website\hostadd.php
+		website\index.php = website\index.php
+		website\lookup.php = website\lookup.php
+		website\process.php = website\process.php
+		website\register.php = website\register.php
+		website\stats.php = website\stats.php
+		website\useredit.php = website\useredit.php
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "include", "include", "{2E1AA96C-758C-41F2-9798-9FCFEEC33653}"
+	ProjectSection(SolutionItems) = preProject
+		website\include\constants.php = website\include\constants.php
+		website\include\cosm.php = website\include\cosm.php
+		website\include\database.php = website\include\database.php
+		website\include\form.php = website\include\form.php
+		website\include\session.php = website\include\session.php
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Debug|Win64 = Debug|Win64
+		Release|Win32 = Release|Win32
+		Release|Win64 = Release|Win64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{452A710C-D6BE-428F-B2C2-7C32DF21F2D0}.Debug|Win32.ActiveCfg = Debug|Win32
+		{452A710C-D6BE-428F-B2C2-7C32DF21F2D0}.Debug|Win32.Build.0 = Debug|Win32
+		{452A710C-D6BE-428F-B2C2-7C32DF21F2D0}.Debug|Win64.ActiveCfg = Debug|x64
+		{452A710C-D6BE-428F-B2C2-7C32DF21F2D0}.Debug|Win64.Build.0 = Debug|x64
+		{452A710C-D6BE-428F-B2C2-7C32DF21F2D0}.Release|Win32.ActiveCfg = Release|Win32
+		{452A710C-D6BE-428F-B2C2-7C32DF21F2D0}.Release|Win32.Build.0 = Release|Win32
+		{452A710C-D6BE-428F-B2C2-7C32DF21F2D0}.Release|Win64.ActiveCfg = Release|x64
+		{452A710C-D6BE-428F-B2C2-7C32DF21F2D0}.Release|Win64.Build.0 = Release|x64
+		{8CF8EC58-217C-4E77-95BE-9D17E784BB4F}.Debug|Win32.ActiveCfg = Debug|Win32
+		{8CF8EC58-217C-4E77-95BE-9D17E784BB4F}.Debug|Win32.Build.0 = Debug|Win32
+		{8CF8EC58-217C-4E77-95BE-9D17E784BB4F}.Debug|Win64.ActiveCfg = Debug|x64
+		{8CF8EC58-217C-4E77-95BE-9D17E784BB4F}.Debug|Win64.Build.0 = Debug|x64
+		{8CF8EC58-217C-4E77-95BE-9D17E784BB4F}.Release|Win32.ActiveCfg = Release|Win32
+		{8CF8EC58-217C-4E77-95BE-9D17E784BB4F}.Release|Win32.Build.0 = Release|Win32
+		{8CF8EC58-217C-4E77-95BE-9D17E784BB4F}.Release|Win64.ActiveCfg = Release|x64
+		{8CF8EC58-217C-4E77-95BE-9D17E784BB4F}.Release|Win64.Build.0 = Release|x64
+		{9B768B59-23A8-412D-94F2-594A582D8A8A}.Debug|Win32.ActiveCfg = Debug|Win32
+		{9B768B59-23A8-412D-94F2-594A582D8A8A}.Debug|Win32.Build.0 = Debug|Win32
+		{9B768B59-23A8-412D-94F2-594A582D8A8A}.Debug|Win64.ActiveCfg = Debug|x64
+		{9B768B59-23A8-412D-94F2-594A582D8A8A}.Debug|Win64.Build.0 = Debug|x64
+		{9B768B59-23A8-412D-94F2-594A582D8A8A}.Release|Win32.ActiveCfg = Release|Win32
+		{9B768B59-23A8-412D-94F2-594A582D8A8A}.Release|Win32.Build.0 = Release|Win32
+		{9B768B59-23A8-412D-94F2-594A582D8A8A}.Release|Win64.ActiveCfg = Release|x64
+		{9B768B59-23A8-412D-94F2-594A582D8A8A}.Release|Win64.Build.0 = Release|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{D5B22222-D8A2-404C-9567-0BCA76B26E24} = {2BDA583D-FCE1-4139-88A6-64CA6E621344}
+		{2E1AA96C-758C-41F2-9798-9FCFEEC33653} = {D5B22222-D8A2-404C-9567-0BCA76B26E24}
+	EndGlobalSection
+EndGlobal
