@@ -1,0 +1,14 @@
+To Do:
+
+Client
+------
+  - Detect out-of-date versions. Make upgrades automatic.
+
+Engine
+------
+
+Server
+------
+
+Web
+------
