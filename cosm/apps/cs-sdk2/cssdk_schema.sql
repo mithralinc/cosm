@@ -1,22 +1,22 @@
-﻿/*
--- select timestamptz '2000-01-01 00:00 GMT' + last_seen * interval '1 second'
---   AS last_seen FROM tracker;
+﻿-- Default schema for Cosm CS-SDK2
 
-CREATE ROLE cssdk_user LOGIN
-  ENCRYPTED PASSWORD 'md501d22bc20de05534a7fcb2ea5dddc6fd'
+CREATE ROLE cssdk2_user LOGIN
+  ENCRYPTED PASSWORD 'md502e98dc3ee1ca2c0ca1d4ef9b2e58242'
   NOSUPERUSER INHERIT NOCREATEDB NOCREATEROLE NOREPLICATION;
 
-CREATE DATABASE cssdk
-  WITH OWNER = cssdk_user
+CREATE DATABASE cssdk2
+  WITH OWNER = cssdk2_user
        ENCODING = 'UTF8'
        TABLESPACE = pg_default
-       LC_COLLATE = 'English, United States'
-       LC_CTYPE = 'English, United States'
+       LC_COLLATE = 'en_US.UTF-8'
+       LC_CTYPE = 'en_US.UTF-8'
        CONNECTION LIMIT = -1;
-*/
+ALTER DATABASE cssdk2 OWNER TO cssdk2_user;
 
+-- Connect to cssdk2 database
+\connect cssdk2
 
-DROP TABLE IF EXISTS users CASCADE;
+-- DROP TABLE IF EXISTS users CASCADE;
 CREATE TABLE users
 (
   PRIMARY KEY ( user_id ),
@@ -32,19 +32,19 @@ CREATE TABLE users
   
   php_cookie varchar(32)
 ); 
-ALTER TABLE users OWNER TO cssdk_user;
+ALTER TABLE users OWNER TO cssdk2_user;
 
 
-DROP TABLE IF EXISTS banned_users;
+-- DROP TABLE IF EXISTS banned_users;
 CREATE TABLE banned_users (
   PRIMARY KEY ( username ),
   username varchar(64) NOT NULL
 );
-ALTER TABLE banned_users OWNER TO cssdk_user;
+ALTER TABLE banned_users OWNER TO cssdk2_user;
 
 
-DROP INDEX IF EXISTS hosts_online_last_pong;
-DROP TABLE IF EXISTS hosts;
+-- DROP INDEX IF EXISTS hosts_online_last_pong;
+-- DROP TABLE IF EXISTS hosts;
 CREATE TABLE hosts
 (
   PRIMARY KEY ( machine_id ),
@@ -60,11 +60,11 @@ CREATE TABLE hosts
   last_pong integer NULL,
   online integer NOT NULL
 ) WITH ( OIDS=FALSE );
-ALTER TABLE hosts OWNER TO cssdk_user;
+ALTER TABLE hosts OWNER TO cssdk2_user;
 CREATE INDEX hosts_online_last_pong ON hosts ( online, last_pong );
 
 
-DROP TABLE IF EXISTS checkins;
+-- DROP TABLE IF EXISTS checkins;
 CREATE TABLE checkins
 (
   machine_id integer NOT NULL,
@@ -76,10 +76,10 @@ CREATE TABLE checkins
   -- for 'C', since last ping heard.
   -- for 'S', uptime.
 ) WITH ( OIDS=FALSE );
-ALTER TABLE checkins OWNER TO cssdk_user;
+ALTER TABLE checkins OWNER TO cssdk2_user;
 
 
-DROP TABLE IF EXISTS pongs;
+-- DROP TABLE IF EXISTS pongs;
 CREATE TABLE pongs
 (
   machine_id integer NOT NULL,
@@ -87,7 +87,7 @@ CREATE TABLE pongs
   pong_time integer NOT NULL,
   latency_ms integer NOT NULL
 ) WITH ( OIDS=FALSE );
-ALTER TABLE pongs OWNER TO cssdk_user;
+ALTER TABLE pongs OWNER TO cssdk2_user;
 
 
 CREATE OR REPLACE FUNCTION checkin( id integer, os integer, cpu integer,
@@ -130,7 +130,7 @@ END;
 $BODY$
 LANGUAGE plpgsql VOLATILE;
 ALTER FUNCTION checkin( integer, integer, integer, integer, integer,
-  inet, integer, char(1), integer ) OWNER TO cssdk_user;
+  inet, integer, char(1), integer ) OWNER TO cssdk2_user;
 
 
 CREATE OR REPLACE FUNCTION pong( id integer, ip integer,
@@ -145,7 +145,7 @@ BEGIN
 END;
 $BODY$
 LANGUAGE plpgsql VOLATILE;
-ALTER FUNCTION pong( integer, integer, integer, integer ) OWNER TO cssdk_user;
+ALTER FUNCTION pong( integer, integer, integer, integer ) OWNER TO cssdk2_user;
 
 --        last_pong ->  |     0     |  < 360    |  < 295    | current |
 -- ---------------------+-----------+-----------+-----------+---------+
@@ -179,7 +179,7 @@ BEGIN
 END;
 $BODY$
 LANGUAGE plpgsql VOLATILE;
-ALTER FUNCTION live_hosts( integer ) OWNER TO cssdk_user;
+ALTER FUNCTION live_hosts( integer ) OWNER TO cssdk2_user;
 
 /*
 -- Clear the hosts status
@@ -193,3 +193,5 @@ UPDATE hosts SET
   last_pong = NULL,
   online = -1;
 */
+-- select timestamptz '2000-01-01 00:00 GMT' + last_seen * interval '1 second'
+--   AS last_seen FROM tracker;
