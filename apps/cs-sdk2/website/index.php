@@ -7,7 +7,7 @@ PrintHead( "Host Management" );
 if($session->logged_in)
 {
   $user_id = sprintf( "%08X", $session->userinfo['user_id'] );
-  echo "<h3>Management</h3>";
+  echo "<h3>Host Management</h3>";
   echo "<p>Welcome <b>$session->username</b></p>";
   
   echo "<h3>Your Hosts</h3>";
@@ -15,16 +15,16 @@ if($session->logged_in)
   echo "Count: " . pg_numrows( $result ) . " of 1<br>\n";
 
   echo "<table border=1 cellpadding=3 cellspacing=0>\n";
-  echo "<tr><th>Machine ID<th>OS<th>CPU<th>Last IP<th>Last Pong<th>Online</tr>\n";
+  echo "<tr><th>Host ID<th>OS<th>CPU<th>Last IP<th>Last Pong<th>Online</tr>\n";
   while ( $row = pg_fetch_assoc( $result ) )
   {
     echo "<tr>";
-    $hex = strtoupper( dechex( $row['machine_id'] ) );
+    $hex = strtoupper( dechex( $row['host_id'] ) );
     if ( strlen( $hex ) == 16 )
     {
       $hex = substr( $hex, 8, 8 );
     }
-    echo '<td><a href="lookup.php?machine_id=' . $hex . '">' .
+    echo '<td><a href="lookup.php?host_id=' . $hex . '">' .
       $hex . '</a></td>';
     if ( $row['online'] == -1 )
     {
@@ -41,7 +41,7 @@ if($session->logged_in)
     echo "</tr>";
   }
   echo "</table>\n";
-  echo "<a href=\"hostadd.php\">Add new Machine ID</a>";
+  echo "<a href=\"hostadd.php\">Add new Host ID</a>";
   
   
   echo "<br><br>[<a href=\"useredit.php\">Edit Account</a>] &nbsp;&nbsp;";
@@ -49,12 +49,11 @@ if($session->logged_in)
 }
 else
 {
-?>
-
-<h1>Login</h1>
-<?php
-if($form->num_errors > 0){
-   echo "<font size=\"2\" color=\"#ff0000\">".$form->num_errors." error(s) found</font>";
+  global $cssdk2_title_prefix;
+  echo "<h3>" . $cssdk2_title_prefix . "Login</h3>";
+  if($form->num_errors > 0){
+    echo "<font size=\"2\" color=\"#ff0000\">" . $form->num_errors .
+      " error(s) found</font>";
 }
 ?>
 <form action="process.php" method="POST">

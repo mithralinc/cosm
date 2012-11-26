@@ -47,8 +47,8 @@ ALTER TABLE banned_users OWNER TO cssdk2_user;
 -- DROP TABLE IF EXISTS hosts;
 CREATE TABLE hosts
 (
-  PRIMARY KEY ( machine_id ),
-  machine_id integer NOT NULL CHECK ( machine_id < 0 ),
+  PRIMARY KEY ( host_id ),
+  host_id integer NOT NULL CHECK ( host_id < 0 ),
   user_id integer NOT NULL REFERENCES users( user_id ),
 
   os_type integer NULL DEFAULT 0,
@@ -67,7 +67,7 @@ CREATE INDEX hosts_online_last_pong ON hosts ( online, last_pong );
 -- DROP TABLE IF EXISTS checkins;
 CREATE TABLE checkins
 (
-  machine_id integer NOT NULL,
+  host_id integer NOT NULL,
   checkin_time integer NOT NULL,
   checkin_type char(1) NOT NULL,
 
@@ -82,7 +82,7 @@ ALTER TABLE checkins OWNER TO cssdk2_user;
 -- DROP TABLE IF EXISTS pongs;
 CREATE TABLE pongs
 (
-  machine_id integer NOT NULL,
+  host_id integer NOT NULL,
   addr_int integer NOT NULL,
   pong_time integer NOT NULL,
   latency_ms integer NOT NULL
@@ -107,20 +107,20 @@ BEGIN
   END IF;
 
   -- first see if host exists
-  SELECT addr_int INTO addr FROM hosts WHERE machine_id = id;
+  SELECT addr_int INTO addr FROM hosts WHERE host_id = id;
   IF NOT FOUND THEN
     return 0;
   END IF;
 
   -- log the checkin
-  INSERT INTO checkins( machine_id, checkin_time, checkin_type, param )
+  INSERT INTO checkins( host_id, checkin_time, checkin_type, param )
     VALUES ( id, cosmtime, stat, argv );
 
   -- now update that we have been seen
   UPDATE hosts SET os_type = os, cpu_type = cpu, memory = mem,
     addr_int = ip_int, addr_inet = ip_inet, last_checkin = cosmtime,
     online = new_online
-    WHERE machine_id = id;
+    WHERE host_id = id;
   IF NOT FOUND THEN
     RETURN 0;
   END IF;
@@ -139,9 +139,9 @@ CREATE OR REPLACE FUNCTION pong( id integer, ip integer,
 $BODY$
 DECLARE
 BEGIN
-  INSERT INTO pongs ( machine_id, addr_int, pong_time, latency_ms )
+  INSERT INTO pongs ( host_id, addr_int, pong_time, latency_ms )
     VALUES ( id, ip, cosmtime, latency );
-  UPDATE hosts SET last_pong = cosmtime WHERE machine_id = id;
+  UPDATE hosts SET last_pong = cosmtime WHERE host_id = id;
 END;
 $BODY$
 LANGUAGE plpgsql VOLATILE;
@@ -164,7 +164,7 @@ BEGIN
       AND last_checkin < ( diem - 360 );
 
   -- return the living
-  RETURN QUERY SELECT to_hex( machine_id ), to_hex( addr_int )
+  RETURN QUERY SELECT to_hex( host_id ), to_hex( addr_int )
     FROM hosts
     WHERE online = 1
       AND (  -- new and recent checkin, 30 sec

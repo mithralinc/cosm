@@ -1,7 +1,8 @@
 <?php
 
-# SETUP: You need to edit the folling 5 variables for your setup.
-$cssdk2_base_url = "http://demo.mithral.com/cs-sdk2/";
+# SETUP: You need to edit the following 6 variables for your setup.
+$cssdk2_base_url = "http://demo.mithral.com/cosm/cs-sdk2/";
+$cssdk2_title_prefix = "Cosm CS-SDK2 Demo - ";
 $cssdk2_db_host = "localhost";
 $cssdk2_db_name = "cssdk2";
 $cssdk2_db_user = "cssdk2_user";
@@ -29,12 +30,12 @@ function rand31()
 
 function PrintHead( $title )
 {
-echo '<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
-    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en-us" xml:lang="en-us">
+  global $cssdk2_title_prefix;
+echo '<!DOCTYPE html>
+<html>
 <head>
-  <title>' . $title . '</title>
+  <title>' . $cssdk2_title_prefix . $title . '</title>
+  <meta charset="utf-8">
 </head>
 <body>
 ';

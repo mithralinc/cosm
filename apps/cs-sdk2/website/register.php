@@ -11,13 +11,9 @@
  * Last Updated: August 19, 2004
  */
 include("include/session.php");
-?>
 
-<html>
-<title>Registration Page</title>
-<body>
+PrintHead( "Registration Page" );
 
-<?php
 /**
  * The user is already logged in, not allowed to register.
  */

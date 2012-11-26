@@ -150,10 +150,10 @@ class MyPostgreSQL
       do
       {
         $tmp_id = -rand31();
-        $result = pg_query($this->connection, "SELECT * FROM hosts WHERE machine_id = $tmp_id" );
+        $result = pg_query($this->connection, "SELECT * FROM hosts WHERE host_id = $tmp_id" );
       } while ( pg_numrows( $result ) > 0 );
 
-      $q = "INSERT INTO hosts ( machine_id, user_id, online ) VALUES ( $tmp_id, $user_id, -1 )";
+      $q = "INSERT INTO hosts ( host_id, user_id, online ) VALUES ( $tmp_id, $user_id, -1 )";
       $result = pg_query($this->connection, $q);
       if ( !$result )
       {
