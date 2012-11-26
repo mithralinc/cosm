@@ -2,12 +2,11 @@
 
 include "include/session.php";
 
-$base = "http://localhost/cssdk/";
 $script = "lookup.php";
 
 if ( !$session->logged_in )
 {
-  header( "Location:" . $base );
+  header( "Location:" . $cssdk2_base_url );
   die();
 }
 
@@ -35,7 +34,7 @@ if ( strlen( $machine ) == 8 )
   }
   $row = pg_fetch_assoc( $result );
   
-  echo "<h3>Machine ID - " . $machine . "</h3>\n";
+  echo "<h3>Machine ID: " . $machine . "</h3>\n";
   
   echo "<p><b>Status: ";
   if ( $row['online'] == -1 )
@@ -83,7 +82,7 @@ if ( strlen( $machine ) == 8 )
   }
   echo "</table>\n";
   
-  $url = $base . $script . '?machine_id=' . $machine;
+  $url = $cssdk2_base_url . $script . '?machine_id=' . $machine;
   echo '<p>Bookmark: <a href="' . $url . ' ">' . $url . '</a></p>';
   echo '<p>Do not reveal your Machine ID to others.</p>';
 
@@ -94,8 +93,8 @@ $query =
   . "GROUP BY os_type, cpu_type ORDER BY os_type, cpu_type;";
 $result = $database->query($query);
 
-$ram = 0;
 $hosts = 0;
+$ram = 0;
 echo "<h3>Total Hosts Online and Ponged</h3>";
 echo "<table border=1 cellpadding=3 cellspacing=0>\n";
 echo "<tr><th>OS<th>CPU<th>Hosts<th>Memory (MiB)</tr>\n";
@@ -110,7 +109,8 @@ while ( $row = pg_fetch_assoc( $result ) )
   $hosts += $row['count'];
   $ram += $row['memory'];
 }
-echo '<tr bgcolor="#00FF00"><th>Totals:<td>&nbsp;<th align="right">' . number_format( $hosts )
+echo '<tr bgcolor="#00FF00"><th>Totals:<th>&nbsp;'
+   . '<th align="right">' . number_format( $hosts )
    . '<th align="right">' . number_format( $ram ) . "</tr>\n";
 echo "</table>\n";
 

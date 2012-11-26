@@ -42,7 +42,7 @@ void Pinger( void * arg );
 u32 __shutdown_flag = 0;   /* interupt flag */
 u32 __tracker_alive = 0;
 u32 __pinger_alive = 0;
-cosm_LOG __log;
+cosm_LOG __server_log;
 u32 __seq = 0;
 
 void Notice( void )
@@ -125,7 +125,7 @@ void Tracker( void * arg )
 
   if ( SQL_Connect( &database ) != COSM_PASS )
   {
-    CosmLog( &__log, 0, COSM_LOG_ECHO,
+    CosmLog( &__server_log, 0, COSM_LOG_ECHO,
       "%.32sUnable to connect to database (Tracker)\n", Now() );
     __shutdown_flag = 1;
     __tracker_alive = 0;
@@ -135,7 +135,7 @@ void Tracker( void * arg )
   /* listening address */
   if ( CosmNetDNS( &server, 1, CSSDK_SERVER_SELF ) < 1 )
   {
-    CosmLog( &__log, 0, COSM_LOG_ECHO,
+    CosmLog( &__server_log, 0, COSM_LOG_ECHO,
       "%.32sUnable to resolve %.128s\n", Now(), CSSDK_SERVER_SELF );
     __shutdown_flag = 1;
     __tracker_alive = 0;
@@ -146,7 +146,7 @@ void Tracker( void * arg )
   CosmMemSet( &net, sizeof( net ), 0 );
   if ( CosmNetListen( &net, &server, COSM_NET_MODE_UDP, 8 ) != COSM_PASS )
   {
-    CosmLog( &__log, 0, COSM_LOG_ECHO,
+    CosmLog( &__server_log, 0, COSM_LOG_ECHO,
       "%.32sUnable to open listening socket\n", Now() );
     SQL_Close( &database );
     __shutdown_flag = 1;
@@ -180,20 +180,21 @@ void Tracker( void * arg )
       {
         case TYPE_PONG:
           /* record a pong */
-          ms = CosmS64S128( CosmS128Div( CosmS128Sub( time_now, pkt.timestamp ), 
-            CosmS128S64( COSM_TIME_MILLISECOND ) ) );
+          ms = CosmS64S128( CosmS128Div( CosmS128Sub( time_now,
+            pkt.timestamp ), CosmS128S64( COSM_TIME_MILLISECOND ) ) );
           CosmPrintStr( query, 128,
             "SELECT pong( x'%X'::int, x'%X'::int, %j, %j );",
             pkt.id, from.ip.v4, time_now.hi, ms );
 
-          CosmLog( &__log, 9, COSM_LOG_ECHO, "%.999s\n", query );
+          CosmLog( &__server_log, 9, COSM_LOG_ECHO, "%.999s\n", query );
           if ( SQL_Exec( &database, query ) != COSM_PASS )
           {
-            CosmLog( &__log, 0, COSM_LOG_ECHO, "%.32sDatabase error 1\n", Now() );
+            CosmLog( &__server_log, 0, COSM_LOG_ECHO,
+              "%.32sDatabase error 1\n", Now() );
             goto bailout;
           }
           
-          CosmLog( &__log, 3, COSM_LOG_ECHO,
+          CosmLog( &__server_log, 3, COSM_LOG_ECHO,
             "%.32spong:%08X ip:%u.%u.%u.%u seq:%u ms:%j\n",
             Now(), pkt.id,
             ( from.ip.v4 >> 24 ) & 0xFF, ( from.ip.v4 >> 16 ) & 0xFF,
@@ -212,17 +213,17 @@ void Tracker( void * arg )
             ( from.ip.v4 >> 8 ) & 0xFF, from.ip.v4 & 0xFF,
             time_now.hi, pkt.type, pkt.timestamp.hi );
 
-          CosmLog( &__log, 9, COSM_LOG_ECHO, "%.999s\n", query );
+          CosmLog( &__server_log, 9, COSM_LOG_ECHO, "%.999s\n", query );
           if ( ( SQL_Exec( &database, query ) != COSM_PASS )
             || ( SQL_GetValue( &result, &database, 0, 0 )
             != COSM_PASS ) || ( result == NULL ) )
           {
-            CosmLog( &__log, 0, COSM_LOG_ECHO, "%.32sDatabase error 2\n",
-              Now() );
+            CosmLog( &__server_log, 0, COSM_LOG_ECHO,
+              "%.32sDatabase error 2\n", Now() );
             goto bailout;
           }
 
-          CosmLog( &__log, 3, COSM_LOG_ECHO,
+          CosmLog( &__server_log, 3, COSM_LOG_ECHO,
             "%.32scheckin:%08X ip:%u.%u.%u.%u port:%u "
             "os:%u cpu:%u mem:%u addr:%X seq:%u found:%c type:%c\n", Now(),
             pkt.id, ( from.ip.v4 >> 24 ) & 0xFF, ( from.ip.v4 >> 16 ) & 0xFF,
@@ -259,7 +260,7 @@ void Pinger( void * arg )
 
   if ( SQL_Connect( &database ) != COSM_PASS )
   {
-    CosmLog( &__log, 0, COSM_LOG_ECHO,
+    CosmLog( &__server_log, 0, COSM_LOG_ECHO,
       "%.32sUnable to connect to database (Pinger)\n", Now() );
     __shutdown_flag = 1;
     __pinger_alive = 0;
@@ -272,11 +273,12 @@ void Pinger( void * arg )
 
     CosmPrintStr( query, 1024,
       "SELECT * FROM live_hosts( %j );", time_now.hi );
-    CosmLog( &__log, 9, COSM_LOG_ECHO, "%.999s\n", query );
+    CosmLog( &__server_log, 9, COSM_LOG_ECHO, "%.999s\n", query );
     if ( ( SQL_Exec( &database, query ) != COSM_PASS )
       || ( SQL_Rows( &rows, &database ) != COSM_PASS ) )
     {
-      CosmLog( &__log, 0, COSM_LOG_ECHO, "%.32sDatabase error 3\n", Now() );
+      CosmLog( &__server_log, 0, COSM_LOG_ECHO,
+        "%.32sDatabase error 3\n", Now() );
       __shutdown_flag = 1;
       __pinger_alive = 0;
       return;
@@ -317,7 +319,8 @@ void Pinger( void * arg )
       to.port = CSSDK_PORT_CLIENT;
 
       CosmNetSendUDP( &net, &to, &ping, sizeof( ping ) );
-      CosmLog( &__log, 6, COSM_LOG_ECHO, "%.32sping:%08X\n", Now(), id );
+      CosmLog( &__server_log, 6, COSM_LOG_ECHO, "%.32sping:%08X\n",
+        Now(), id );
     }
 
     CosmNetClose( &net );
@@ -358,24 +361,21 @@ int main( int argc, char *argv[] )
     CosmProcessEnd( -3 );
   }
 
-  /* open __log */
-  CosmMemSet( &__log, sizeof( __log ), 0 );
-  if ( CosmLogOpen( &__log, "cssdk-server.log", log_lvl,
+  /* open __server_log */
+  CosmMemSet( &__server_log, sizeof( __server_log ), 0 );
+  if ( CosmLogOpen( &__server_log, "cssdk-server.log", log_lvl,
     COSM_LOG_MODE_NUMBER ) != COSM_PASS )
   {
     CosmPrint( "Unable to open log\n" );
     CosmProcessEnd( -4 );
   }
 
-  /* we need to step up the priority */
-  SetPriorityClass( GetCurrentProcess(), HIGH_PRIORITY_CLASS );
-
   CosmThreadBegin( &thread_tracker, Tracker, NULL, 64*1024 );
   /* let the Tracker get a headstart */
   CosmSleep( 2000 );
   CosmThreadBegin( &thread_pinger, Pinger, NULL, 64*1024 );
 
-  CosmLog( &__log, 0, COSM_LOG_ECHO, "%.32sRunning\n", Now() );
+  CosmLog( &__server_log, 0, COSM_LOG_ECHO, "%.32sRunning\n", Now() );
 
   while  ( ( __shutdown_flag == 0 )
     || ( __tracker_alive == 1 )
@@ -385,8 +385,8 @@ int main( int argc, char *argv[] )
   }
 
   /* now we can shutdown */
-  CosmLog( &__log, 0, COSM_LOG_ECHO, "%.32sShutdown\n\n", Now() );
-  CosmLogClose( &__log );
+  CosmLog( &__server_log, 0, COSM_LOG_ECHO, "%.32sShutdown\n\n", Now() );
+  CosmLogClose( &__server_log );
 
   return COSM_PASS;
 }

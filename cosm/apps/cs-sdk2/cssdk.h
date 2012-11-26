@@ -27,15 +27,18 @@
 #define CSSDK_SIGNATURE  0x4353444b  /* CSDK */
 
 /* Server's IP. It's common for the server to have a 192.168.* or 10.* IP
-address but known from the outside world as a fixed or dynamic IP address */
-#define CSSDK_SERVER      "192.168.0.11" /* seen from outside */
-#define CSSDK_SERVER_SELF "192.168.0.11" /* as the server knows itself */
+address but known from the outside world as a fixed or dynamic IP address.
+On Amazon EC2 this will be the Elastic IP for the instance and the SELF
+address will be the 10.* address of the machine you get from ifconfig. */
+#define CSSDK_SERVER      "127.0.0.1" /* seen from outside */
+#define CSSDK_SERVER_SELF "127.0.0.1" /* as the server knows itself */
 
 #define CSSDK_PORT_SERVER   4432
 #define CSSDK_PORT_CLIENT   4433
 
 #define CSSDK_STATS     "http://127.0.0.1/cssdk/"
 
+/* Location to download engine.dylib when enabled */
 #define CSSDK_SRV_HOST  "http://127.0.0.1/"
 #define CSSDK_SRV_BASE  "/cssdk/"
 

@@ -1,7 +1,7 @@
 ﻿-- Default schema for Cosm CS-SDK2
 
 CREATE ROLE cssdk2_user LOGIN
-  ENCRYPTED PASSWORD 'md502e98dc3ee1ca2c0ca1d4ef9b2e58242'
+  ENCRYPTED PASSWORD 'md50ac57776dfedf41a264ce8dafbef8d4b'
   NOSUPERUSER INHERIT NOCREATEDB NOCREATEROLE NOREPLICATION;
 
 CREATE DATABASE cssdk2
@@ -51,8 +51,8 @@ CREATE TABLE hosts
   machine_id integer NOT NULL CHECK ( machine_id < 0 ),
   user_id integer NOT NULL REFERENCES users( user_id ),
 
-  os_type integer NULL,
-  cpu_type integer NULL,
+  os_type integer NULL DEFAULT 0,
+  cpu_type integer NULL DEFAULT 0,
   memory integer NULL,
   addr_int integer NULL,
   addr_inet inet NULL,

@@ -115,7 +115,10 @@ int CSSDKMain( int argc, char * argv[] )
   cosm_LOG log;
   cosm_NET_ADDR listen;
   cosm_NET net;
+  /* If you want online updates of the engine... */
+#if 0
   u32 current_minor = 1, updated_minor;
+#endif
 
   cosm_DYNAMIC_LIB dylib;
   s32 (*engine)( u32, cosmtime, u32 *, cosm_LOG *, cosm_NET * );
@@ -190,7 +193,7 @@ int CSSDKMain( int argc, char * argv[] )
     return -5;
   }
 
-/* If you want online updates of the engine... */
+  /* If you want online updates of the engine... */
 #if 0
   /* Load up the engine in the current directory */
   if ( UpdateFile( "./", "cssdk-engine.dylib", &updated_minor,

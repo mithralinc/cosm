@@ -19,8 +19,10 @@ class MyPostgreSQL
    function MyPostgreSQL()
    {
       /* Make connection to database */
-      $this->connection = pg_connect(
-        "host=localhost dbname=cssdk user=cssdk_user password=cssdk_pass" )
+      global $cssdk2_db_host, $cssdk2_db_name, $cssdk2_db_user, $cssdk2_db_pass;
+      $connect_cmd = "host=" . $cssdk2_db_host . " dbname=" . $cssdk2_db_name .
+        " user=" . $cssdk2_db_user . " password=" . $cssdk2_db_pass;
+      $this->connection = pg_connect( $connect_cmd )
         or die( 'Could not connect: ' . pg_last_error() );
    }
 

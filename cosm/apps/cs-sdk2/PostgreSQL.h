@@ -34,10 +34,11 @@ s32 PostgreSQL_Exec( DATABASE * database, utf8 * query );
 s32 PostgreSQL_Columns( u32 * columns, DATABASE * database );
 s32 PostgreSQL_ColumnName( utf8 ** name, DATABASE * database, u32 column );
 s32 PostgreSQL_Rows( u32 * rows, DATABASE * database );
-s32 PostgreSQL_GetValue( utf8 ** value, DATABASE * database, u32 row, u32 column );
+s32 PostgreSQL_GetValue( utf8 ** value, DATABASE * database,
+  u32 row, u32 column );
 s32 PostgreSQL_Close( DATABASE * database );
 
-// Common API
+/* Common API */
 #define SQL_Connect PostgreSQL_Connect
 #define SQL_Exec PostgreSQL_Exec
 #define SQL_Columns PostgreSQL_Columns

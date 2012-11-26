@@ -1,6 +1,6 @@
 COSM = ../..
 include $(COSM)/include/cosm/Makefile.cosm
-CC_FLAGS = $(CCFLAGS) -I$(COSM)/include -L.
+CC_FLAGS = $(CCFLAGS) -I$(COSM)/include -I.
 LD_FLAGS = $(LDFLAGS) -L$(COSM)/lib -L.
 LD_LIBS =  $(LDLIBS) -lCosmUtil
 

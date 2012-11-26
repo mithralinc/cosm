@@ -20,8 +20,8 @@ s32 PostgreSQL_Connect( DATABASE * database )
 {
   PGconn * connection;
 
-  connection = PQconnectdb( "host='localhost' dbname='cssdk' "
-    "user='cssdk_user' password='cssdk_pass'" );
+  connection = PQconnectdb( "host='localhost' dbname='cssdk2' "
+    "user='cssdk2_user' password='cssdk2_pass'" );
 
   if ( PQstatus( connection ) != CONNECTION_OK )
   {
@@ -99,7 +99,8 @@ s32 PostgreSQL_Rows( u32 * rows, DATABASE * database )
   return COSM_FAIL;
 }
 
-s32 PostgreSQL_GetValue( utf8 ** value, DATABASE * database, u32 row, u32 column )
+s32 PostgreSQL_GetValue( utf8 ** value, DATABASE * database,
+  u32 row, u32 column )
 {
   if ( database->state == POSTGRESQL_STATE_RESULT )
   {
