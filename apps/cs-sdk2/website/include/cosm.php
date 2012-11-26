@@ -1,5 +1,12 @@
 <?php
 
+# SETUP: You need to edit the folling 5 variables for your setup.
+$cssdk2_base_url = "http://demo.mithral.com/cs-sdk2/";
+$cssdk2_db_host = "localhost";
+$cssdk2_db_name = "cssdk2";
+$cssdk2_db_user = "cssdk2_user";
+$cssdk2_db_pass = "cssdk2_pass";
+
 $cpu_types = array( "UNKNOWN","x86", "PPC", "MIPS", "MIPS64", "Alpha",
   "undef", "68K", "Sparc", "Sparc64", "undef", "IA64",  "ARM", "Cell",
   "undef", "PPC64", "x64" );

@@ -204,8 +204,6 @@ static void Pinger( void * arg )
   u32 recv_bytes;
   s32 error;
   u32 address;
-  u32 seq;
-  u8 type;
   cosmtime now;
   ascii * now_str;
 
@@ -271,8 +269,6 @@ static void Pinger( void * arg )
     }
     
     address = pkt.address;
-    seq = pkt.seq;
-    type = pkt.type;
 
     /* reply ASAP, only to server */
     pkt.type = TYPE_PONG;

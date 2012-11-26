@@ -2,12 +2,11 @@
 
 include "include/session.php";
 
-$base = "http://localhost/cssdk/";
 $script = "hostadd.php";
 
 if ( !$session->logged_in )
 {
-  header( "Location:" . $base );
+  header( "Location:" . $cssdk2_base_url );
   die();
 }
 
@@ -20,13 +19,18 @@ if ( $new_host == 0 )
 }
 else
 {
-  printf( "<p>New Machine ID %08X added.</p>", $new_host );
+  $hex = strtoupper( dechex( $new_host ) );
+  if ( strlen( $hex ) == 16 )
+  {
+    $hex = substr( $hex, 8, 8 );
+  }
+  echo "<p>New Machine ID " . $hex . " added.</p>";
   echo "<p>This Machine ID is now ready for you to setup your sah-monitor.exe. "
      . "Be sure to use the proper Machine ID.</p>";
 }
 
 
-echo '<p>[<a href="' . $base . 'index.php">Back</a>]</p>';
+echo '<p>[<a href="' . $cssdk2_base_url . 'index.php">Back</a>]</p>';
 
 PrintTail();
 ?>

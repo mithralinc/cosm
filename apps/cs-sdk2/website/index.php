@@ -2,7 +2,7 @@
 
 include("include/session.php");
 
-PrintHead( "Management" );
+PrintHead( "Host Management" );
 
 if($session->logged_in)
 {
@@ -20,7 +20,12 @@ if($session->logged_in)
   {
     echo "<tr>";
     $hex = strtoupper( dechex( $row['machine_id'] ) );
-    echo '<td><a href="lookup.php?machine_id=' . $hex . '">' . $hex . '</a></td>';
+    if ( strlen( $hex ) == 16 )
+    {
+      $hex = substr( $hex, 8, 8 );
+    }
+    echo '<td><a href="lookup.php?machine_id=' . $hex . '">' .
+      $hex . '</a></td>';
     if ( $row['online'] == -1 )
     {
       echo '<td colspan=5>You can now setup your client with this ID</td>';

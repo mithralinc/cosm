@@ -101,7 +101,7 @@ class Session
          $this->userinfo  = $database->getUserInfo($_SESSION['username']);
          $this->username  = $this->userinfo['username'];
          $this->php_cookie    = $this->userinfo['php_cookie'];
-         $this->userlevel = $this->userinfo['userlevel'];
+         $this->userlevel = GUEST_LEVEL; #$this->userinfo['userlevel'];
          return true;
       }
       /* User not logged in */
@@ -165,7 +165,7 @@ class Session
       $this->userinfo  = $database->getUserInfo($subuser);
       $this->username  = $_SESSION['username'] = $this->userinfo['username'];
       $this->php_cookie    = $_SESSION['php_cookie']   = $this->generateRandID();
-      $this->userlevel = $this->userinfo['userlevel'];
+      $this->userlevel = GUEST_LEVEL; #$this->userinfo['userlevel'];
       
       /* Insert php_cookie into database and update active users table */
       $database->updateUserField($this->username, "php_cookie", $this->php_cookie);

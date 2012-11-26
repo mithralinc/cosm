@@ -2,12 +2,11 @@
 
 include "include/session.php";
 
-$base = "http://localhost/cssdk/";
 $script = "stats.php";
 
 if ( !$session->logged_in )
 {
-  header( "Location:" . $base );
+  header( "Location:" . $cssdk2_base_url );
   die();
 }
 
