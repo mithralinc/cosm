@@ -11,13 +11,9 @@
  * Last Updated: August 26, 2004
  */
 include("include/session.php");
-?>
 
-<html>
-<title>User Edit</title>
-<body>
+PrintHead( "User Edit" );
 
-<?php
 /**
  * User has submitted form without errors and user's
  * account has been edited successfully.

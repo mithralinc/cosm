@@ -10,20 +10,20 @@ if ( !$session->logged_in )
   die();
 }
 
-if ( is_numeric( '0x' . $_REQUEST['machine_id'] ) )
+if ( is_numeric( '0x' . $_REQUEST['host_id'] ) )
 {
-  $machine = $_REQUEST['machine_id'];
+  $host_id = $_REQUEST['host_id'];
 }
 else
 {
-  $machine = "";
+  $host_id = "";
 }
 
-PrintHead( "Machine Lookup" );
+PrintHead( "Host Lookup" );
 
-if ( strlen( $machine ) == 8 )
+if ( strlen( $host_id ) == 8 )
 {
-  $query = "SELECT * FROM hosts WHERE machine_id = x'" . $machine
+  $query = "SELECT * FROM hosts WHERE host_id = x'" . $host_id
     . "'::int AND user_id = " . $session->userinfo['user_id'] . ";";
   $result = $database->query($query);
   if ( pg_numrows( $result ) != 1 )
@@ -34,7 +34,7 @@ if ( strlen( $machine ) == 8 )
   }
   $row = pg_fetch_assoc( $result );
   
-  echo "<h3>Machine ID: " . $machine . "</h3>\n";
+  echo "<h3>Host ID: " . $host_id . "</h3>\n";
   
   echo "<p><b>Status: ";
   if ( $row['online'] == -1 )
@@ -65,7 +65,7 @@ if ( strlen( $machine ) == 8 )
   echo "<tr><td>" . "Online?" . "</td><td>" . $row['online'] . "</td></tr>";
   echo "</table>\n";
   
-  $query = "SELECT * FROM pongs WHERE machine_id = x'" . $machine
+  $query = "SELECT * FROM pongs WHERE host_id = x'" . $host_id
     . "'::int ORDER BY pong_time DESC LIMIT 12;";
   $result = $database->query($query);
   
@@ -82,9 +82,9 @@ if ( strlen( $machine ) == 8 )
   }
   echo "</table>\n";
   
-  $url = $cssdk2_base_url . $script . '?machine_id=' . $machine;
+  $url = $cssdk2_base_url . $script . '?host_id=' . $host_id;
   echo '<p>Bookmark: <a href="' . $url . ' ">' . $url . '</a></p>';
-  echo '<p>Do not reveal your Machine ID to others.</p>';
+  echo '<p>Do not reveal your Host ID to others.</p>';
 
 
 $query =
@@ -117,7 +117,7 @@ echo "</table>\n";
 }
 else
 {
-  echo "Bad Machine ID";
+  echo "Bad Host ID";
 }
 
 PrintTail();
