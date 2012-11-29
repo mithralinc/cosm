@@ -187,7 +187,6 @@ typedef struct s128 { s64 hi; u64 lo; } s128; /**< 128-bit signed. */
 #if ( !defined( NO_FLOATING_POINT ) )
 typedef float f32;        /**< 32-bit float. */
 typedef double f64;       /**< 64 bit double. */
-typedef long double f128; /**< 128-bit float. */
 #endif
 
 /* Text types */

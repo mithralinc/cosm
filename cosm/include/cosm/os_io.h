@@ -229,8 +229,6 @@ u32 CosmPrint( const utf8 * format, ... );
       b = pointer to raw byte buffer, precision flag is length in bytes
       f = f32 or f64, [-]dddd.dddddd
       F = f32 or f64, [-]d.dddddd[Edd]
-      g = f128, [-]dddd.dddddd
-      G = f128, [-]d.dddddd[Edd]
       u = u32 dec
       v = u64 dec
       w = u128 dec

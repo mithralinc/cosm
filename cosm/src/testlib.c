@@ -278,7 +278,6 @@ int main( int argc, char * argv[] )
     || ( sizeof( u128 ) != 16 )
 #if ( !defined( NO_FLOATING_POINT ) )
     || ( sizeof( f32 ) != 4 ) || ( sizeof( f64 ) != 8 )
-    || ( sizeof( f128 ) < 8 )
 #endif
     )
   {
@@ -297,15 +296,10 @@ int main( int argc, char * argv[] )
 
 #if ( !defined( NO_FLOATING_POINT ) )
   CosmPrint( "Floating point support enabled.\n" );
-  CosmPrint( "f128 is %i bits%.50s.\n", sizeof( f128 ) * 8,
-    ( sizeof( f128 ) <= 8 )
-    ? " - compiler and/or CPU is not for hardcore math" : "" );
-  CosmPrint( "f32  %.40f (~7 significant digits)\n",
+  CosmPrint( "f32  %.20f (~7 significant digits)\n",
     (f32) 0.1234567890123456789012345678901234567890 );
-  CosmPrint( "f64  %.40f (~16 significant digits)\n",
+  CosmPrint( "f64  %.20f (~16 significant digits)\n",
     (f64) 0.1234567890123456789012345678901234567890 );
-  CosmPrint( "f128 %.40g (up to ~34 significant digits)\n",
-    (f128) 0.1234567890123456789012345678901234567890 );
 #else
   CosmPrint( "Floating point support disabled.\n" );
 #endif

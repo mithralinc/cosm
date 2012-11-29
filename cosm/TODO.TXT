@@ -91,7 +91,7 @@ src/os_io
   check: proper +127 to -128 ranges on numbers.
   Make CosmPrint work on chars, not bytes.
   CRITICAL: force scientific notation for big numbers.
-            f128 has only 34 sig-figs. u128 has 39.
+            f64 has only ~16 sig-figs. u128 has 39.
   BROKEN: \b needs to not get encoded
   return codes for CosmStr functions are seldom checked elsewhere.
   Fix API/return values to be consistent with pass/fail

@@ -71,8 +71,6 @@ enum COSM_IO_STATES
   COSM_IO_U128_HEX,
   COSM_IO_F64,
   COSM_IO_F64_SCI,
-  COSM_IO_F128,
-  COSM_IO_F128_SCI,
   COSM_IO_POINTER
 };
 
@@ -1467,14 +1465,11 @@ u32 Cosm_Print( cosm_FILE * file, void * string, u32 max_bytes,
   f64  tmp_f64;
   f64  whole_f64;
   f64  tmp_whole_f64;
-  f128 tmp_f128;
-  f128 whole_f128;
-  f128 tmp_whole_f128;
 #endif
 
   ascii * ptr_ascii;
   utf8 * ptr_utf8;
-  ascii tmp_ascii[64]; /* longest is s128 at 40+sign, f128 around same */
+  ascii tmp_ascii[64]; /* longest is s128 at 40+sign */
   u32 tmp_count;
   s32 tmp_sign;
   s32 i;
@@ -1608,12 +1603,6 @@ u32 Cosm_Print( cosm_FILE * file, void * string, u32 max_bytes,
                 break;
               case 'F':
                 state = COSM_IO_F64_SCI;
-                break;
-              case 'g':
-                state = COSM_IO_F128;
-                break;
-              case 'G':
-                state = COSM_IO_F128_SCI;
                 break;
 #endif
               case 'X':
@@ -2157,231 +2146,6 @@ u32 Cosm_Print( cosm_FILE * file, void * string, u32 max_bytes,
 
         *ptr_ascii++ = (ascii) '.';
         *ptr_ascii++ = (ascii) ( '0' + whole_f64 );
-        tmp_count += 2;
-
-        *ptr_ascii++ = 0;
-        state = COSM_IO_TMP_STRING;
-        break;
-      case COSM_IO_F128:
-        tmp_f128 = (f128) va_arg( args, f128 );
-
-        if ( CosmFloatNaN( (f64) tmp_f128 ) )
-        {
-          *ptr_ascii++ = (ascii) 'N';
-          *ptr_ascii++ = (ascii) 'a';
-          *ptr_ascii++ = (ascii) 'N';
-          *ptr_ascii++ = 0;
-          tmp_count += 3;
-          state = COSM_IO_TMP_STRING;
-          break;
-        }
-
-        if ( tmp_f128 < 0 )
-        {
-          tmp_sign = -1;
-          tmp_f128 = -tmp_f128;
-        }
-
-        if ( ( i = CosmFloatInf( (f64) tmp_f128 ) ) != 0 )
-        {
-          *ptr_ascii++ = (ascii) 'f';
-          *ptr_ascii++ = (ascii) 'n';
-          *ptr_ascii++ = (ascii) 'I';
-          if ( i > 0 )
-          {
-            *ptr_ascii++ = (ascii) '+';
-          }
-          else
-          {
-            *ptr_ascii++ = (ascii) '-';
-          }
-          *ptr_ascii++ = 0;
-          tmp_count += 4;
-          state = COSM_IO_TMP_STRING;
-          break;
-        }
-
-        /* Get whole/fraction part using casts. */
-        whole_f128 = floorl( tmp_f128 );
-        tmp_f128 = tmp_f128 - whole_f128;
-
-        /* Set precision to "6" if not set (From os_io.h)  */
-        if ( precision_set )
-        {
-          if ( precision == 0 )
-          {
-            tmp_f128 = 0.0;
-          }
-          if ( precision > 40 )
-          {
-            precision = 40;
-          }
-        }
-        else
-        {
-          precision = 6;
-        }
-
-        if ( tmp_f128 > 0 || precision )
-        {
-          for ( i = precision-1 ; i >= 0 ; i-- )
-          {
-            if ( tmp_f128 > 0 )
-            {
-              tmp_f128 = tmp_f128 * (f128) 10.0;
-              tmp_whole_f128 = floorl( tmp_f128 );
-              tmp_f128 = tmp_f128 - tmp_whole_f128;
-            }
-            else
-            {
-              tmp_whole_f128 = 0.0;
-            }
-
-            *( ptr_ascii + i ) = (ascii) ( '0' + tmp_whole_f128 );
-          }
-
-          ptr_ascii += precision;
-          tmp_count += precision;
-
-          *ptr_ascii++ = (ascii) '.';
-          tmp_count++;
-        }
-
-        /* print whole */
-        do
-        {
-          *ptr_ascii++ = (ascii) ( '0' + fmodl( whole_f128, (f128) 10.0 ) );
-          whole_f128 = whole_f128 / (f128) 10.0;
-          whole_f128 = floorl( whole_f128 );
-          tmp_count++;
-        } while ( whole_f128 > 0 );
-
-        *ptr_ascii++ = 0;
-        state = COSM_IO_TMP_STRING;
-        break;
-      case COSM_IO_F128_SCI:
-        tmp_f128 = (f128) va_arg( args, f128 );
-
-        if ( CosmFloatNaN( (f64) tmp_f128 ) )
-        {
-          *ptr_ascii++ = (ascii) 'N';
-          *ptr_ascii++ = (ascii) 'a';
-          *ptr_ascii++ = (ascii) 'N';
-          *ptr_ascii++ = 0;
-          tmp_count += 3;
-          state = COSM_IO_TMP_STRING;
-          break;
-        }
-
-        if ( tmp_f128 < 0 )
-        {
-          tmp_sign = -1;
-          tmp_f128 = -tmp_f128;
-        }
-
-        if ( ( i = CosmFloatInf( (f64) tmp_f128 ) ) != 0 )
-        {
-          *ptr_ascii++ = (ascii) 'f';
-          *ptr_ascii++ = (ascii) 'n';
-          *ptr_ascii++ = (ascii) 'I';
-          if ( i > 0 )
-          {
-            *ptr_ascii++ = (ascii) '+';
-          }
-          else
-          {
-            *ptr_ascii++ = (ascii) '-';
-          }
-          *ptr_ascii++ = 0;
-          tmp_count += 4;
-          state = COSM_IO_TMP_STRING;
-          break;
-        }
-
-        /* Count "E" digits */
-        tmp_s32 = 0;
-        if ( tmp_f128 != 0 )
-        {
-          while ( tmp_f128 < (f128) 1.0 )
-          {
-            tmp_s32--;
-            tmp_f128 = tmp_f128 * (f128) 10.0;
-          }
-          while ( tmp_f128 >= (f128) 10.0 )
-          {
-            tmp_s32++;
-            tmp_f128 = tmp_f128 / (f128) 10.0;
-          }
-        }
-
-        if ( tmp_s32 )
-        {
-          if ( tmp_s32 < 0 )
-          {
-            tmp_u32 = -tmp_s32;
-          }
-          else
-          {
-            tmp_u32 = tmp_s32;
-          }
-
-          do
-          {
-            *ptr_ascii++ = (ascii) ( '0' + ( tmp_u32 % 10 ) );
-            tmp_u32 = tmp_u32 / 10;
-            tmp_count++;
-          } while ( tmp_u32 > 0 );
-
-          if ( tmp_s32 < 0 )
-          {
-            *ptr_ascii++ = (ascii) '-';
-            tmp_count++;
-          }
-
-          *ptr_ascii++ = (ascii) 'E';
-          tmp_count++;
-        }
-
-        whole_f128 = floorl( tmp_f128 );
-        tmp_f128 = tmp_f128 - whole_f128;
-
-        /* Set precision to "6" if not set (From os_io.h)  */
-        if ( precision_set )
-        {
-          if ( precision == 0 )
-          {
-            tmp_f128 = 0.0;
-          }
-          if ( precision > 40 )
-          {
-            precision = 40;
-          }
-        }
-        else
-        {
-          precision = 6;
-        }
-
-        for ( i = precision-1; i >= 0; i-- )
-        {
-          if ( tmp_f128 > 0 )
-          {
-            tmp_f128 = tmp_f128 * (f128) 10.0;
-            tmp_whole_f128 = floorl( tmp_f128 );
-            tmp_f128 = tmp_f128 - tmp_whole_f128;
-          }
-          else
-          {
-            tmp_whole_f128 = 0;
-          }
-
-          *(ptr_ascii+i) = (ascii) ( '0' + tmp_whole_f128 );
-        }
-        ptr_ascii += precision;
-        tmp_count += precision;
-
-        *ptr_ascii++ = (ascii) '.';
-        *ptr_ascii++ = (ascii) ( '0' + whole_f128 );
         tmp_count += 2;
 
         *ptr_ascii++ = 0;

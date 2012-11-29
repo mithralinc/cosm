@@ -268,19 +268,7 @@
     <None Include="..\TEMPLATE">
       <Filter>Miscellaneous\UNIX Makefiles</Filter>
     </None>
-    <None Include="..\..\utils\file2hex">
-      <Filter>Miscellaneous</Filter>
-    </None>
     <None Include="..\..\doc\html2man.pl">
-      <Filter>Miscellaneous</Filter>
-    </None>
-    <None Include="..\..\utils\indent.pro">
-      <Filter>Miscellaneous</Filter>
-    </None>
-    <None Include="..\..\utils\p2update.pl">
-      <Filter>Miscellaneous</Filter>
-    </None>
-    <None Include="..\..\utils\longlines.pl">
       <Filter>Miscellaneous</Filter>
     </None>
     <None Include="usertype.dat">
@@ -288,6 +276,18 @@
     </None>
     <None Include="..\..\doc\Doxygen.cfg">
       <Filter>Documentation</Filter>
+    </None>
+    <None Include="..\..\apps\indent.pro">
+      <Filter>Miscellaneous</Filter>
+    </None>
+    <None Include="..\..\apps\longlines.pl">
+      <Filter>Miscellaneous</Filter>
+    </None>
+    <None Include="..\..\apps\p2update.pl">
+      <Filter>Miscellaneous</Filter>
+    </None>
+    <None Include="..\..\apps\file2hex">
+      <Filter>Miscellaneous</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
