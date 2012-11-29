@@ -44,8 +44,9 @@ os_io:
     email, net, http, os_task (commands), are ascii protocols of course.
   - The string library (os_io) now uses u32 instead of u64 in most cases.
     This is for better performance and ease of use.
-  - f128 type added for your hardcore math needs.
-    f128 in CosmPrint() is %g and %G.
+  - f128 type added for your hardcore math needs. (REMOVED)
+    f128 in CosmPrint() is %g and %G. (REMOVED)
+	f128 removed - appropriate for hardware accelerator libraries only.
   - CosmPrint() %n and %N are removed from the documention (never existed)
   - CosmStrLength is now CosmStrBytes for clarity.
 os_math:

@@ -253,6 +253,10 @@
     <ClInclude Include="..\..\src\bzip2\bzlib_private.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\..\apps\file2hex" />
+    <None Include="..\..\apps\indent.pro" />
+    <None Include="..\..\apps\longlines.pl" />
+    <None Include="..\..\apps\p2update.pl" />
     <None Include="..\..\doc\cosm.html" />
     <None Include="..\..\doc\Doxygen.cfg" />
     <None Include="..\..\doc\functions.html" />
@@ -292,10 +296,6 @@
     <None Include="..\macosx-x64" />
     <None Include="..\macosx-x86" />
     <None Include="..\TEMPLATE" />
-    <None Include="..\..\utils\file2hex" />
-    <None Include="..\..\utils\indent.pro" />
-    <None Include="..\..\utils\longlines.pl" />
-    <None Include="..\..\utils\p2update.pl" />
     <None Include="..\..\CHANGES.TXT" />
     <None Include="..\..\CREDITS.TXT" />
     <None Include="..\..\LICENSE.TXT" />

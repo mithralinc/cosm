@@ -10,7 +10,6 @@ s64
 s128
 f32
 f64
-f128
 vector
 pixel
 ascii
