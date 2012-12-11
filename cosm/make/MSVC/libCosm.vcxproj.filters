@@ -154,7 +154,6 @@
   <ItemGroup>
     <None Include="..\..\CHANGES.TXT" />
     <None Include="..\..\CREDITS.TXT" />
-    <None Include="..\..\LICENSE.TXT" />
     <None Include="..\..\README.txt" />
     <None Include="..\..\TODO.TXT" />
     <None Include="..\..\doc\bignum.html">
@@ -289,6 +288,8 @@
     <None Include="..\..\apps\file2hex">
       <Filter>Miscellaneous</Filter>
     </None>
+    <None Include="..\..\NOTICE" />
+    <None Include="..\..\LICENSE" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Documentation">

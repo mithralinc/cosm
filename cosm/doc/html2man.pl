@@ -1,8 +1,5 @@
 #!/usr/bin/perl -w
 #
-# Use of this code is subject to the terms of the Phase 1 Cosm License.
-# Any other use of this code violates the terms of the license.
-#
 # html2man -- automatically convert an HTML file containing documentation
 #             for Cosm function(s) into the corresponding man page(s).
 
@@ -20,10 +17,9 @@ sub gen_symlinks;
 # Copyright notice to prepend to all man pages.
 
 my $COPYRIGHT
-       = ".\\\" Copyright (c) 1999 Adam L. Beberg.  All rights reserved.\n"
-       . ".\\\" Cosm (tm) is a trademark of Adam L. Beberg.\n"
-       . ".\\\" Any use of the information presented here is subject to\n"
-       . ".\\\" the terms in the Cosm License.\n";
+       = ".\\\" Copyright 1995-2012 Mithral Communications & Design Inc.\n"
+       . ".\\\" Mithral(R) and Cosm(R) are registered trademarks of\n"
+       . ".\\\" Mithral Communications & Design Inc.\n";
 
 # Suffix of output files
 
