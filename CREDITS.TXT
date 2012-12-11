@@ -60,7 +60,7 @@ Phase 1 libCosm Credits
     David 'David-T' Taylor - uk.co.yadt#davidt - misc
 
   Legal:
-    Paul Biba - license
+    Paul Biba - Phase 1 license
 
   Porting:
     'SisterD' - Mac OS 9

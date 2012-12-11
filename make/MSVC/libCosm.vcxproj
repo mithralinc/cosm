@@ -282,6 +282,8 @@
     <None Include="..\..\doc\time.html" />
     <None Include="..\..\doc\transform.html" />
     <None Include="..\..\doc\bzip2.html" />
+    <None Include="..\..\LICENSE" />
+    <None Include="..\..\NOTICE" />
     <None Include="..\..\src\bzip2\Makefile" />
     <None Include="..\..\src\bzip2\README.TXT" />
     <None Include="..\..\build" />
@@ -298,7 +300,6 @@
     <None Include="..\TEMPLATE" />
     <None Include="..\..\CHANGES.TXT" />
     <None Include="..\..\CREDITS.TXT" />
-    <None Include="..\..\LICENSE.TXT" />
     <None Include="..\..\README.txt" />
     <None Include="..\..\TODO.TXT" />
     <None Include="usertype.dat" />

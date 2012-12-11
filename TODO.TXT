@@ -17,8 +17,6 @@ Notes:
 CODING
 ------
 
-!!! MITHRAL LICENSE A/B !!! Fix code templates
-
 Doxygen
 Move to common errors.
 CosmErrorStr(), CosmOSStr(), CosmCPUStr()
@@ -50,7 +48,7 @@ apps/p2update.pl
   CosmU64U32\({.*sizeof\(.*\).*}\)
 
 2nd Party/
-  bzip2 1.0.2 -> 1.0.5 - security vulnerability
+  bzip2 1.0.2 -> 1.0.6 - security vulnerabilities
   need LZMA (the 7zip alg)
 
 -- CPU/OS layer --
