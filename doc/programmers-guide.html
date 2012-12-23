@@ -294,7 +294,7 @@ typedef struct invalid_STRUCT
   u16 c; /* length isn't a multiple of 8, cannot be arrayed */
 } invalid_STRUCT;
 
-PACKED_STRUCT_BEGIN
+PACKED_STRUCT_BEGIN( 1 );
 typedef struct valid_STRUCT
 {
   u32 a;
@@ -302,7 +302,7 @@ typedef struct valid_STRUCT
   u16 pad; /* padding */
   u64 b; /* correctly aligned, correct length, etc. */
 } valid_STRUCT;
-PACKED_STRUCT_END
+PACKED_STRUCT_END;
 
 s32 Cosm_TestBlah( void );
 

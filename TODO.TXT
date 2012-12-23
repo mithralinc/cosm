@@ -54,9 +54,9 @@ apps/p2update.pl
 -- CPU/OS layer --
 
 src/cputypes
-  -
 
 src/os_file
+  Remove COSM_FILE64, use int for unix file handles.
   Don't make files executable by default, need flag setting functions.
   Memory mapped file tests
   Remove special file prefix processing
@@ -183,6 +183,7 @@ src/config
   code audit
 
 src/crypto
+  Move to AES, SHA3-256, ECC P-256.
   Fix RSA signing padding - http://tools.ietf.org/html/rfc3447
   Use montgomery math - setup when loading keys, so batch operations are fast
   code audit

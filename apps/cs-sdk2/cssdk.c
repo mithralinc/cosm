@@ -103,8 +103,8 @@ s32 UpdateFile( const ascii * path, const ascii * filename,
   /* base/os/cpu/filename.ver */
   CosmPrintStr( url, sizeof( url ), "%.32s%.02X/%.8s/%.8s/%.64s.ver",
     CSSDK_SRV_BASE, current_version_major,
-    os_types[( OS_TYPE > COSM_OS_TYPE_MAX ) ? 0 : OS_TYPE],
-    cpu_types[( CPU_TYPE > COSM_CPU_TYPE_MAX ) ? 0 : CPU_TYPE],
+    os_types[( OS_TYPE > OS_TYPE_MAX ) ? 0 : OS_TYPE],
+    cpu_types[( CPU_TYPE > CPU_TYPE_MAX ) ? 0 : CPU_TYPE],
     filename );
 
   /* get the version, base 16 */
@@ -137,8 +137,8 @@ s32 UpdateFile( const ascii * path, const ascii * filename,
     /* base/os/cpu/filename.XXXX */
     CosmPrintStr( url, sizeof( url ), "%.32s%.02X%.8s/%.8s/%.64s.%04X",
       CSSDK_SRV_BASE, current_version_major,
-      os_types[( OS_TYPE > COSM_OS_TYPE_MAX ) ? 0 : OS_TYPE],
-      cpu_types[( CPU_TYPE > COSM_CPU_TYPE_MAX ) ? 0 : CPU_TYPE],
+      os_types[( OS_TYPE > OS_TYPE_MAX ) ? 0 : OS_TYPE],
+      cpu_types[( CPU_TYPE > CPU_TYPE_MAX ) ? 0 : CPU_TYPE],
       filename, version );
 
     /* do HTTP GET, and open output file, create buffer */

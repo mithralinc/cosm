@@ -38,24 +38,6 @@
 #include <sys/shm.h>
 #endif
 
-#define COSM_MEM_64BITS  64
-#define COSM_MEM_32BITS  32
-
-#undef COSM_MEM_SIZE
-#if ( ( OS_TYPE == OS_TRU64 ) || ( OS_TYPE == OS_IRIX64 ) \
-  || ( ( OS_TYPE == OS_SOLARIS ) && ( defined( CPU_64BIT ) ) ) \
-  || ( CPU_TYPE == CPU_ALPHA ) || ( CPU_TYPE == CPU_IA64 ) \
-  || ( CPU_TYPE == CPU_X64 ) )
-#define COSM_MEM_SIZE COSM_MEM_64BITS
-#else
-#define COSM_MEM_SIZE COSM_MEM_32BITS
-#endif
-
-/* one of the above must be set at this point */
-#if ( !defined( COSM_MEM_SIZE ) )
-#error "Define COSM_MEM_SIZE - see os_mem.c"
-#endif
-
 /* Memory leak related defines */
 #include "cosm/os_file.h"
 
@@ -93,18 +75,14 @@ s32 CosmMemCopy( void * dest, const void * src, u64 length )
     return COSM_PASS;
   }
 
-#if ( COSM_MEM_SIZE == COSM_MEM_64BITS )
+#if ( defined( CPU_64BIT ) )
   memmove( dest, src, length );
 #else /* 32bits */
   if ( length > 0xFFFFFFFFLL )
   {
     return COSM_FAIL;
   }
-#if ( OS_TYPE == OS_SUNOS )
-  bcopy( src, dest, (u32) length );
-#else
   memmove( dest, src, (u32) length );
-#endif
 #endif
 
   return COSM_PASS;
@@ -117,7 +95,7 @@ s32 CosmMemSet( void * memory, u64 length, u8 value )
     return COSM_FAIL;
   }
 
-#if ( COSM_MEM_SIZE == COSM_MEM_64BITS )
+#if ( defined( CPU_64BIT ) )
   memset( memory, value, length );
 #else /* 32bits */
   if ( length > 0xFFFFFFFFLL )
@@ -175,7 +153,7 @@ void * CosmMemOffset( const void * memory, u64 offset )
 
   tmp = (u8 *) memory;
 
-#if ( COSM_MEM_SIZE == COSM_MEM_64BITS )
+#if ( defined( CPU_64BIT ) )
   tmp = &tmp[offset];
   if ( (u64) tmp < (u64) memory )
   {
@@ -285,7 +263,7 @@ void * CosmSharedMemAlloc( cosm_SHARED_MEM * shared_mem,
     return NULL;
   }
 
-#if ( COSM_MEM_SIZE == COSM_MEM_32BITS )
+#if ( defined( CPU_32BIT ) )
   if ( bytes > 0xFFFFFFFFLL )
   {
     return NULL;
@@ -475,7 +453,7 @@ void * Cosm_MemAlloc( u64 bytes )
     }  
   }
 
-#if ( COSM_MEM_SIZE == COSM_MEM_64BITS )
+#if ( defined( CPU_64BIT ) )
   return calloc( 1, request );
 #else /* 32bits */
   if ( bytes > 0xFFFFFFFFLL )
@@ -526,7 +504,7 @@ void * Cosm_MemRealloc( void * memory, u64 bytes )
     request = ( request + align );
   }
 
-#if ( COSM_MEM_SIZE == COSM_MEM_64BITS )
+#if ( defined( CPU_64BIT ) )
   return realloc( memory, request );
 #else /* 32bits */
   if ( bytes > 0xFFFFFFFFLL )
@@ -830,7 +808,7 @@ s32 Cosm_TestOSMem( void )
   u64 size;
 
   /* First be sure our COSM_MEM_SIZE is correct - set at the top of os_mem.c */
-#if ( COSM_MEM_SIZE == COSM_MEM_64BITS )
+#if ( defined( CPU_64BIT ) )
   if ( sizeof( void * ) != 8 )
   {
     return -1;
@@ -843,7 +821,7 @@ s32 Cosm_TestOSMem( void )
 #endif
 
   /* Next be sure our memory size matches the calloc size_t */
-#if ( COSM_MEM_SIZE == COSM_MEM_64BITS )
+#if ( defined( CPU_64BIT ) )
   if ( sizeof( size_t ) != sizeof( u64 ) )
   {
     return -2;
@@ -859,7 +837,7 @@ s32 Cosm_TestOSMem( void )
     We simply try to allocate more memory then the machine
     can possibly be able to give up.
   */
-#if ( COSM_MEM_SIZE == COSM_MEM_64BITS )
+#if ( defined( CPU_64BIT ) )
   size = 0xFFFFFFFFFFFFFFFFLL;
 #else /* the 32bit case */
   size = 0x0000000100000000LL;

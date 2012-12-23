@@ -95,7 +95,7 @@
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <AdditionalIncludeDirectories>../../include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_DEBUG;MEM_LEAK_FIND;WIN32;_LIB;CPU_32BIT;CPU_TYPE=CPU_X86;OS_TYPE=OS_WIN32;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;MEM_LEAK_FIND;WIN32;_LIB;CPU_TYPE=CPU_X86;OS_TYPE=OS_WIN32;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <ProgramDataBaseFileName>$(IntDir)$(ProjectName).pdb</ProgramDataBaseFileName>
@@ -121,7 +121,7 @@
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <AdditionalIncludeDirectories>../../include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_DEBUG;MEM_LEAK_FIND;_LIB;CPU_64BIT;CPU_TYPE=CPU_X64;OS_TYPE=OS_WIN64;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;MEM_LEAK_FIND;_LIB;CPU_TYPE=CPU_X64;OS_TYPE=OS_WIN64;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <ProgramDataBaseFileName>$(IntDir)$(ProjectName).pdb</ProgramDataBaseFileName>
@@ -145,7 +145,7 @@
       <Optimization>Full</Optimization>
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
       <AdditionalIncludeDirectories>../../include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>NDEBUG;WIN32;_LIB;CPU_32BIT;CPU_TYPE=CPU_X86;OS_TYPE=OS_WIN32;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;WIN32;_LIB;CPU_TYPE=CPU_X86;OS_TYPE=OS_WIN32;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
@@ -171,7 +171,7 @@
       <Optimization>Full</Optimization>
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
       <AdditionalIncludeDirectories>../../include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>NDEBUG;_LIB;CPU_64BIT;CPU_TYPE=CPU_X64;OS_TYPE=OS_WIN64;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;_LIB;CPU_TYPE=CPU_X64;OS_TYPE=OS_WIN64;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
@@ -258,7 +258,7 @@
     <None Include="..\..\apps\longlines.pl" />
     <None Include="..\..\apps\p2update.pl" />
     <None Include="..\..\doc\cosm.html" />
-    <None Include="..\..\doc\Doxygen.cfg" />
+    <None Include="..\..\doc\doxygen.cfg" />
     <None Include="..\..\doc\functions.html" />
     <None Include="..\..\doc\html2man.pl" />
     <None Include="..\..\doc\index.html" />
@@ -288,20 +288,22 @@
     <None Include="..\..\src\bzip2\README.TXT" />
     <None Include="..\..\build" />
     <None Include="..\..\src\Makefile" />
-    <None Include="..\common" />
-    <None Include="..\fake" />
-    <None Include="..\linux-x64" />
-    <None Include="..\linux-x86" />
-    <None Include="..\macosx-ppc" />
-    <None Include="..\macosx-ppc64" />
-    <None Include="..\macosx-universal" />
-    <None Include="..\macosx-x64" />
-    <None Include="..\macosx-x86" />
-    <None Include="..\TEMPLATE" />
     <None Include="..\..\CHANGES.TXT" />
     <None Include="..\..\CREDITS.TXT" />
     <None Include="..\..\README.txt" />
     <None Include="..\..\TODO.TXT" />
+    <None Include="..\common" />
+    <None Include="..\fake" />
+    <None Include="..\linux-arm" />
+    <None Include="..\linux-x64" />
+    <None Include="..\linux-x86" />
+    <None Include="..\osx-intel" />
+    <None Include="..\osx-ppc" />
+    <None Include="..\osx-ppc64" />
+    <None Include="..\osx-universal" />
+    <None Include="..\osx-x64" />
+    <None Include="..\osx-x86" />
+    <None Include="..\TEMPLATE" />
     <None Include="usertype.dat" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

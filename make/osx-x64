@@ -20,7 +20,7 @@ LDFLAGS = -mmacosx-version-min=10.4
 LDLIBS  = $(EXTRA_LIBS)
 
 # Cosm Defines
-COSM_DEFS = -DCPU_64BIT -DOS_TYPE=OS_MACOSX -DCPU_TYPE=CPU_X64
+COSM_DEFS = -DOS_TYPE=OS_MACOSX -DCPU_TYPE=CPU_X64
 
 .c.$(OBJ):
 	@echo "Compiling $<"

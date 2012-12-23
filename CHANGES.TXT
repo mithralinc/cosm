@@ -65,7 +65,7 @@ os_mem:
 os_net:
   - Full IPv6 support.
   - CosmNetOpen is simplified, and the parameters reordered correctly.
-  - CosmNetOpenSocks is now a separate, and depreciated function, so
+  - CosmNetOpenSocks is now a separate, and deprecated function, so
     CosmNetOpen takes 2 less parameters. SOCKS proxies have not been in
     common use for over 5 years, as host-based filtering has taken over.
   - IP addressses are now a struct cosm_NET_ADDR, not a u32 ip with u16 port.
@@ -184,7 +184,7 @@ Required:
 - CosmTransform API and CosmEncrypt macro API changes.
 - CosmCompressInit -> Add a final NULL parameter where CosmCompressInit was.
 - CosmNet -> Changes for cosm_NET_ADDR.
-- CosmNetOpen - API change. CosmNetOpenSocks added but depreciated.
+- CosmNetOpen - API change. CosmNetOpenSocks added but deprecated.
 - CosmNetACL* -> API change.
 - CosmNetMyIP -> API change, additional length parameter.
 - CosmCPUGet - removed.

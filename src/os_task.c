@@ -30,16 +30,6 @@ u32 win32_signals_init = 0;
 HANDLE win32_sigint_handle = NULL;
 HANDLE win32_sigterm_handle = NULL;
 void Cosm_SignalWaitThread( void * arg );
-#elif ( OS_TYPE == OS_SUNOS )
-#include <signal.h>
-#include <sys/time.h>
-#include <sys/resource.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <lwp/lwp.h>
-#include <lwp/lwpmachdep.h>
-#include <lwp/stackdep.h>
-#include <dlfcn.h>
 #elif ( OS_TYPE == OS_MACOSX )
 #include <sched.h>
 #include <signal.h>
@@ -71,10 +61,6 @@ void Cosm_SignalWaitThread( void * arg );
 #include <sys/sysctl.h>
 #endif
 
-#if ( ( OS_TYPE == OS_IRIX ) || ( OS_TYPE == OS_IRIX64 ) )
-#include <sys/sysmp.h>
-#endif
-
 #if ( OS_TYPE == OS_SOLARIS )
 #include <sys/types.h>
 #include <sys/processor.h>
@@ -94,12 +80,6 @@ void Cosm_SignalWaitThread( void * arg );
 #if ( OS_TYPE == OS_SOLARIS )
 #define PRIO_MAX  20
 #define PRIO_MIN  -20
-#endif
-
-/* QNX lacks PRIO_MAX and PRIO_MIN. */
-#if ( OS_TYPE == OS_QNX )
-#define PRIO_MAX 63
-#define PRIO_MIN 1
 #endif
 
 u64 CosmProcessID( void )
@@ -292,13 +272,6 @@ s32 CosmCPUCount( u32 * count )
     *count = 1;
     return COSM_FAIL;
   }
-#elif ( ( OS_TYPE == OS_IRIX ) || ( OS_TYPE == OS_IRIX64 ) )
-  *count = sysmp( MP_NPROCS );
-#elif ( OS_TYPE == OS_SUNOS )
-  /* SunOS does have multiple CPU capabilities, but no sysconf()
-     interface to access it. */
-  *count = 1;
-  return COSM_FAIL;
 #else /* OS = other */
   *count = 1;
   return COSM_FAIL;
@@ -455,43 +428,6 @@ s32 CosmThreadBegin( u64 * thread_id, void (*start)(void *),
     *thread_id = (u64) t_id;
     return COSM_PASS;
   }
-#elif ( OS_TYPE == OS_SUNOS )
-  u64 result;
-  thread_t tid;
-  stkalign_t *stack;
-  int ret;
-
-  *thread_id = (u64) 0;
-
-  /* !!! use a thread stack cache? [init] */
-  /* minimum stack size */
-  if ( stack_size < ( MINSIGSTKSZ ) )
-  {
-    stack_size = MINSIGSTKSZ;
-  }
-
-  /* Allocate the stack */
-  stack = (stkalign_t *) malloc( sizeof(stkalign_t) * stack_size );
-  if ( stack == NULL )
-  {
-    return COSM_FAIL;
-  }
-
-  /* Create the critter */
-  ret = lwp_create( &tid, (void * (*)( void * )) start, MINPRIO, 0,
-    stack, 1, (int) arg, (int) 0, (int) 0, (int) 0);
-  if ( ret != 0 )
-  {
-    return COSM_FAIL;
-  }
-  else
-  {
-    /* SunOS is 32bit only. */
-    result.hi = (u32) tid.thread_id;
-    result.lo = (u32) tid.thread_key;
-  }
-  *thread_id = result;
-  return COSM_PASS;
 #else /* POSIX Threads? */
   u64 result;
   pthread_t thread;
@@ -501,8 +437,7 @@ s32 CosmThreadBegin( u64 * thread_id, void (*start)(void *),
 
   pthread_attr_init( &attr );
 
-#if ( ( OS_TYPE == OS_IRIX ) || ( OS_TYPE == OS_IRIX64 ) \
-  || ( OS_TYPE == OS_MACOSX ) )
+#if ( OS_TYPE == OS_MACOSX )
   pthread_attr_setstacksize( &attr, (size_t) stack_size );
 #elif ( OS_TYPE == OS_SOLARIS )
   /* system-wide contention */
@@ -519,7 +454,7 @@ s32 CosmThreadBegin( u64 * thread_id, void (*start)(void *),
   }
   else
   {
-#ifdef CPU_64BIT
+#if ( defined( CPU_64BIT ) )
     *thread_id = (u64) thread;
 #else
     *thread_id = (u32) thread;
@@ -533,20 +468,8 @@ u64 CosmThreadID( void )
 {
 #if ( ( OS_TYPE == OS_WIN32 ) || ( OS_TYPE == OS_WIN64 ) )
   return (u64) GetCurrentThreadId();
-#elif ( OS_TYPE == OS_SUNOS )
-  u64 thread_id;
-  thread_t tid;
-
-  if ( lwp_self( &tid ) != 0 )
-  {
-    return (u64) 0;
-  }
-  /* SunOS is 32bit only. */
-  thread_id->hi = (u32) tid.thread_id;
-  thread_id->lo = (u32) tid.thread_key;
-  return thread_id;
 #else /* OS */
-#ifdef CPU_64BIT
+#if ( defined( CPU_64BIT ) )
   return (u64) pthread_self();
 #else
   return (u32) pthread_self();
@@ -669,16 +592,6 @@ u8 CosmThreadPriority( u8 priority )
   }
 
   return Cosm_PriorityToCosm( (u8) goal );
-#elif ( OS_TYPE == OS_SUNOS )
-  int result;
-
-  result = lwp_setpri( SELF, priority );
-  if ( result != 0 )
-  {
-    /* !!! call pod_setmaxpri(255) maybe? [init] */
-    return 0;
-  }
-  return priority;
 #else /* OS */
   pthread_attr_t attr;
   struct sched_param param;
@@ -708,8 +621,6 @@ void CosmThreadEnd( void )
 {
 #if ( ( OS_TYPE == OS_WIN32 ) || ( OS_TYPE == OS_WIN64 ) )
   _endthreadex( 0 );
-#elif ( OS_TYPE == OS_SUNOS )
-  lwp_destroy( SELF );
 #else /* OS */
   pthread_exit( NULL );
 #endif
@@ -1235,10 +1146,6 @@ void CosmYield( void )
 {
 #if ( ( OS_TYPE == OS_WIN32 ) || ( OS_TYPE == OS_WIN64 ) )
   SwitchToThread();
-#elif ( OS_TYPE == OS_SUNOS )
-  /* This doesn't do what you think it does... */
-  /* (this will only yeild to the same lwp priority group) */
-  lwp_yield( SELF );
 #else /* OS */
 #ifdef _POSIX_PRIORITY_SCHEDULING
   sched_yield();

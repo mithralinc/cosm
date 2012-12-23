@@ -225,33 +225,6 @@
     <None Include="..\..\build">
       <Filter>Miscellaneous\UNIX Makefiles</Filter>
     </None>
-    <None Include="..\common">
-      <Filter>Miscellaneous\UNIX Makefiles</Filter>
-    </None>
-    <None Include="..\fake">
-      <Filter>Miscellaneous\UNIX Makefiles</Filter>
-    </None>
-    <None Include="..\linux-x64">
-      <Filter>Miscellaneous\UNIX Makefiles</Filter>
-    </None>
-    <None Include="..\linux-x86">
-      <Filter>Miscellaneous\UNIX Makefiles</Filter>
-    </None>
-    <None Include="..\macosx-ppc">
-      <Filter>Miscellaneous\UNIX Makefiles</Filter>
-    </None>
-    <None Include="..\macosx-ppc64">
-      <Filter>Miscellaneous\UNIX Makefiles</Filter>
-    </None>
-    <None Include="..\macosx-universal">
-      <Filter>Miscellaneous\UNIX Makefiles</Filter>
-    </None>
-    <None Include="..\macosx-x64">
-      <Filter>Miscellaneous\UNIX Makefiles</Filter>
-    </None>
-    <None Include="..\macosx-x86">
-      <Filter>Miscellaneous\UNIX Makefiles</Filter>
-    </None>
     <None Include="..\..\src\Makefile">
       <Filter>Miscellaneous\UNIX Makefiles</Filter>
     </None>
@@ -264,17 +237,11 @@
     <None Include="..\..\src\bzip2\README.TXT">
       <Filter>Documentation\Utility Layer\bzip2</Filter>
     </None>
-    <None Include="..\TEMPLATE">
-      <Filter>Miscellaneous\UNIX Makefiles</Filter>
-    </None>
     <None Include="..\..\doc\html2man.pl">
       <Filter>Miscellaneous</Filter>
     </None>
     <None Include="usertype.dat">
       <Filter>Miscellaneous</Filter>
-    </None>
-    <None Include="..\..\doc\Doxygen.cfg">
-      <Filter>Documentation</Filter>
     </None>
     <None Include="..\..\apps\indent.pro">
       <Filter>Miscellaneous</Filter>
@@ -290,6 +257,45 @@
     </None>
     <None Include="..\..\NOTICE" />
     <None Include="..\..\LICENSE" />
+    <None Include="..\..\doc\doxygen.cfg">
+      <Filter>Documentation</Filter>
+    </None>
+    <None Include="..\common">
+      <Filter>Miscellaneous\UNIX Makefiles</Filter>
+    </None>
+    <None Include="..\fake">
+      <Filter>Miscellaneous\UNIX Makefiles</Filter>
+    </None>
+    <None Include="..\linux-arm">
+      <Filter>Miscellaneous\UNIX Makefiles</Filter>
+    </None>
+    <None Include="..\linux-x64">
+      <Filter>Miscellaneous\UNIX Makefiles</Filter>
+    </None>
+    <None Include="..\linux-x86">
+      <Filter>Miscellaneous\UNIX Makefiles</Filter>
+    </None>
+    <None Include="..\osx-intel">
+      <Filter>Miscellaneous\UNIX Makefiles</Filter>
+    </None>
+    <None Include="..\osx-ppc">
+      <Filter>Miscellaneous\UNIX Makefiles</Filter>
+    </None>
+    <None Include="..\osx-ppc64">
+      <Filter>Miscellaneous\UNIX Makefiles</Filter>
+    </None>
+    <None Include="..\osx-universal">
+      <Filter>Miscellaneous\UNIX Makefiles</Filter>
+    </None>
+    <None Include="..\osx-x64">
+      <Filter>Miscellaneous\UNIX Makefiles</Filter>
+    </None>
+    <None Include="..\osx-x86">
+      <Filter>Miscellaneous\UNIX Makefiles</Filter>
+    </None>
+    <None Include="..\TEMPLATE">
+      <Filter>Miscellaneous\UNIX Makefiles</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Documentation">

@@ -25,19 +25,19 @@ LDLIBS  = $(EXTRA_LIBS)
 .c.$(OBJ):
 	@echo "Compiling $< x86"
 	@$(CC) $(CC_FLAGS) -DOS_TYPE=OS_MACOSX \
-	  -DCPU_32BIT -DCPU_TYPE=CPU_X86 -arch i386 -o $@.i386 -c $<
+	  -DCPU_TYPE=CPU_X86 -arch i386 -o $@.i386 -c $<
 	@echo "Compiling $< x64"
 	@$(CC) $(CC_FLAGS) -DOS_TYPE=OS_MACOSX \
-	  -DCPU_64BIT -DCPU_TYPE=CPU_X64 -arch x86_64 -o $@.x86_64 -c $<
+	  -DCPU_TYPE=CPU_X64 -arch x86_64 -o $@.x86_64 -c $<
 	@lipo $@.i386 $@.x86_64 -create -output $@ 
 	@$(RM) $@.i386 $@.x86_64
 
 .cpp.$(OBJ):
 	@echo "Compiling $< x86"
 	@$(CXX) $(CC_FLAGS) -DOS_TYPE=OS_MACOSX \
-	  -DCPU_32BIT -DCPU_TYPE=CPU_X86 -arch i386 -o $@.i386 -c $<
+	  -DCPU_TYPE=CPU_X86 -arch i386 -o $@.i386 -c $<
 	@echo "Compiling $< x64"
 	@$(CXX) $(CC_FLAGS) -DOS_TYPE=OS_MACOSX \
-	  -DCPU_64BIT -DCPU_TYPE=CPU_X64 -arch x86_64 -o $@.x86_64 -c $<
+	  -DCPU_TYPE=CPU_X64 -arch x86_64 -o $@.x86_64 -c $<
 	@lipo $@.i386 $@.x86_64 -create -output $@ 
 	@$(RM) $@.i386 $@.x86_64

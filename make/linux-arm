@@ -20,7 +20,7 @@ LDFLAGS =
 LDLIBS  = -lpthread -lm -ldl $(EXTRA_LIBS)
 
 # Cosm Defines
-COSM_DEFS = -DCPU_32BIT -DOS_TYPE=OS_LINUX -DCPU_TYPE=CPU_ARM
+COSM_DEFS = -DOS_TYPE=OS_LINUX -DCPU_TYPE=CPU_ARM
 
 .c.$(OBJ):
 	@echo "Compiling $<"

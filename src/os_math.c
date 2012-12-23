@@ -653,7 +653,7 @@ s32 CosmFloatNaN( f64 number )
     NaN: u = dont care, At least one x-bit/X-byte must be non-zero.
     f64 = [u111]FFX XXXX XXXX XXXX
   */
-#if ( COSM_ENDIAN_CURRENT == COSM_ENDIAN_BIG )
+#if ( COSM_ENDIAN == COSM_ENDIAN_BIG )
   return ( ( n[0] & 0x7FF00000 ) == 0x7FF00000 )
     && ( ( ( 0x000FFFFF & n[0] ) | n[1] ) != 0 );
 #else
@@ -672,7 +672,7 @@ s32 CosmFloatInf( f64 number )
     +/- INF: s = sign bit.
     f64 = [s111]FF0 0000 0000 0000
   */
-#if ( COSM_ENDIAN_CURRENT == COSM_ENDIAN_BIG )
+#if ( COSM_ENDIAN == COSM_ENDIAN_BIG )
   n[1] |= ( n[0] & 0x7fffffff ) ^ 0x7ff00000;
   n[1] |= -n[1];
   return ~( n[1] >> 31 ) & ( n[0] >> 30 );

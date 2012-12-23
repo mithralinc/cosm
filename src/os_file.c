@@ -45,7 +45,7 @@
 #endif
 
 /* Setup the size of file handle ( not the max size of a file ) */
-#if ( OS_TYPE == OS_TRU64 )
+#if 0
   /* int, off_t, size_t ans ssize_t are 64 bits */
 #define COSM_FILE64
 #else
@@ -1329,7 +1329,7 @@ s32 CosmDirSet( const ascii * dirname )
 
 /* byte order functions */
 
-#if ( COSM_ENDIAN_CURRENT == COSM_ENDIAN_LITTLE )
+#if ( COSM_ENDIAN == COSM_ENDIAN_LITTLE )
 
 void CosmU16Load( u16 * num, const void * bytes )
 {
@@ -1374,12 +1374,12 @@ void CosmU32Save( void * bytes, const u32 * num )
 
 #endif /* little endian u16/u32 save/loads */
 
-#if ( ( COSM_ENDIAN_CURRENT == COSM_ENDIAN_LITTLE ) \
+#if ( ( COSM_ENDIAN == COSM_ENDIAN_LITTLE ) \
   || ( defined( CPU_32BIT ) ) )
 
 void CosmU64Load( u64 * num, const void * bytes )
 {
-#if ( COSM_ENDIAN_CURRENT == COSM_ENDIAN_BIG )
+#if ( COSM_ENDIAN == COSM_ENDIAN_BIG )
   *num = *( (u64 *) bytes );
 #else
   const u8 * mem;
@@ -1397,7 +1397,7 @@ void CosmU64Load( u64 * num, const void * bytes )
 
 void CosmU64Save( void * bytes, const u64 * num )
 {
-#if ( COSM_ENDIAN_CURRENT == COSM_ENDIAN_BIG )
+#if ( COSM_ENDIAN == COSM_ENDIAN_BIG )
   *( (u64 *) bytes ) = *num;
 #else
   u8 * mem;
@@ -1422,7 +1422,7 @@ void CosmU64Save( void * bytes, const u64 * num )
 
 void CosmU128Load( u128 * num, const void * bytes )
 {
-#if ( COSM_ENDIAN_CURRENT == COSM_ENDIAN_BIG )
+#if ( COSM_ENDIAN == COSM_ENDIAN_BIG )
   const u8 * mem;
 
   mem = bytes;
@@ -1449,7 +1449,7 @@ void CosmU128Load( u128 * num, const void * bytes )
 
 void CosmU128Save( void * bytes, const u128 * num )
 {
-#if ( COSM_ENDIAN_CURRENT == COSM_ENDIAN_BIG )
+#if ( COSM_ENDIAN == COSM_ENDIAN_BIG )
   u8 * mem;
 
   mem = bytes;
@@ -1796,7 +1796,7 @@ s32 Cosm_FileLock( cosm_FILE * file, u32 lock )
       }
     }
   }
-#elif ( ( OS_TYPE == OS_SOLARIS ) || ( OS_TYPE == OS_SUNOS ) )
+#elif ( OS_TYPE == OS_SOLARIS )
   struct flock lock_desc;
 
   if ( lock == COSM_FILE_LOCK_READ )
@@ -1849,7 +1849,7 @@ s32 Cosm_FileLock( cosm_FILE * file, u32 lock )
 s32 Cosm_FileUnLock( cosm_FILE * file )
 {
 #if ( OS_TYPE == OS_LINUX )
-#if  ( defined( COSM_FILE64 ) )
+#if ( defined( COSM_FILE64 ) )
   if ( flock( (int) file->handle, LOCK_UN ) == -1 )
 #else
   if ( flock( (int) (u32) file->handle, LOCK_UN ) == -1 )

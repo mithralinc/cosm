@@ -109,7 +109,7 @@ s32 CosmTest( s32 * failed_module, s32 * failed_test, s32 module_num );
 #define strcpy( a, b ) unsafe_strcpy_use_CosmStrCopy()
 #define strncpy( a, b, c ) unsafe_strncpy_use_CosmStrCopy()
 /*
-  We need to define macros to catch any depreciated and non-portable
+  We need to define macros to catch any deprecated and non-portable
   function used. Any working compiler should spit out warnings.
 */
 #define calloc( a, b ) replace_calloc_use_CosmMemAlloc()
