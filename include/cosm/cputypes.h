@@ -200,9 +200,9 @@ typedef double f64;
 #endif
 
 /** String of ASCII 7-bit text. */
-typedef signed char ascii;
+typedef char ascii;
 /** String of multibyte UTF-8 Unicode. */
-typedef unsigned char utf8;
+typedef char utf8;
 /** Single Unicode character codepoint. */
 typedef u32 utf8char;
 
@@ -215,19 +215,16 @@ typedef s128 cosmtime;
 
 /* Packed structure macros */
 /**
-@def PACKED_STRUCT_BEGIN(size)
+@def PACKED_STRUCT_BEGIN
 Begin packed memory structure definition.
-@param size Packing alignment size. For any disk/network type this should be
-one, and the order of the elements should be reviewed carefully to not force
-any unnatural gaps.
 @def PACKED_STRUCT_END
 End packed structure definitions.
 */
 #if defined( __GNUC__ )
-#define PACKED_STRUCT_BEGIN(size) _Pragma( "pack(size)" )
-#define PACKED_STRUCT_END _Pragma( "pack()" )
+#define PACKED_STRUCT_BEGIN _Pragma( "pack(push,1)" )
+#define PACKED_STRUCT_END _Pragma( "pack(pop)" )
 #elif defined( _MSC_VER )
-#define PACKED_STRUCT_BEGIN(size) __pragma( pack(push,size) )
+#define PACKED_STRUCT_BEGIN __pragma( pack(push,1) )
 #define PACKED_STRUCT_END __pragma( pack(pop) )
 #else
 #error "need correct struct packing macro, see cputypes.h"
@@ -235,7 +232,7 @@ End packed structure definitions.
 
 /* Vector types, up to 512 bits */
 
-PACKED_STRUCT_BEGIN( 1 );
+PACKED_STRUCT_BEGIN
 typedef f32 f32x2[2];   /**< f32 x2 vector type. */
 typedef f32 f32x4[4];   /**< f32 x4 vector type. */
 typedef f32 f32x8[8];   /**< f32 x8 vector type. */
@@ -287,7 +284,7 @@ typedef u32 u32x16[16]; /**< u32 x16 vector type. */
 typedef u64 u64x2[2];   /**< u64 x2 vector type. */
 typedef u64 u64x4[4];   /**< u64 x4 vector type. */
 typedef u64 u64x8[8];   /**< u64 x8 vector type. */
-PACKED_STRUCT_END;
+PACKED_STRUCT_END
 
 /**
   Enums for referring to Cosm vector types.

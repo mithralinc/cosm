@@ -25,12 +25,12 @@
 
 /* Hash Functions */
 
-PACKED_STRUCT_BEGIN( 1 );
+PACKED_STRUCT_BEGIN
 typedef struct cosm_HASH
 {
   u8 hash[32]; /* max 256 bits, big endian, aligned left */
 } cosm_HASH;
-PACKED_STRUCT_END;
+PACKED_STRUCT_END
 
 s32 CosmHashEq( const cosm_HASH * hashA, const cosm_HASH * hashB );
   /*
