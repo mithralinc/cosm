@@ -116,18 +116,22 @@ typedef ascii cosm_FILENAME[COSM_FILE_MAX_FILENAME];
   portion will be stripped.
 */
 
-/** File structure. */
+/** Structure used by CosmFile functions. */
 typedef struct cosm_FILE
 {
   cosm_FILENAME filename;  /**< File name. */
+  /**
+    @var cosm_FILE::handle
+    Internal file handle in an OS specific format.
+  */
 #if ( ( OS_TYPE == OS_WIN32 ) || ( OS_TYPE == OS_WIN64 ) )
-  HANDLE handle; /**< OS file handle. */
+  HANDLE handle;
 #else
   u64 handle;
 #endif
-  u32 status;   /**< Status of file. */
-  u32 mode;     /**< Mode opened in. */
-  u32 lockmode; /**< Mode locked with. */
+  u32 status;    /**< Status of file. */
+  u32 mode;      /**< Mode opened in. */
+  u32 lockmode;  /**< Mode locked with. */
 } cosm_FILE;
 
 /** Memory mapped file structure. */
@@ -393,7 +397,7 @@ or overlapping memory location.
 @{
 */
 
-#if ( COSM_ENDIAN_CURRENT == COSM_ENDIAN_BIG )
+#if ( COSM_ENDIAN == COSM_ENDIAN_BIG )
 #define CosmU16Load( num, bytes ) ( *( (u16 *) num ) = *( (u16 *) bytes ) )
 #define CosmU16Save( bytes, num ) ( *( (u16 *) bytes ) = *( (u16 *) num ) )
 #define CosmU32Load( num, bytes ) ( *( (u32 *) num ) = *( (u32 *) bytes ) )
@@ -405,7 +409,7 @@ void CosmU32Load( u32 * num, const void * bytes );
 void CosmU32Save( void * bytes, const u32 * num );
 #endif
 
-#if ( ( COSM_ENDIAN_CURRENT == COSM_ENDIAN_BIG ) \
+#if ( ( COSM_ENDIAN == COSM_ENDIAN_BIG ) \
   && ( defined( CPU_64BIT ) ) )
 #define CosmU64Load( num, bytes ) ( *( (u64 *) num ) = *( (u64 *) bytes ) )
 #define CosmU64Save( bytes, num ) ( *( (u64 *) bytes ) = *( (u64 *) num ) )

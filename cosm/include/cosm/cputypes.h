@@ -15,8 +15,8 @@
 */
 
 /**
-\file cputypes.h
-\brief Cosm CPU/OS defines, and scalar/vector data types.
+  @file cputypes.h
+  Cosm CPU/OS defines, scalar types, and vector data types.
 */
 
 /* CPU/OS Layer - CPU and OS specific code is allowed */
@@ -26,112 +26,95 @@
 
 #include <limits.h>
 
-/* We don't want or need fine resolution on either OS or CPU for compiles */
-#define CPU_UNKNOWN     0
-#define CPU_X86         1
-#define CPU_PPC         2
-#define CPU_MIPS        3
-#define CPU_MIPS64      4
-#define CPU_ALPHA       5
-/*#define CPU_PA_RISC   6  depreciated */
-#define CPU_68K         7
-#define CPU_SPARC       8
-#define CPU_SPARC64     9
-/*#define CPU_POWER     10 depreciated */
-#define CPU_IA64        11
-#define CPU_ARM         12
-#define CPU_CELL        13
-/*#define CPU_S390      14 depreciated */
-#define CPU_PPC64       15
-#define CPU_X64         16
-#define COSM_CPU_TYPE_MAX 16
+/* CPU family. */
+#define CPU_INVALID   0  /** Invalid CPU */
+#define CPU_X86       1  /** Intel 8086 */
+#define CPU_X64       2  /** AMD64 */
+#define CPU_ARM       3  /** ARM */
+#define CPU_ARM64     4  /** ARM64 */
+#define CPU_MIPS      5  /** MIPS */
+#define CPU_MIPS64    6  /** MIPS64 */
+#define CPU_PPC       7  /** PowerPC */
+#define CPU_PPC64     8  /** PowerPC 64 */
+#define CPU_TYPE_MAX  8  /** Maximum valid CPU_TYPE */
 
-#define COSM_CPU_TYPES { "UNKNOWN", \
-  "x86", "PPC", "MIPS", "MIPS64", "Alpha", \
-  "undef", "68K", "Sparc", "Sparc64", "undef", \
-  "IA64",  "ARM", "Cell", "undef", "PPC64", \
-  "x64", NULL }
+#define COSM_CPU_TYPES { "INVALID", \
+  "x86", "x64", "ARM", "ARM64", "MIPS", "MIPS64", "PPC", "PPC64", \
+  NULL }
 
 /* CPU_TYPE must be defined by now */
-#if ( !defined( CPU_TYPE ) || ( CPU_TYPE == CPU_UNKNOWN ) \
-  || ( CPU_TYPE > COSM_CPU_TYPE_MAX ) )
-#error "Define CPU_TYPE - see cputypes.h"
+#if ( !defined( CPU_TYPE ) || ( CPU_TYPE == CPU_INVALID ) \
+  || ( CPU_TYPE > CPU_TYPE_MAX ) )
+#error "Properly define CPU_TYPE - see cputypes.h"
 #endif
 
-#define OS_UNKNOWN      0
-#define OS_WIN32        1  /* 32bit WinNT 4, Win2000, XP and up */
-#define OS_WIN64        2  /* 64bit XP/2003+/Vista */
-#define OS_MACOSX       3
-#define OS_LINUX        4
-/*#define OS_BSDI       5  depreciated */
-#define OS_NETBSD       6
-#define OS_FREEBSD      7
-#define OS_OPENBSD      8
-/*#define OS_NEXTSTEP   9  depreciated */
-/*#define OS_BEOS       10 depreciated */
-#define OS_IRIX         11
-#define OS_IRIX64       12
-#define OS_SUNOS        13
-#define OS_SOLARIS      14
-#define OS_SONYPS3      15 /* !!!this must have a name */
-#define OS_QNX          16
-#define OS_TRU64        17 /* Dec UNIX, OSF1 */
-#define COSM_OS_TYPE_MAX  17
+#define OS_INVALID    0  /** Invalid OS */
+#define OS_WIN32      1  /** Win32 - 32bit WinNT 4, Win2000, XP and up */
+#define OS_WIN64      2  /** Win64 - 64bit XP, 2003+, Vista and up */
+#define OS_LINUX      3  /** Linux */
+#define OS_ANDROID    4  /** Android */
+#define OS_MACOSX     5  /** Apple MacOS X */
+#define OS_IOS        6  /** Apple iOS */
+#define OS_SOLARIS    7  /** Solaris */
+#define OS_FREEBSD    8  /** FreeBSD */
+#define OS_OPENBSD    9  /** OpenBSD */
+#define OS_NETBSD     10 /** NetBSD */
+#define OS_TYPE_MAX   10
 
-#define COSM_OS_TYPES { "UNKNOWN", \
-  "Win32", "Win64", "OSX", "Linux", "undef", \
-  "NetBSD", "FreeBSD", "OpenBSD", "undef", "undef", \
-  "Irix", "Irix64", "SunOS", "Solaris", "SonyPS3", \
-  "QNX", "Tru64", NULL }
+#define COSM_OS_TYPES { "INVALID", \
+  "Win32", "Win64", "Linux", "Android", "OSX", "iOS", "Solaris", \
+  "FreeBSD", "OpenBSD", "NetBSD", NULL }
 
 /* OS_TYPE must be defined by now */
-#if ( !defined( OS_TYPE ) || ( OS_TYPE == OS_UNKNOWN ) \
-  || ( OS_TYPE > COSM_OS_TYPE_MAX ) )
+#if ( !defined( OS_TYPE ) || ( OS_TYPE == OS_INVALID ) \
+  || ( OS_TYPE > OS_TYPE_MAX ) )
 #error "Define OS_TYPE - see cputypes.h"
 #endif
 
 /* Endian settings for big endian or little endian */
-#undef  COSM_ENDIAN_CURRENT
+#undef  COSM_ENDIAN
 #define COSM_ENDIAN_BIG     4321
 #define COSM_ENDIAN_LITTLE  1234
 
 #if ( ( CPU_TYPE == CPU_X86 ) || ( CPU_TYPE == CPU_X64 ) \
-  || ( CPU_TYPE == CPU_IA64 ) || ( CPU_TYPE == CPU_ALPHA ) \
-  || ( CPU_TYPE == CPU_ARM ) )
-#define COSM_ENDIAN_CURRENT COSM_ENDIAN_LITTLE
+  || ( CPU_TYPE == CPU_ARM ) || ( CPU_TYPE == CPU_ARM64 ) )
+#define COSM_ENDIAN COSM_ENDIAN_LITTLE
 #else
-#define COSM_ENDIAN_CURRENT COSM_ENDIAN_BIG
+#define COSM_ENDIAN COSM_ENDIAN_BIG
 #endif
 
-/* One and only one of the following must be defined */
-#if ( ( !defined( CPU_64BIT ) && !defined( CPU_32BIT ) ) \
-  || ( defined( CPU_64BIT ) && defined( CPU_32BIT ) ) )
-#error "Define either CPU_64BIT or CPU_32BIT"
+#if ( ( CPU_TYPE == CPU_X86 ) || ( CPU_TYPE == CPU_ARM ) \
+  || ( CPU_TYPE == CPU_MIPS ) || ( CPU_TYPE == CPU_PPC ) )
+#define CPU_32BIT
+#undef CPU_64BIT
+#elif ( ( CPU_TYPE == CPU_X64 ) || ( CPU_TYPE == CPU_ARM64 ) \
+  || ( CPU_TYPE == CPU_MIPS64 ) || ( CPU_TYPE == CPU_PPC64 ) )
+#define CPU_64BIT
+#undef CPU_32BIT
+#else
+#error "CPU_TYPE missing CPU_64BIT/CPU_32BIT - see cputypes.h"
 #endif
 
-/* Define 8bit types and characters */
-typedef unsigned char u8; /**< 8-bit unsigned. */
-typedef signed char s8;   /**< 8-bit signed. */
+/** 8-bit unsigned integer. */
+typedef unsigned char u8;
+/** 8-bit signed integer. */
+typedef signed char s8;
 #if ( UCHAR_MAX != 0xFF )
 #error "char is not 8 bits - serious problem - see cputypes.h"
 #endif
 
-/* Define 16bit types */
-typedef unsigned short u16; /**< 16-bit unsigned. */
-typedef signed short s16;   /**< 16-bit signed. */
+/** 16-bit unsigned integer. */
+typedef unsigned short u16;
+/** 16-bit signed integer. */
+typedef signed short s16;
 #if ( USHRT_MAX != 0xFFFF )
 #error "Cannot find a 16-bit type - see cputypes.h"
 #endif
 
-/* Define the 32bit types, int most common */
-/**
-\typedef u32
-32-bit unsigned.
-\typedef s32
-32-bit signed.
-*/
 #if ( UINT_MAX == 0xFFFFFFFF )
+/** 32-bit unsigned integer. */
 typedef unsigned int u32;
+/** 32-bit signed integer. */
 typedef signed int s32;
 #elif ( ULONG_MAX == 0xFFFFFFFF )
 typedef unsigned long u32;
@@ -140,24 +123,12 @@ typedef signed long s32;
 #error "Cannot find a 32-bit type - see cputypes.h"
 #endif
 
-/*
-  Define 64bit types
-  On a CPU_32BIT this type is being faked by the compiler.
-*/
-/**
-\typedef u64
-64-bit unsigned.
-\typedef s64
-64-bit signed.
-*/
+/* On a CPU_32BIT this type is being implemented by the compiler. */
 #if ( defined( CPU_64BIT ) )
-#if ( ULONG_MAX == 0xFFFFFFFF )
+/** 64-bit unsigned integer. */
 typedef unsigned long long u64;
+/** 64-bit signed integer. */
 typedef signed long long s64;
-#else /* long must be 64-bit */
-typedef unsigned long u64;
-typedef signed long s64;
-#endif
 #else /* 32 bit CPU */
 #if ( ( OS_TYPE == OS_WIN32 ) || ( OS_TYPE == OS_WIN64 ) )
 typedef unsigned __int64 u64;
@@ -168,183 +139,236 @@ typedef signed long long s64;
 #endif /* OS */
 #endif /* 64 or 32 bit ? */
 
-/* We don't support native 128bit CPUs. All systems will fake 128bit */
-typedef struct u128 { u64 hi; u64 lo; } u128; /**< 128-bit unsigned. */
-typedef struct s128 { s64 hi; u64 lo; } s128; /**< 128-bit signed. */
+/* All systems have software 128bit integers */
 
-/*
-  Define the 128 bit setting and equality macros
-  usage: _COSM_SET128( a, fedcba9876543210, 0123456789abcdef );
-  usage: if ( _COSM_EQ128( a, fedcba9876543210, 0123456789abcdef ) ) ...
+/** 128-bit unsigned integer. */
+typedef struct u128
+{ 
+  u64 hi; /**< High order 64 bits. */
+  u64 lo; /**< Low order 64 bits. */
+} u128;
+
+/** 128-bit signed integer. */
+typedef struct s128
+{
+  s64 hi; /**< High order 64 bits. */
+  u64 lo; /**< Low order 64 bits. */
+} s128;
+
+/**
+  Helper Macro for _COSM_SET128 and _COSM_EQ128.
+  @see _COSM_SET128
+  @see _COSM_EQ128
 */
-/** @cond SKIPED */
 #define _COSM_CAT64( a ) 0x##a##LL
-/** @endcond */
+
+/**
+  Set a 128-bit value from 2 64-bit numbers.
+  @param dest Destination.
+  @param a High order 64 bits.
+  @param b Low order 64 bits.
+  @code
+    _COSM_SET128( a, 0123456789ABCDEF, FEDCBA9876543210 );
+  @endcode
+  @see _COSM_CAT64
+*/
 #define _COSM_SET128( dest, a, b ) \
   dest.hi = _COSM_CAT64( a ); dest.lo = _COSM_CAT64( b );
+
+/**
+  Compare a 128-bit value by parts to 64-bit numbers.
+  @param value Value to compare to. 
+  @param a High order 64 bits.
+  @param b Low order 64 bits.
+  @code
+    if ( !_COSM_EQ128( foo, 123456789ABCDEF4, 5670123CDEF89AB0 ) )
+    {
+      return -1;
+    }
+  @endcode
+  @see _COSM_CAT64
+*/
 #define _COSM_EQ128( value, a, b ) \
   ( ( value.hi == _COSM_CAT64( a ) ) && ( value.lo == _COSM_CAT64( b ) ) )
 
-/* Floating point, not everything has a floating point unit */
+/* Not every CPU has a floating point unit. */
 #if ( !defined( NO_FLOATING_POINT ) )
-typedef float f32;        /**< 32-bit float. */
-typedef double f64;       /**< 64 bit double. */
+/** 32-bit floating point value. */
+typedef float f32;
+/** 64-bit floating point value. */
+typedef double f64;
 #endif
 
-/* Text types */
-typedef char ascii;   /**< ASCII 7-bit text. */
-typedef char utf8;    /**< String of multibyte UTF-8 Unicode. */
-typedef u32 utf8char; /**< Single Unicode codepoint. */
+/** String of ASCII 7-bit text. */
+typedef signed char ascii;
+/** String of multibyte UTF-8 Unicode. */
+typedef unsigned char utf8;
+/** Single Unicode character codepoint. */
+typedef u32 utf8char;
 
 /**
-  Cosm time type. A fixed point 128bit signed number. 64 bit seconds and
-  64 bits of fraction. Zero is January 1, 2000 at 0:00:00.
+  Cosm internal time type. A fixed point 128bit signed number,
+  with 64 bit seconds and 64 bits of fractional seconds.
+  Zero was January 1, 2000 at 00:00:00.
 */
 typedef s128 cosmtime;
 
 /* Packed structure macros */
 /**
-\def PACKED_STRUCT_BEGIN
-\brief Begin packed memory struct definition.
-\def PACKED_STRUCT_END
-\brief End packed memory struct definition.
+@def PACKED_STRUCT_BEGIN(size)
+Begin packed memory structure definition.
+@param size Packing alignment size. For any disk/network type this should be
+one, and the order of the elements should be reviewed carefully to not force
+any unnatural gaps.
+@def PACKED_STRUCT_END
+End packed structure definitions.
 */
 #if defined( __GNUC__ )
-#define PACKED_STRUCT_BEGIN _Pragma( "pack(1)" )
+#define PACKED_STRUCT_BEGIN(size) _Pragma( "pack(size)" )
 #define PACKED_STRUCT_END _Pragma( "pack()" )
 #elif defined( _MSC_VER )
-#define PACKED_STRUCT_BEGIN __pragma( pack(push,1) );
-#define PACKED_STRUCT_END __pragma( pack(pop) );
+#define PACKED_STRUCT_BEGIN(size) __pragma( pack(push,size) )
+#define PACKED_STRUCT_END __pragma( pack(pop) )
 #else
 #error "need correct struct packing macro, see cputypes.h"
 #endif
 
 /* Vector types, up to 512 bits */
-PACKED_STRUCT_BEGIN
-typedef f32 f32x2[2];   /**< f32 vector type. */
-typedef f32 f32x4[4];   /**< f32 vector type. */
-typedef f32 f32x8[8];   /**< f32 vector type. */
-typedef f32 f32x16[16]; /**< f32 vector type. */
-typedef f64 f64x2[2];   /**< f64 vector type. */
-typedef f64 f64x4[4];   /**< f64 vector type. */
-typedef f64 f64x8[8];   /**< f64 vector type. */
 
-typedef s8  s8x2[2];    /**< s8 vector type. */
-typedef s8  s8x4[4];    /**< s8 vector type. */
-typedef s8  s8x8[8];    /**< s8 vector type. */
-typedef s8  s8x16[16];  /**< s8 vector type. */
-typedef s8  s8x32[32];  /**< s8 vector type. */
-typedef s8  s8x64[64];  /**< s8 vector type. */
+PACKED_STRUCT_BEGIN( 1 );
+typedef f32 f32x2[2];   /**< f32 x2 vector type. */
+typedef f32 f32x4[4];   /**< f32 x4 vector type. */
+typedef f32 f32x8[8];   /**< f32 x8 vector type. */
+typedef f32 f32x16[16]; /**< f32 x16 vector type. */
+typedef f64 f64x2[2];   /**< f64 x2 vector type. */
+typedef f64 f64x4[4];   /**< f64 x4 vector type. */
+typedef f64 f64x8[8];   /**< f64 x8 vector type. */
 
-typedef s16 s16x2[2];
-typedef s16 s16x4[4];
-typedef s16 s16x8[8];
-typedef s16 s16x16[16];
-typedef s16 s16x32[32];
+typedef s8  s8x2[2];    /**< s8 x2 vector type. */
+typedef s8  s8x4[4];    /**< s8 x4 vector type. */
+typedef s8  s8x8[8];    /**< s8 x8 vector type. */
+typedef s8  s8x16[16];  /**< s8 x16 vector type. */
+typedef s8  s8x32[32];  /**< s8 x32 vector type. */
+typedef s8  s8x64[64];  /**< s8 x64 vector type. */
 
-typedef s32 s32x2[2];
-typedef s32 s32x4[4];
-typedef s32 s32x8[8];
-typedef s32 s32x16[16];
+typedef s16 s16x2[2];   /**< s16 x2 vector type. */
+typedef s16 s16x4[4];   /**< s16 x4 vector type. */
+typedef s16 s16x8[8];   /**< s16 x8 vector type. */
+typedef s16 s16x16[16]; /**< s16 x16 vector type. */
+typedef s16 s16x32[32]; /**< s16 x32 vector type. */
 
-typedef s64 s64x2[2];
-typedef s64 s64x4[4];
-typedef s64 s64x8[8];
+typedef s32 s32x2[2];   /**< s32 x2 vector type. */
+typedef s32 s32x4[4];   /**< s32 x4 vector type. */
+typedef s32 s32x8[8];   /**< s32 x8 vector type. */
+typedef s32 s32x16[16]; /**< s32 x16 vector type. */
 
-typedef u8  u8x2[2];
-typedef u8  u8x4[4];
-typedef u8  u8x8[8];
-typedef u8  u8x16[16];
-typedef u8  u8x32[32];
-typedef u8  u8x64[64];
+typedef s64 s64x2[2];   /**< s64 x2 vector type. */
+typedef s64 s64x4[4];   /**< s64 x4 vector type. */
+typedef s64 s64x8[8];   /**< s64 x8 vector type. */
 
-typedef u16 u16x2[2];
-typedef u16 u16x4[4];
-typedef u16 u16x8[8];
-typedef u16 u16x16[16];
-typedef u16 u16x32[32];
+typedef u8  u8x2[2];    /**< u8 x2 vector type. */
+typedef u8  u8x4[4];    /**< u8 x4 vector type. */
+typedef u8  u8x8[8];    /**< u8 x8 vector type. */
+typedef u8  u8x16[16];  /**< u8 x16 vector type. */
+typedef u8  u8x32[32];  /**< u8 x32 vector type. */
+typedef u8  u8x64[64];  /**< u8 x64 vector type. */
 
-typedef u32 u32x2[2];
-typedef u32 u32x4[4];
-typedef u32 u32x8[8];
-typedef u32 u32x16[16];
+typedef u16 u16x2[2];   /**< u16 x2 vector type. */
+typedef u16 u16x4[4];   /**< u16 x4 vector type. */
+typedef u16 u16x8[8];   /**< u16 x8 vector type. */
+typedef u16 u16x16[16]; /**< u16 x16 vector type. */
+typedef u16 u16x32[32]; /**< u16 x32 vector type. */
 
-typedef u64 u64x2[2];
-typedef u64 u64x4[4];
-typedef u64 u64x8[8];
-PACKED_STRUCT_END
+typedef u32 u32x2[2];   /**< u32 x2 vector type. */
+typedef u32 u32x4[4];   /**< u32 x4 vector type. */
+typedef u32 u32x8[8];   /**< u32 x8 vector type. */
+typedef u32 u32x16[16]; /**< u32 x16 vector type. */
 
+typedef u64 u64x2[2];   /**< u64 x2 vector type. */
+typedef u64 u64x4[4];   /**< u64 x4 vector type. */
+typedef u64 u64x8[8];   /**< u64 x8 vector type. */
+PACKED_STRUCT_END;
+
+/**
+  Enums for referring to Cosm vector types.
+  Value is: ( [float=1, signed=2, unsigned=3] << 16 ) +
+  ( bytes << 8 ) + vector width.
+*/
 enum vector_type
 {
-  /* 3 bytes = type (float, signed, unsigned), bytes, vector width */
-  VECTOR_F32    = 0x010401,
-  VECTOR_F32X2  = 0x010402,
-  VECTOR_F32X4  = 0x010404,
-  VECTOR_F32X8  = 0x010408,
-  VECTOR_F32X16 = 0x010410,
+  VECTOR_F32    = 0x010401, /**< f32 */
+  VECTOR_F32X2  = 0x010402, /**< f32x2 */
+  VECTOR_F32X4  = 0x010404, /**< f32x4 */
+  VECTOR_F32X8  = 0x010408, /**< f32x8 */
+  VECTOR_F32X16 = 0x010410, /**< f32x16 */
 
-  VECTOR_F64    = 0x010801,
-  VECTOR_F64X2  = 0x010802,
-  VECTOR_F64X4  = 0x010804,
-  VECTOR_F64X8  = 0x010808,
+  VECTOR_F64    = 0x010801, /**< f64 */
+  VECTOR_F64X2  = 0x010802, /**< f64x2 */
+  VECTOR_F64X4  = 0x010804, /**< f64x4 */
+  VECTOR_F64X8  = 0x010808, /**< f64x8 */
 
-  VECTOR_S8     = 0x020101,
-  VECTOR_S8X2   = 0x020102,
-  VECTOR_S8X4   = 0x020104,
-  VECTOR_S8X8   = 0x020108,
-  VECTOR_S8X16  = 0x020110,
-  VECTOR_S8X32  = 0x020120,
-  VECTOR_S8X64  = 0x020140,
+  VECTOR_S8     = 0x020101, /**< s8 */
+  VECTOR_S8X2   = 0x020102, /**< s8x2 */
+  VECTOR_S8X4   = 0x020104, /**< s8x4 */
+  VECTOR_S8X8   = 0x020108, /**< s8x8 */
+  VECTOR_S8X16  = 0x020110, /**< s8x16 */
+  VECTOR_S8X32  = 0x020120, /**< s8x32 */
+  VECTOR_S8X64  = 0x020140, /**< s8x64 */
 
-  VECTOR_S16    = 0x020201,
-  VECTOR_S16X2  = 0x020202,
-  VECTOR_S16X4  = 0x020204,
-  VECTOR_S16X8  = 0x020208,
-  VECTOR_S16X16 = 0x020210,
-  VECTOR_S16X32 = 0x020220,
+  VECTOR_S16    = 0x020201, /**< s16 */
+  VECTOR_S16X2  = 0x020202, /**< s16x2 */
+  VECTOR_S16X4  = 0x020204, /**< s16x4 */
+  VECTOR_S16X8  = 0x020208, /**< s16x8 */
+  VECTOR_S16X16 = 0x020210, /**< s16x16 */
+  VECTOR_S16X32 = 0x020220, /**< s16x32 */
 
-  VECTOR_S32    = 0x020401,
-  VECTOR_S32X2  = 0x020402,
-  VECTOR_S32X4  = 0x020404,
-  VECTOR_S32X8  = 0x020408,
-  VECTOR_S32X16 = 0x020410,
+  VECTOR_S32    = 0x020401, /**< s32 */
+  VECTOR_S32X2  = 0x020402, /**< s32x2 */
+  VECTOR_S32X4  = 0x020404, /**< s32x4 */
+  VECTOR_S32X8  = 0x020408, /**< s32x8 */
+  VECTOR_S32X16 = 0x020410, /**< s32x16 */
 
-  VECTOR_S64    = 0x020801,
-  VECTOR_S64X2  = 0x020802,
-  VECTOR_S64X4  = 0x020804,
-  VECTOR_S64X8  = 0x020808,
+  VECTOR_S64    = 0x020801, /**< s64 */
+  VECTOR_S64X2  = 0x020802, /**< s64x2 */
+  VECTOR_S64X4  = 0x020804, /**< s64x4 */
+  VECTOR_S64X8  = 0x020808, /**< s64x8 */
 
-  VECTOR_U8     = 0x030101,
-  VECTOR_U8X2   = 0x030102,
-  VECTOR_U8X4   = 0x030104,
-  VECTOR_U8X8   = 0x030108,
-  VECTOR_U8X16  = 0x030110,
-  VECTOR_U8X32  = 0x030120,
-  VECTOR_U8X64  = 0x030140,
+  VECTOR_U8     = 0x030101, /**< u8 */
+  VECTOR_U8X2   = 0x030102, /**< u8x2 */
+  VECTOR_U8X4   = 0x030104, /**< u8x4 */
+  VECTOR_U8X8   = 0x030108, /**< u8x8 */
+  VECTOR_U8X16  = 0x030110, /**< u8x16 */
+  VECTOR_U8X32  = 0x030120, /**< u8x32 */
+  VECTOR_U8X64  = 0x030140, /**< u8x64 */
 
-  VECTOR_U16    = 0x030201,
-  VECTOR_U16X2  = 0x030202,
-  VECTOR_U16X4  = 0x030204,
-  VECTOR_U16X8  = 0x030208,
-  VECTOR_U16X16 = 0x030210,
-  VECTOR_U16X32 = 0x030220,
+  VECTOR_U16    = 0x030201, /**< u16 */
+  VECTOR_U16X2  = 0x030202, /**< u16x2 */
+  VECTOR_U16X4  = 0x030204, /**< u16x4 */
+  VECTOR_U16X8  = 0x030208, /**< u16x8 */
+  VECTOR_U16X16 = 0x030210, /**< u16x16 */
+  VECTOR_U16X32 = 0x030220, /**< u16x32 */
 
-  VECTOR_U32    = 0x030401,
-  VECTOR_U32X2  = 0x030402,
-  VECTOR_U32X4  = 0x030404,
-  VECTOR_U32X8  = 0x030408,
-  VECTOR_U32X16 = 0x030410,
+  VECTOR_U32    = 0x030401, /**< u32 */
+  VECTOR_U32X2  = 0x030402, /**< u32x2 */
+  VECTOR_U32X4  = 0x030404, /**< u32x4 */
+  VECTOR_U32X8  = 0x030408, /**< u32x8 */
+  VECTOR_U32X16 = 0x030410, /**< u32x16 */
 
-  VECTOR_U64    = 0x030801,
-  VECTOR_U64X2  = 0x030802,
-  VECTOR_U64X4  = 0x030804,
-  VECTOR_U64X8  = 0x030808
+  VECTOR_U64    = 0x030801, /**< u64 */
+  VECTOR_U64X2  = 0x030802, /**< u64x2 */
+  VECTOR_U64X4  = 0x030804, /**< u64x4 */
+  VECTOR_U64X8  = 0x030808  /**< u64x8 */
 };
 
+/** 
+  Macro to calculate the number of bytes in a vector_type.
+  @param type vector_type to determine the byte length of.
+  @see vector_type.
+*/
 #define _VECTOR_TYPE_BYTES( type ) \
   ( ( ( type >> 8 ) & 0xFF ) * ( type & 0xFF ) )
 
-/* Make sure that NULL is defined and correct */
+/* Make sure that NULL defined to standard. */
 #undef  NULL
 #ifdef __cplusplus
 #define NULL 0

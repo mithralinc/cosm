@@ -197,12 +197,12 @@ int main( int argc, char * argv[] )
   utf8 buf[512];
   u64 bytesread;
   u64 process_id;
+  u128 endian_u128;
   const u8 endian_bytes[16] =
   {
     0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08,
     0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F, 0x10
   };
-  u128 b_u128, e_u128;
 
   if ( ( argc == 2 )
     && ( CosmStrCmp( argv[1], "-child", (u64) 8 ) == 0 ) )
@@ -215,7 +215,7 @@ int main( int argc, char * argv[] )
   {
     count++;
   }
-  if ( count != ( COSM_OS_TYPE_MAX + 1 ) )
+  if ( count != ( OS_TYPE_MAX + 1 ) )
   {
     CosmPrint( "COSM_OS_TYPES are incorrect in cputypes.h\n" );
     CosmProcessEnd( -1 );
@@ -226,14 +226,14 @@ int main( int argc, char * argv[] )
   {
     count++;
   }
-  if ( count != ( COSM_CPU_TYPE_MAX + 1 ) )
+  if ( count != ( CPU_TYPE_MAX + 1 ) )
   {
     CosmPrint( "COSM_CPU_TYPES are incorrect in cputypes.h\n" );
     CosmProcessEnd( -1 );
   }
 
   CosmPrint( "CPU = %.20s * ",
-    cpu_types[( CPU_TYPE > COSM_CPU_TYPE_MAX ) ? 0 : CPU_TYPE] );
+    cpu_types[( CPU_TYPE > CPU_TYPE_MAX ) ? 0 : CPU_TYPE] );
 
   if ( CosmCPUCount( &count ) == COSM_PASS )
   {
@@ -246,26 +246,23 @@ int main( int argc, char * argv[] )
 
 #if ( defined( CPU_64BIT ) )
   CosmPrint( ", 64-Bit" );
-#elif ( defined( CPU_64BIT ) )
-  CosmPrint( ", 32-Bit w/compiler u64" );
 #else
   CosmPrint( ", 32-Bit" );
 #endif
 
-  CosmU128Load( &b_u128, endian_bytes );
-  _COSM_SET128( e_u128, 0102030405060708, 090A0B0C0D0E0F10 );
-  if ( !CosmU128Eq( b_u128, e_u128 ) )
+  CosmU128Load( &endian_u128, endian_bytes );
+  if ( !_COSM_EQ128( endian_u128, 0102030405060708, 090A0B0C0D0E0F10 ) )
   {
     CosmPrint( "\nCPU endian is incorrect set as %.6s in cputypes.h\n",
-      ( COSM_ENDIAN_CURRENT == COSM_ENDIAN_BIG ) ? "BIG" : "LITTLE" );
+      ( COSM_ENDIAN == COSM_ENDIAN_BIG ) ? "BIG" : "LITTLE" );
     CosmProcessEnd( -1 );
   }
 
   CosmPrint( ", %.6s Endian",
-    ( COSM_ENDIAN_CURRENT == COSM_ENDIAN_BIG ) ? "Big" : "Little" );
+    ( COSM_ENDIAN == COSM_ENDIAN_BIG ) ? "Big" : "Little" );
 
   CosmPrint( ", OS = %.20s\n",
-    os_types[( OS_TYPE > COSM_OS_TYPE_MAX ) ? 0 : OS_TYPE] );
+    os_types[( OS_TYPE > OS_TYPE_MAX ) ? 0 : OS_TYPE] );
 
 
   if ( sizeof( align_test ) != 48 )

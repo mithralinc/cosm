@@ -69,35 +69,24 @@
     </p>
 
     <p>
-      <strong>CPU_64BIT or CPU_32BIT - CPU bitness</strong>
-    </p>
-    <p>
-      Either CPU_32BIT or CPU_64BIT must be defined, not both.
-    </p>
-
-    <p>
       <strong>CPU_TYPE - CPU type</strong>
     </p>
     <p>
       The CPU type is set by defining <em>CPU_TYPE</em> to be one of the
       following. Note that valid values of <em>CPU_TYPE</em> are from 0 to
-      COSM_CPU_TYPE_MAX inclusive. The array COSM_CPU_TYPES of CPU names will
+      CPU_TYPE_MAX inclusive. The array COSM_CPU_TYPES of CPU names will
       also be of use to programmers, see <a href="#Strings">below</a>.
     </p>
     <ul>
-      <li>CPU_UNKNOWN
+      <li>CPU_INVALID
       <li>CPU_X86
-      <li>CPU_PPC
-      <li>CPU_PPC64
+      <li>CPU_X64
+      <li>CPU_ARM
+      <li>CPU_ARM64
       <li>CPU_MIPS
       <li>CPU_MIPS64
-      <li>CPU_ALPHA
-      <li>CPU_68K
-      <li>CPU_SPARC
-      <li>CPU_SPARC64
-      <li>CPU_IA64
-      <li>CPU_ARM
-      <li>CPU_X64
+      <li>CPU_PPC
+      <li>CPU_PPC64
     </ul>
 
     <p>
@@ -106,24 +95,20 @@
     <p>
       The OS is set by defining <em>OS_TYPE</em> to be one of the following.
       Note that valid values of <em>OS_TYPE</em> are from 0 to
-      COSM_OS_TYPE_MAX inclusive. The array COSM_OS_TYPES of OS names will
+      OS_TYPE_MAX inclusive. The array COSM_OS_TYPES of OS names will
       also be of use to programmers, see <a href="#Strings">below</a>.
     </p>
     <ul>
-      <li>OS_UNKNOWN
+      <li>OS_INVALID
       <li>OS_WIN32
       <li>OS_WIN64
       <li>OS_MACOSX
       <li>OS_LINUX
+      <li>OS_SOLARIS
       <li>OS_NETBSD
       <li>OS_FREEBSD
       <li>OS_OPENBSD
-      <li>OS_IRIX
-      <li>OS_IRIX64
-      <li>OS_SUNOS
-      <li>OS_SOLARIS
-      <li>OS_QNX
-      <li>OS_TRU64
+
     </ul>
 
     <hr>
@@ -271,18 +256,18 @@
   const ascii * os_types[] = COSM_OS_TYPES;
 
   CosmPrint( "CPU = %.20s, OS = %.20s\n",
-    cpu_types[( CPU_TYPE > COSM_CPU_TYPE_MAX ) ? 0 : CPU_TYPE],
-    os_types[( OS_TYPE > COSM_OS_TYPE_MAX ) ? 0 : OS_TYPE] );
+    cpu_types[( CPU_TYPE > CPU_TYPE_MAX ) ? 0 : CPU_TYPE],
+    os_types[( OS_TYPE > OS_TYPE_MAX ) ? 0 : OS_TYPE] );
 </pre>
 <font face="Verdana,Arial,Helvetica" size="-1">
 
     <h4>Endian</h4>
     <p>
-      COSM_ENDIAN_CURRENT, COSM_ENDIAN_BIG, and COSM_ENDIAN_LITTLE are defined.
-      COSM_ENDIAN_CURRENT is whichever one the machine is running in at the
-      time. This allows you to check the endian at compile time or at
-      run time. In almost all cases compile time checking leads to faster
-      code, but for statistics/reporting you will need the run time value.
+      COSM_ENDIAN, COSM_ENDIAN_BIG, and COSM_ENDIAN_LITTLE are defined.
+      This allows you to check the endian at compile time or at run time.
+      In almost all cases compile time checking leads to faster code, but
+      for statistics/reporting you will need the run time value.
+      COSM_ENDIAN can be set at compile time for bi-endian architectures.
     </p>
 
     <p>
@@ -292,7 +277,7 @@
 <pre>
   /* Compile time checking */
 
-  #if ( COSM_ENDIAN_CURRENT == COSM_ENDIAN_BIG )
+  #if ( COSM_ENDIAN == COSM_ENDIAN_BIG )
     /* do the big thing */
   #else
     /* do the little thing */
@@ -300,7 +285,7 @@
 
   /* Runtime checking */
 
-  if ( COSM_ENDIAN_CURRENT == COSM_ENDIAN_BIG )
+  if ( COSM_ENDIAN == COSM_ENDIAN_BIG )
   {
     /* do the big thing */
   }

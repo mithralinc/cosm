@@ -20,20 +20,13 @@
 #include "cosm/os_io.h"
 #include <stdio.h>
 
-#if ( OS_TYPE == OS_SUNOS )
-extern int _filbuf();
-extern int _flsbuf();
-extern void fflush();
-#endif
 #if ( ( OS_TYPE == OS_WIN32 ) || ( OS_TYPE == OS_WIN64 ) )
 #include <io.h>
 #include <conio.h>
 #else
 #include <unistd.h>
-#if ( ( OS_TYPE == OS_LINUX ) || ( OS_TYPE == OS_FREEBSD ) \
-  || ( OS_TYPE == OS_IRIX ) || ( OS_TYPE == OS_IRIX64 ) \
-  || ( OS_TYPE == OS_SUNOS ) || ( OS_TYPE == OS_SOLARIS ) \
-  || ( OS_TYPE == OS_TRU64 ) || ( OS_TYPE == OS_MACOSX ) \
+#if ( ( OS_TYPE == OS_LINUX ) || ( OS_TYPE == OS_MACOSX ) \
+  || ( OS_TYPE == OS_SOLARIS ) || ( OS_TYPE == OS_FREEBSD ) \
   || ( OS_TYPE == OS_OPENBSD ) || ( OS_TYPE == OS_NETBSD ) )
 #define UNIX_NOECHO_METHOD
 #include <termios.h>

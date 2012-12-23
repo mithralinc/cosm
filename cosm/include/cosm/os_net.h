@@ -54,7 +54,7 @@
 #define COSM_NET_IPV4 4
 #define COSM_NET_IPV6 6
 
-PACKED_STRUCT_BEGIN
+PACKED_STRUCT_BEGIN( 1 );
 typedef struct cosm_NET_ADDR
 {
   u32 type;
@@ -74,7 +74,7 @@ typedef struct cosm_NET
   cosm_NET_ADDR addr;
   cosm_NET_ADDR my_addr;
 } cosm_NET;
-PACKED_STRUCT_END
+PACKED_STRUCT_END;
 
 #define COSM_NET_MAX_HOSTNAME 1024
 
@@ -119,7 +119,7 @@ s32 CosmNetOpenSocks( cosm_NET * net, const cosm_NET_ADDR * addr,
     CosmNetOpen for SOCKS firewalls, opening an IPv4 TCP connection to the
     host. firehost and firepass are the SOCKS firewall settings.
     Use semi-colon to separate username from password for socks5 firewalls.
-    This functionality is depreciated.
+    This functionality is deprecated.
     Returns: COSM_PASS on success, or an error code on failure.
   */
 
