@@ -31,7 +31,8 @@
 #include <unistd.h>
 #include <signal.h>
 #if ( ( ( OS_TYPE == OS_LINUX ) || ( OS_TYPE == OS_NETBSD ) \
-  || ( OS_TYPE == OS_OPENBSD ) || ( OS_TYPE == OS_FREEBSD ) ) \
+  || ( OS_TYPE == OS_OPENBSD ) || ( OS_TYPE == OS_FREEBSD ) \
+  || ( OS_TYPE == OS_ANDROID ) ) \
   && ( !defined( _POSIX_THREADS ) ) ) /* forgot posix in headers */
 #define _POSIX_THREADS
 #endif /* system forgot define */
@@ -81,6 +82,7 @@ typedef struct cosm_MUTEX
 
 #undef WINDOWS_SEMAPHORES
 #undef POSIX_SEMAPHORES
+#undef LOCAL_POSIX_SEMAPHORES
 #undef SYSV_SEMAPHORES
 #if ( ( OS_TYPE == OS_WIN32 ) || ( OS_TYPE == OS_WIN64 ) )
 #define WINDOWS_SEMAPHORES
@@ -88,6 +90,12 @@ typedef struct cosm_MUTEX
 #elif ( OS_TYPE == OS_MACOSX )
 #include <semaphore.h>
 #define POSIX_SEMAPHORES
+#elif ( OS_TYPE == OS_ANDROID )
+/* Android does not support interprocess semaphores */
+#include <semaphore.h>
+#include <fcntl.h>
+#include <sys/stat.h>
+#define LOCAL_POSIX_SEMAPHORES
 #elif ( OS_TYPE == OS_LINUX )
 #include <sys/types.h>
 #include <sys/ipc.h>
@@ -107,6 +115,8 @@ typedef struct cosm_SEMAPHORE
   HANDLE os_sem;
 #elif ( defined( POSIX_SEMAPHORES ) )
   sem_t * os_sem;
+#elif ( defined( LOCAL_POSIX_SEMAPHORES ) )
+  sem_t os_sem;
 #elif ( defined( SYSV_SEMAPHORES ) )
   int os_sem;
 #else
