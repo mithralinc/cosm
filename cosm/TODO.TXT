@@ -107,7 +107,8 @@ src/os_math
   CosmFloatInf/NaN tests
 
 src/os_mem
-  Shared memory tests in testlib Parent/Child
+  Shared memory tests in testlib Parent/Child.
+  Android has no shared memory or interprocess semaphores.
   mmap64?
   CosmMemAllocSecure - implement tracking and wipe.
     Win32: SecureZeroMemory()

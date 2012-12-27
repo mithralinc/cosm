@@ -24,7 +24,7 @@
 #include <stdlib.h>
 #include <string.h> /* for memmove */
 
-#if ( OS_TYPE == OS_LINUX )
+#if ( ( OS_TYPE == OS_LINUX ) || ( OS_TYPE == OS_ANDROID ) )
 #include <sys/sysinfo.h>
 #elif ( ( OS_TYPE == OS_MACOSX ) || ( OS_TYPE == OS_OPENBSD ) \
   || ( OS_TYPE == OS_NETBSD ) )
@@ -192,7 +192,7 @@ s32 CosmMemSystem( u64 * amount )
   }
   *amount = info.ullTotalPhys;
   return COSM_PASS;
-#elif ( OS_TYPE == OS_LINUX )
+#elif ( ( OS_TYPE == OS_LINUX ) || ( OS_TYPE == OS_ANDROID ) )
   struct sysinfo info;
 
   CosmMemSet( &info, sizeof( info ), 0 );
@@ -326,6 +326,8 @@ void * CosmSharedMemAlloc( cosm_SHARED_MEM * shared_mem,
       }
       unique_found = 1;
     }
+#elif ( defined( SHARED_MEM_UNSUPPORTED ) )
+    return NULL;
 #else
 #error "Incomplete CosmSharedMemAlloc - see os_mem.c"
 #endif
@@ -374,6 +376,8 @@ void * CosmSharedMemOpen( cosm_SHARED_MEM * shared_mem,
   {
     return NULL;
   }
+#elif ( defined( SHARED_MEM_UNSUPPORTED ) )
+  return NULL;
 #else
 #error "Incomplete CosmSharedMemOpen - see os_mem.c"
 #endif
@@ -398,6 +402,8 @@ void CosmSharedMemClose( cosm_SHARED_MEM * shared_mem )
   CloseHandle( shared_mem->file_mapping );
 #elif ( defined( SYSV_SHARED_MEM ) )
   shmdt( shared_mem->memory );
+#elif ( defined( SHARED_MEM_UNSUPPORTED ) )
+  return;
 #else
 #error "Incomplete CosmSharedMemClose - see os_mem.c"
 #endif
@@ -417,6 +423,8 @@ void CosmSharedMemFree( cosm_SHARED_MEM * shared_mem )
 #elif ( defined( SYSV_SHARED_MEM ) )
   shmdt( shared_mem->memory );
   shmctl( shared_mem->sysv_handle, IPC_RMID, NULL );
+#elif ( defined( SHARED_MEM_UNSUPPORTED ) )
+  return;
 #else
 #error "Incomplete CosmSharedMemFree - see os_mem.c"
 #endif

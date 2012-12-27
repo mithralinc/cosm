@@ -2010,7 +2010,7 @@ s32 Cosm_TestOSNet( void )
   addr.type = COSM_NET_IPV4;
   addr.ip.v4 = 0;
   addr.port = 0;
-  if ( CosmNetListen( &netsrv, &addr, COSM_NET_MODE_TCP, 1  ) != COSM_PASS )
+  if ( CosmNetListen( &netsrv, &addr, COSM_NET_MODE_TCP, 1 ) != COSM_PASS )
   {
     return -3;
   }

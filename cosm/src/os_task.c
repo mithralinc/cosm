@@ -630,7 +630,7 @@ s32 CosmMutexInit( cosm_MUTEX * mutex )
 {
 #if ( defined( _POSIX_THREADS ) )
 #if ( ( OS_TYPE == OS_LINUX ) || ( OS_TYPE == OS_NETBSD ) \
-  || ( OS_TYPE == OS_MACOSX ) )
+  || ( OS_TYPE == OS_MACOSX ) || ( OS_TYPE == OS_ANDROID ) )
   pthread_mutex_t tmp_mutex = PTHREAD_MUTEX_INITIALIZER;
 #else /* standard POSIX case */
   pthread_mutexattr_t attr;
@@ -800,18 +800,18 @@ s32 CosmSemaphoreInit( cosm_SEMAPHORE * sem, u32 initial_count )
 {
   u32 unique_found = 0;
   u64 key;
-  
+
   if ( ( NULL == sem )
     || ( sem->state == COSM_SEMAPHORE_STATE_INIT )
     || ( sem->state == COSM_SEMAPHORE_STATE_OPEN ) )
   {
     return COSM_FAIL;
   }
-  
+
   key = (unsigned long) sem;
   key = CosmProcessID() ^ ( ( key << 32 ) & ( key >> 32 ) ); 
   do
-  {    
+  {
 #if ( defined( WINDOWS_SEMAPHORES ) )
     CosmPrintStr( sem->name, sizeof( cosm_SEMAPHORE_NAME ),
       "Global\\sem%Y", key );
@@ -847,6 +847,16 @@ s32 CosmSemaphoreInit( cosm_SEMAPHORE * sem, u32 initial_count )
     {
       unique_found = 1;
     }
+#elif ( defined( LOCAL_POSIX_SEMAPHORES ) )
+    /* Android (and maybe others) do not support shared semaphores. */
+    if ( -1 == sem_init( &sem->os_sem, 0, initial_count) )
+    {
+      return COSM_FAIL;
+    }
+    else
+    {
+      unique_found = 1;
+    }
 #elif ( defined( SYSV_SEMAPHORES ) )
     CosmPrintStr( sem->name, sizeof( cosm_SEMAPHORE_NAME ), "sem%Y", key );
 
@@ -874,7 +884,7 @@ s32 CosmSemaphoreInit( cosm_SEMAPHORE * sem, u32 initial_count )
 #endif /* semaphore type */
     key++;
   } while ( 0 == unique_found );
-  
+
   sem->state = COSM_SEMAPHORE_STATE_INIT;
   return COSM_PASS;
 }
@@ -903,6 +913,9 @@ s32 CosmSemaphoreOpen( cosm_SEMAPHORE * sem, cosm_SEMAPHORE_NAME * name )
   {
     return COSM_FAIL;
   }
+#elif ( defined( LOCAL_POSIX_SEMAPHORES ) )
+  /* Android (and maybe others) do not support shared semaphores. */
+  return COSM_FAIL;
 #elif ( defined( SYSV_SEMAPHORES ) )
   if ( ( COSM_FAIL == CosmU64Str( &key, NULL, &name[0][3], 16 ) )
     || ( -1 == ( sem->os_sem = semget( key, 0, 0 ) ) ) )
@@ -927,15 +940,11 @@ void CosmSemaphoreClose( cosm_SEMAPHORE * sem )
   }
 
 #if ( defined( WINDOWS_SEMAPHORES ) )
-  if ( 0 == CloseHandle( sem->os_sem ) )
-  {
-    return;
-  }
+  CloseHandle( sem->os_sem );
 #elif ( defined( POSIX_SEMAPHORES ) )
-  if ( -1 == sem_close( sem->os_sem ) )
-  {
-    return;
-  }
+  sem_close( sem->os_sem );
+#elif ( defined( LOCAL_POSIX_SEMAPHORES ) )
+  /* Android (and maybe others) do not support shared semaphores. */
 #elif ( defined( SYSV_SEMAPHORES ) )
   /* do nothing, only the creator should remove the semaphore */
 #else
@@ -980,13 +989,25 @@ s32 CosmSemaphoreDown( cosm_SEMAPHORE * sem, u32 wait )
       return COSM_FAIL;
     }
 #elif ( defined( POSIX_SEMAPHORES ) )
-    wait_on_sem:
+    wait_on_posix_sem:
     if ( sem_wait( sem->os_sem ) == -1 )
     {
       if ( EINTR == errno )
       {
         /* interupted by a signal, need to rewait */
-        goto wait_on_sem;
+        goto wait_on_posix_sem;
+      }
+      /* everything else is a real error */
+      return COSM_FAIL;
+    }
+#elif ( defined( LOCAL_POSIX_SEMAPHORES ) )
+    wait_on_local_sem:
+    if ( sem_wait( &sem->os_sem ) == -1 )
+    {
+      if ( EINTR == errno )
+      {
+        /* interupted by a signal, need to rewait */
+        goto wait_on_local_sem;
       }
       /* everything else is a real error */
       return COSM_FAIL;
@@ -995,7 +1016,7 @@ s32 CosmSemaphoreDown( cosm_SEMAPHORE * sem, u32 wait )
     command.sem_num = 0;
     command.sem_op = -1;
     command.sem_flg = 0;
-    
+
     wait_on_sem:
     if ( -1 == semop( sem->os_sem, &command, 1 ) )
     {
@@ -1032,6 +1053,12 @@ s32 CosmSemaphoreDown( cosm_SEMAPHORE * sem, u32 wait )
     }
 #elif ( defined( POSIX_SEMAPHORES ) )
     if ( -1 == sem_trywait( sem->os_sem ) )
+    {
+      /* failures and already locked are both failures */
+      return COSM_FAIL;
+    }
+#elif ( defined( LOCAL_POSIX_SEMAPHORES ) )
+    if ( -1 == sem_trywait( &sem->os_sem ) )
     {
       /* failures and already locked are both failures */
       return COSM_FAIL;
@@ -1080,11 +1107,16 @@ s32 CosmSemaphoreUp( cosm_SEMAPHORE * sem )
   {
     return COSM_FAIL;
   }
+#elif ( defined( LOCAL_POSIX_SEMAPHORES ) )
+  if ( sem_post( &sem->os_sem ) == -1 )
+  {
+    return COSM_FAIL;
+  }
 #elif ( defined( SYSV_SEMAPHORES ) )
   command.sem_num = 0;
   command.sem_op = 1;
   command.sem_flg = 0;
-  
+
   if ( -1 == semop( sem->os_sem, &command, 1 ) )
   {
     return COSM_FAIL;
@@ -1108,6 +1140,9 @@ void CosmSemaphoreFree( cosm_SEMAPHORE * sem )
 #elif ( defined( POSIX_SEMAPHORES ) )
   sem_close( sem->os_sem );
   sem_unlink( sem->name );
+#elif ( defined( LOCAL_POSIX_SEMAPHORES ) )
+  /* Android (and maybe others) do not support shared semaphores. */
+  sem_destroy( &sem->os_sem );
 #elif ( defined( SYSV_SEMAPHORES ) )
   semctl( sem->os_sem, 0, IPC_RMID );
 #else
@@ -1719,10 +1754,20 @@ s32 Cosm_TestOSTask( void )
     return -9;
   }
   CosmMemSet( &semaphore2, sizeof( semaphore2 ), 0 );
+#if ( OS_TYPE == OS_ANDROID )
+  /* Android (and maybe others) do not support shared semaphores. */
+  /* should fail */
+  if ( COSM_FAIL != CosmSemaphoreOpen( &semaphore2, &semaphore.name ) )
+  {
+    return -10;
+  }
+#else
+  /* All other platforms should have shared semaphores. */
   if ( COSM_PASS != CosmSemaphoreOpen( &semaphore2, &semaphore.name ) )
   {
     return -10;
   }
+#endif
   CosmSemaphoreClose( &semaphore2 );
   CosmSemaphoreFree( &semaphore );
 

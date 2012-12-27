@@ -43,8 +43,11 @@
 #undef SYSV_SHARED_MEM
 #if ( ( OS_TYPE == OS_WIN32 ) || ( OS_TYPE == OS_WIN64 ) )
 #define WINDOWS_SHARED_MEM
-#elif ( ( OS_TYPE == OS_LINUX ) || ( OS_TYPE == OS_MACOSX ) ) 
+#elif ( ( OS_TYPE == OS_LINUX ) || ( OS_TYPE == OS_MACOSX ) )
 #define SYSV_SHARED_MEM
+#elif ( OS_TYPE == OS_ANDROID )
+/* No shared memory support in Android */
+#define SHARED_MEM_UNSUPPORTED
 #else
 #error "Unknown shared memory types - see os_mem.h"
 #endif
@@ -64,6 +67,7 @@ typedef struct cosm_SHARED_MEM
   u64 bytes;
 #elif ( defined( SYSV_SHARED_MEM ) )
   int sysv_handle;
+#elif ( defined( SHARED_MEM_UNSUPPORTED ) )
 #else
 #error "Unknown shared memory types - see os_mem.h"
 #endif
