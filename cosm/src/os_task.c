@@ -771,6 +771,10 @@ void CosmMutexFree( cosm_MUTEX * mutex )
 
 s32 CosmSemaphoreInit( cosm_SEMAPHORE * sem, u32 initial_count )
 {
+#if ( OS_TYPE == OS_MACOSX )
+  u64 key;
+#endif
+
   if ( ( NULL == sem ) || ( sem->state == COSM_SEMAPHORE_STATE_INIT ) )
   {
     return COSM_FAIL;
@@ -781,6 +785,29 @@ s32 CosmSemaphoreInit( cosm_SEMAPHORE * sem, u32 initial_count )
     0x7FFFFFFF, NULL ) ) )
   {
     return COSM_FAIL;
+  }
+#elif ( OS_TYPE == OS_MACOSX )
+  key = (unsigned long) sem;
+  key = CosmProcessID() ^ ( ( key << 32 ) & ( key >> 32 ) ); 
+  while ( 1 )
+  {
+    CosmPrintStr( sem->name, sizeof( sem->name ), "/sem%Y", key );
+
+    if ( (void *) SEM_FAILED == ( sem->os_sem = sem_open( sem->name,
+      O_CREAT | O_EXCL, S_IRWXU, initial_count ) ) )
+    {
+      if ( EEXIST != errno )
+      {
+        return COSM_FAIL;
+      }
+      /* otherwise keep trying */
+    }
+    else
+    {
+      break;
+    }
+
+    key++;
   }
 #elif ( defined( POSIX_SEMAPHORES ) )
   if ( -1 == sem_init( &sem->os_sem, 0, initial_count) )
@@ -825,6 +852,18 @@ s32 CosmSemaphoreDown( cosm_SEMAPHORE * sem, u32 wait )
       /* non-fatal */
       return COSM_FAIL;
     }
+#elif ( OS_TYPE == OS_MACOSX )
+    wait_on_posix_sem:
+    if ( sem_wait( sem->os_sem ) == -1 )
+    {
+      if ( EINTR == errno )
+      {
+        /* interupted by a signal, need to rewait */
+        goto wait_on_posix_sem;
+      }
+      /* everything else is a real error */
+      return COSM_FAIL;
+    }
 #elif ( defined( POSIX_SEMAPHORES ) )
     wait_on_posix_sem:
     if ( sem_wait( &sem->os_sem ) == -1 )
@@ -860,6 +899,12 @@ s32 CosmSemaphoreDown( cosm_SEMAPHORE * sem, u32 wait )
       /* proabably just a timeout, non-fatal */
       return COSM_FAIL;
     }
+#elif ( OS_TYPE == OS_MACOSX )
+    if ( -1 == sem_trywait( sem->os_sem ) )
+    {
+      /* failures and already locked are both failures */
+      return COSM_FAIL;
+    }
 #elif ( defined( POSIX_SEMAPHORES ) )
     if ( -1 == sem_trywait( &sem->os_sem ) )
     {
@@ -890,6 +935,11 @@ s32 CosmSemaphoreUp( cosm_SEMAPHORE * sem )
   {
     return COSM_FAIL;
   }
+#elif ( OS_TYPE == OS_MACOSX )
+  if ( sem_post( sem->os_sem ) == -1 )
+  {
+    return COSM_FAIL;
+  }
 #elif ( defined( POSIX_SEMAPHORES ) )
   if ( sem_post( &sem->os_sem ) == -1 )
   {
@@ -911,6 +961,9 @@ void CosmSemaphoreFree( cosm_SEMAPHORE * sem )
 
 #if ( defined( WINDOWS_SEMAPHORES ) )
   CloseHandle( sem->os_sem );
+#elif ( OS_TYPE == OS_MACOSX )
+  sem_close( sem->os_sem );
+  sem_unlink( sem->name );
 #elif ( defined( POSIX_SEMAPHORES ) )
   sem_destroy( &sem->os_sem );
 #else
