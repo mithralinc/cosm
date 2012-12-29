@@ -59,7 +59,8 @@ os_mem:
   - CosmMemWarning has been removed. If your OS has no memory protection, then
     there is nothing you can do about it. But whatever precautions can be
     taken will be, like zero on free.
-  - Named shared memory functions have been added.
+  - Named shared memory functions have been added. (REMOVED)
+    Shared memory functions have been removed.
   - You can now use -DMEM_LEAK_FIND no matter if the libs are compiled with
     it or not, the functions now always exist.
 os_net:
@@ -91,7 +92,7 @@ os_task:
     locking.
   - CosmMutexUnlock now returns void.
   - CosmProcessSignal is now CosmSignal.
-  - Named Semaphore functions have been added.
+  - Named Semaphore functions have been added. (REMOVED)
 
 
 Utility

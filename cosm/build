@@ -9,27 +9,9 @@ if target-platforms is:
   install         : Install Cosm headers and libraries on system
   installman      : Install the UNIX man pages on system
 
-target-platform may be one of the following:
-  freebsd-x86              : FreeBSD on x86 family
-  irix-mips-cc             : IRIX on 32bit mips family (cc)
-  irix-mips64-cc           : IRIX on 64bit mips family (cc)
-  irix64-mips64-cc         : IRIX64 on 64bit mips family (cc)
-  linux-x86                : Linux on x86 family
-  linux-alpha              : Linux on Alpha family
-  linux-alpha-ccc          : Linux on Alpha family (Compaq compiler)
-  linux-ppc                : Linux on PowerPC family
-  linux-sparc              : Linux on Sparc family
-  linux-sparc64            : Linux on 64bit Sparc family
-  nutc-x86                 : Win32 on x86 family via NuTCRACKER
-  solaris-x86              : Solaris on x86 family
-  solaris-sparc            : Solaris on 32bit Sparc family
-  solaris-sparc64          : Solaris on 64bit Sparc family
-  solaris-sparc-workshop   : Solaris on 32bit Spar familyc (Sun Workshop cc)
-  solaris-sparc64-workshop : Solaris on 64bit Sparc family (Sun Workshop cc)
-  sunos-sparc              : SunOS (Solaris 1) on 32bit Sparc family
-  tru64-alpha              : Tru64/OSF1 on Alpha family (cc)
-  win32-x86                : Win32 on x86 family (cygwin)
-  <missing os-cpu>: Start with make/TEMPLATE, and send in what works :)
+target-platform may be any of those listed in the make/ directory.
+e.g. linux-x86, osx-x64, etc.
+If your combination is missing, start with make/TEMPLATE, and contribute.
 
 General <make-options> (see also: cputypes.html in documentation)
 -DNO_NETWORKING     : Do not add support for network functions.

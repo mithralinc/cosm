@@ -39,40 +39,6 @@
   Cosm_MemDumpLeaks( filename, __FILE__, __LINE__ );
 #endif /* MEM_LEAK_FIND */
 
-#undef WINDOWS_SHARED_MEM
-#undef SYSV_SHARED_MEM
-#if ( ( OS_TYPE == OS_WIN32 ) || ( OS_TYPE == OS_WIN64 ) )
-#define WINDOWS_SHARED_MEM
-#elif ( ( OS_TYPE == OS_LINUX ) || ( OS_TYPE == OS_MACOSX ) )
-#define SYSV_SHARED_MEM
-#elif ( OS_TYPE == OS_ANDROID )
-/* No shared memory support in Android */
-#define SHARED_MEM_UNSUPPORTED
-#else
-#error "Unknown shared memory types - see os_mem.h"
-#endif
-
-#define COSM_SHARED_MEM_STATE_NONE    0
-#define COSM_SHARED_MEM_STATE_ALLOC  20
-#define COSM_SHARED_MEM_STATE_OPEN  252
-
-typedef utf8 cosm_SHARED_MEM_NAME[32];
-typedef struct cosm_SHARED_MEM
-{
-  u32 state;
-  cosm_SHARED_MEM_NAME name;
-  void * memory;
-#if ( defined( WINDOWS_SHARED_MEM ) )
-  void * file_mapping;
-  u64 bytes;
-#elif ( defined( SYSV_SHARED_MEM ) )
-  int sysv_handle;
-#elif ( defined( SHARED_MEM_UNSUPPORTED ) )
-#else
-#error "Unknown shared memory types - see os_mem.h"
-#endif
-} cosm_SHARED_MEM;
-
 s32 CosmMemCopy( void * dest, const void * src, u64 length );
   /*
     Copy length bytes of memory from src to dest.
@@ -107,35 +73,6 @@ s32 CosmMemSystem( u64 * amount );
     Returns: COSM_PASS on success, or COSM_FAIL on failure.
   */
 
-void * CosmSharedMemAlloc( cosm_SHARED_MEM * shared_mem,
-  cosm_SHARED_MEM_NAME * name, u64 bytes );
-  /*
-    Allocate a block of zero'd shared memory. The value of name is set to a
-    unique value, and can be given to other processes to open.
-    Returns: A pointer to the shared memory, or NULL on error.
-  */
-
-void * CosmSharedMemOpen( cosm_SHARED_MEM * shared_mem,
-  cosm_SHARED_MEM_NAME * name );
-  /*
-    Open a connection to an existing shared memory allocation. This must
-    later be closed (not freed) before it is freed by the creating process.
-    Returns: A pointer to the shared memory, or NULL on error.
-  */
-
-void CosmSharedMemClose( cosm_SHARED_MEM * shared_mem );
-  /*
-    Close a connection to shared memory that has been opened.
-    Returns: A pointer to the shared memory, or NULL on error.
-  */
-
-void CosmSharedMemFree( cosm_SHARED_MEM * shared_mem );
-  /*
-    Free a shared memory regeon that has been allocated. Doing this before
-    all other processes have closed it may result in bad things happening.
-    Returns: A pointer to the shared memory, or NULL on error.
-  */
-  
 /* low level */
 
 void * Cosm_MemAlloc( u64 bytes );

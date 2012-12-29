@@ -62,14 +62,6 @@ void ChildTERM( int arg )
 
 void Child( void )
 {
-  /*
-  cosm_SEMAPHORE sem;
-  cosm_SEMAPHORE_NAME sem_name;
-  cosm_SHARED_MEM mem;
-  cosm_SHARED_MEM_NAME mem_name;
-  cosm_FILE file;
-  */
-
   CosmPrint( "    Hello from child process %v\n", CosmProcessID() );
 
   if ( ( CosmSignalRegister( COSM_SIGNAL_INT, ChildINT ) != COSM_PASS ) ||
@@ -93,13 +85,6 @@ void Child( void )
 void Parent( char * self )
 {
   u64 child_id;
-  /*
-  cosm_SEMAPHORE sem;
-  cosm_SEMAPHORE_NAME sem_name;
-  cosm_SHARED_MEM mem;
-  cosm_SHARED_MEM_NAME mem_name;
-  cosm_FILE file;
-  */
   
   CosmPrint( "Spawning - %.256s -child\n", self );
   if ( CosmProcessSpawn( &child_id, self, "-child", NULL ) != COSM_PASS )

@@ -69,7 +69,7 @@ typedef enum packet_type
   TYPE_PONG     = 'O'  
 } packet_type;
 
-PACKED_STRUCT_BEGIN( 1 );
+PACKED_STRUCT_BEGIN
 typedef struct packet
 {
   u32 signature;
@@ -86,7 +86,7 @@ typedef struct packet
   cosmtime timestamp;
   u8 type; /* 45 */
 } packet;
-PACKED_STRUCT_END;
+PACKED_STRUCT_END
 
 ascii * Now( void );
 void PacketEncode( packet * pkt );
