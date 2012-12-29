@@ -98,6 +98,9 @@ typedef struct cosm_SEMAPHORE
   u32 state;
 #if( defined( WINDOWS_SEMAPHORES ) )
   HANDLE os_sem;
+#elif ( OS_TYPE == OS_MACOSX )
+  ascii name[32];
+  sem_t * os_sem;
 #elif ( defined( POSIX_SEMAPHORES ) )
   sem_t os_sem;
 #else

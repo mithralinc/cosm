@@ -657,7 +657,7 @@ static void Cosm_SHA1Transform( cosm_SHA1_CONTEXT * context )
   u32 i, A, B, C, D, E, T;
   u32 W[80], *WP;
 
-  for( i = 0; i < 16; i++ )
+  for ( i = 0; i < 16; i++ )
   {
     CosmU32Load( &W[ i ], &context->buffer[ i * 4 ] );
   }
@@ -675,16 +675,16 @@ static void Cosm_SHA1Transform( cosm_SHA1_CONTEXT * context )
   E = context->digest[4];
   WP = W;
 
-  for( i = 0; i < 20; i++ )
+  for ( i = 0; i < 20; i++ )
     _COSM_SHA_FG( 1 );
 
-  for( i = 0; i < 20; i++ )
+  for ( i = 0; i < 20; i++ )
     _COSM_SHA_FG( 2 );
 
-  for( i = 0; i < 20; i++ )
+  for ( i = 0; i < 20; i++ )
     _COSM_SHA_FG( 3 );
 
-  for( i = 0; i < 20; i++ )
+  for ( i = 0; i < 20; i++ )
     _COSM_SHA_FG( 4 );
 
   context->digest[0] += A;
@@ -849,7 +849,7 @@ static void Cosm_SHA256Transform( cosm_SHA256_CONTEXT * context )
   u32 A, B, C, D, E, F, G, H, temp1, temp2, W[64];
   u32 i;
 
-  for( i = 0; i < 16; i++ )
+  for ( i = 0; i < 16; i++ )
   {
     CosmU32Load( &W[i], &context->buffer[i * 4] );
   }

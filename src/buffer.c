@@ -501,7 +501,7 @@ s32 Cosm_TestBuffer( void )
 
   /* First stuff some small data into the first and third pipe.
    * and some slightly larger data down the second. */
-  for( i = 1; i < 21; i++ )
+  for ( i = 1; i < 21; i++ )
   {
     item1 = i;
     item2 = i + 100; /* Let data differ so we can separate it.*/
