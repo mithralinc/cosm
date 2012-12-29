@@ -147,8 +147,6 @@ src/os_net
 src/os_task
   FIX process/thread priority system - broken in windows.
   PTHREAD_MUTEX_NORMAL is bad, use semaphores for double-locks.
-  Semaphore tests in testlib Parent/Child
-  Semaphores need to allow for nameless as well?
   Affinity needs to be per thread.
     Win32 SetThreadAffinityMask().
     NPTL requires 2.4.20 (2002) more to require 2.6 from 2003.

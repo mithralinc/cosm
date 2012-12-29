@@ -289,7 +289,7 @@ PACKED_STRUCT_END
 /**
   Enums for referring to Cosm vector types.
   Value is: ( [float=1, signed=2, unsigned=3] << 16 ) +
-  ( bytes << 8 ) + vector width.
+  ( base_type_bytes << 8 ) + vector width.
 */
 enum vector_type
 {

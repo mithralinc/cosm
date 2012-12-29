@@ -32,8 +32,9 @@
 #include <signal.h>
 #if ( ( ( OS_TYPE == OS_LINUX ) || ( OS_TYPE == OS_NETBSD ) \
   || ( OS_TYPE == OS_OPENBSD ) || ( OS_TYPE == OS_FREEBSD ) \
-  || ( OS_TYPE == OS_ANDROID ) ) \
-  && ( !defined( _POSIX_THREADS ) ) ) /* forgot posix in headers */
+  || ( OS_TYPE == OS_ANDROID ) || ( OS_TYPE == OS_SOLARIS ) ) \
+  && ( !defined( _POSIX_THREADS ) ) )
+/* forgot posix in headers */
 #define _POSIX_THREADS
 #endif /* system forgot define */
 #if ( defined( _POSIX_THREADS ) )
@@ -64,7 +65,6 @@
 #define COSM_SEMAPHORE_WAIT        12
 #define COSM_SEMAPHORE_NOWAIT      192
 #define COSM_SEMAPHORE_STATE_INIT  47
-#define COSM_SEMAPHORE_STATE_OPEN  511
 
 typedef struct cosm_MUTEX
 {
@@ -73,8 +73,6 @@ typedef struct cosm_MUTEX
   HANDLE os_mutex;
 #elif ( defined( _POSIX_THREADS ) )
   pthread_mutex_t os_mutex;
-#elif ( defined( SEM_VALUE_MAX ) )
-  sem_t os_mutex;
 #else
 #error "no mutexes? check os_task.h"
 #endif
@@ -82,43 +80,26 @@ typedef struct cosm_MUTEX
 
 #undef WINDOWS_SEMAPHORES
 #undef POSIX_SEMAPHORES
-#undef LOCAL_POSIX_SEMAPHORES
-#undef SYSV_SEMAPHORES
 #if ( ( OS_TYPE == OS_WIN32 ) || ( OS_TYPE == OS_WIN64 ) )
 #define WINDOWS_SEMAPHORES
 /* if we have POSIX semaphores on UNIX we want to use them over Sys V */
-#elif ( OS_TYPE == OS_MACOSX )
+#elif ( ( OS_TYPE == OS_MACOSX ) || ( OS_TYPE == OS_LINUX ) \
+  || ( OS_TYPE == OS_ANDROID ) || ( OS_TYPE == OS_FREEBSD ) \
+  || ( OS_TYPE == OS_OPENBSD ) || ( OS_TYPE == OS_NETBSD ) \
+  || ( OS_TYPE == OS_SOLARIS ) ) 
 #include <semaphore.h>
 #define POSIX_SEMAPHORES
-#elif ( OS_TYPE == OS_ANDROID )
-/* Android does not support interprocess semaphores */
-#include <semaphore.h>
-#include <fcntl.h>
-#include <sys/stat.h>
-#define LOCAL_POSIX_SEMAPHORES
-#elif ( OS_TYPE == OS_LINUX )
-#include <sys/types.h>
-#include <sys/ipc.h>
-#include <sys/sem.h>
-#define SYSV_SEMAPHORES
 #else
 #error "Unknown semaphore types - see os_task.h"
 #endif
 
-typedef ascii cosm_SEMAPHORE_NAME[32];
-
 typedef struct cosm_SEMAPHORE
 {
   u32 state;
-  cosm_SEMAPHORE_NAME name;
 #if( defined( WINDOWS_SEMAPHORES ) )
   HANDLE os_sem;
 #elif ( defined( POSIX_SEMAPHORES ) )
-  sem_t * os_sem;
-#elif ( defined( LOCAL_POSIX_SEMAPHORES ) )
   sem_t os_sem;
-#elif ( defined( SYSV_SEMAPHORES ) )
-  int os_sem;
 #else
 #error "Unknown semaphore types - see os_task.h"
 #endif
@@ -266,19 +247,6 @@ s32 CosmSemaphoreInit( cosm_SEMAPHORE * sem, u32 initial_count );
     Note: Picking a name is not allowed due to platform specific naming
     conventions.
     Returns: COSM_PASS on success, or COSM_FAIL on failure.
-  */
-
-s32 CosmSemaphoreOpen( cosm_SEMAPHORE * sem, cosm_SEMAPHORE_NAME * name );
-  /*
-    Open a semaphore initialized in another process. You must later
-    close (not free) any semaphore acquired in this way.
-    Returns: COSM_PASS on success, or COSM_FAIL on failure.
-  */
-
-void CosmSemaphoreClose( cosm_SEMAPHORE * sem );
-  /*
-    Close a semaphore that has been opened.
-    Returns: nothing.
   */
 
 s32 CosmSemaphoreDown( cosm_SEMAPHORE * sem, u32 wait );
