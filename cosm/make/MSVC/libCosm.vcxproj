@@ -292,8 +292,10 @@
     <None Include="..\..\CREDITS.TXT" />
     <None Include="..\..\README.txt" />
     <None Include="..\..\TODO.TXT" />
+    <None Include="..\Android.mk" />
     <None Include="..\common" />
     <None Include="..\fake" />
+    <None Include="..\ios-arm" />
     <None Include="..\linux-arm" />
     <None Include="..\linux-x64" />
     <None Include="..\linux-x86" />

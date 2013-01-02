@@ -296,6 +296,12 @@
     <None Include="..\TEMPLATE">
       <Filter>Miscellaneous\UNIX Makefiles</Filter>
     </None>
+    <None Include="..\Android.mk">
+      <Filter>Miscellaneous\UNIX Makefiles</Filter>
+    </None>
+    <None Include="..\ios-arm">
+      <Filter>Miscellaneous\UNIX Makefiles</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Documentation">
