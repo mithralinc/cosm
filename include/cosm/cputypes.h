@@ -90,11 +90,11 @@
 #  if ( defined( _WIN64 ) )
 #    define OS_TYPE OS_WIN64
 #  elif ( defined( _WIN32 ) )
-#    defined OS_TYPE OS_WIN32
+#    define OS_TYPE OS_WIN32
 #  elif ( defined( __ANDROID__ ) )
-#    defined OS_TYPE OS_ANDROID
+#    define OS_TYPE OS_ANDROID
 #  elif ( defined( __linux__ ) )
-#    defined OS_TYPE OS_LINUX
+#    define OS_TYPE OS_LINUX
 #  elif ( defined( __APPLE__ ) )
 #    include "TargetConditionals.h"
 #    if TARGET_OS_IPHONE
