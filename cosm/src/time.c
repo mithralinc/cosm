@@ -37,7 +37,7 @@ s32 CosmTime( cosmtime * dest, cosm_TIME_CORRECTION * corrections )
   }
 
   /* Check if initialized properly.*/
-  if ( ( corrections->initialized == 0 ) )
+  if ( corrections->initialized == 0 )
   {
     CosmMutexUnlock( &corrections->lock );
     return COSM_FAIL;

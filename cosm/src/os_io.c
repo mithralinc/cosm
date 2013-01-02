@@ -25,7 +25,8 @@
 #include <conio.h>
 #else
 #include <unistd.h>
-#if ( ( OS_TYPE == OS_LINUX ) || ( OS_TYPE == OS_MACOSX ) \
+#if ( ( OS_TYPE == OS_LINUX ) || ( OS_TYPE == OS_ANDROID ) \
+  || ( OS_TYPE == OS_OSX ) || ( OS_TYPE == OS_IOS ) \
   || ( OS_TYPE == OS_SOLARIS ) || ( OS_TYPE == OS_FREEBSD ) \
   || ( OS_TYPE == OS_OPENBSD ) || ( OS_TYPE == OS_NETBSD ) )
 #define UNIX_NOECHO_METHOD
@@ -356,7 +357,7 @@ s32 CosmStrAppend( utf8 * stringA, const utf8 * stringB, u32 max_bytes )
   ptr = CosmMemOffset( stringA, lenA );
 
   /* Check to see if we exceded bounds */
-  if ( ( ptr == 0 ) )
+  if ( ptr == 0 )
   {
     return COSM_FAIL;
   }

@@ -22,31 +22,22 @@ LDFLAGS = -Wl,-syslibroot /Developer/SDKs/MacOSX10.4u.sdk \
   -mmacosx-version-min=10.4
 LDLIBS  = $(EXTRA_LIBS)
 
-# Cosm Defines
-#COSM_DEFS =  < no generic setting this time >
-
 .c.$(OBJ):
 	@echo "Compiling $< x86"
-	@$(CC) $(CC_FLAGS) -DOS_TYPE=OS_MACOSX \
-	  -DCPU_TYPE=CPU_X86 -arch i386 -o $@.i386 -c $<
+	@$(CC) $(CC_FLAGS) -DCPU_TYPE=CPU_X86 -arch i386 -o $@.i386 -c $<
 	@echo "Compiling $< x64"
-	@$(CC) $(CC_FLAGS) -DOS_TYPE=OS_MACOSX \
-	  -DCPU_TYPE=CPU_X64 -arch x86_64 -o $@.x86_64 -c $<
+	@$(CC) $(CC_FLAGS) -DCPU_TYPE=CPU_X64 -arch x86_64 -o $@.x86_64 -c $<
 	@echo "Compiling $< PPC"
-	@$(CC) $(CC_FLAGS) -DOS_TYPE=OS_MACOSX \
-	  -DCPU_TYPE=CPU_PPC -arch ppc -o $@.ppc -c $<
+	@$(CC) $(CC_FLAGS) -DCPU_TYPE=CPU_PPC -arch ppc -o $@.ppc -c $<
 	@lipo $@.i386 $@.x86_64 $@.ppc -create -output $@ 
 	@$(RM) $@.i386 $@.x86_64 $@.ppc
 
 .cpp.$(OBJ):
 	@echo "Compiling $< x86"
-	@$(CXX) $(CC_FLAGS) -DOS_TYPE=OS_MACOSX \
-	  -DCPU_TYPE=CPU_X86 -arch i386 -o $@.i386 -c $<
+	@$(CXX) $(CC_FLAGS) -DCPU_TYPE=CPU_X86 -arch i386 -o $@.i386 -c $<
 	@echo "Compiling $< x64"
-	@$(CXX) $(CC_FLAGS) -DOS_TYPE=OS_MACOSX \
-	  -DCPU_TYPE=CPU_X64 -arch x86_64 -o $@.x86_64 -c $<
+	@$(CXX) $(CC_FLAGS) -DCPU_TYPE=CPU_X64 -arch x86_64 -o $@.x86_64 -c $<
 	@echo "Compiling $< PPC"
-	@$(CXX) $(CC_FLAGS) -DOS_TYPE=OS_MACOSX \
-	  -DCPU_TYPE=CPU_PPC -arch ppc -o $@.ppc -c $<
+	@$(CXX) $(CC_FLAGS) -DCPU_TYPE=CPU_PPC -arch ppc -o $@.ppc -c $<
 	@lipo $@.i386 $@.x86_64 $@.ppc -create -output $@ 
 	@$(RM) $@.i386 $@.x86_64 $@.ppc

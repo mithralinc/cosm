@@ -83,10 +83,10 @@ typedef struct cosm_MUTEX
 #if ( ( OS_TYPE == OS_WIN32 ) || ( OS_TYPE == OS_WIN64 ) )
 #define WINDOWS_SEMAPHORES
 /* if we have POSIX semaphores on UNIX we want to use them over Sys V */
-#elif ( ( OS_TYPE == OS_MACOSX ) || ( OS_TYPE == OS_LINUX ) \
-  || ( OS_TYPE == OS_ANDROID ) || ( OS_TYPE == OS_FREEBSD ) \
-  || ( OS_TYPE == OS_OPENBSD ) || ( OS_TYPE == OS_NETBSD ) \
-  || ( OS_TYPE == OS_SOLARIS ) ) 
+#elif ( ( OS_TYPE == OS_OSX ) || ( OS_TYPE == OS_IOS ) \
+  || ( OS_TYPE == OS_LINUX ) || ( OS_TYPE == OS_ANDROID ) \
+  || ( OS_TYPE == OS_SOLARIS ) || ( OS_TYPE == OS_FREEBSD ) \
+  || ( OS_TYPE == OS_OPENBSD ) || ( OS_TYPE == OS_NETBSD ) )
 #include <semaphore.h>
 #define POSIX_SEMAPHORES
 #else
@@ -98,7 +98,7 @@ typedef struct cosm_SEMAPHORE
   u32 state;
 #if( defined( WINDOWS_SEMAPHORES ) )
   HANDLE os_sem;
-#elif ( OS_TYPE == OS_MACOSX )
+#elif ( ( OS_TYPE == OS_OSX ) || ( OS_TYPE == OS_IOS ) )
   ascii name[32];
   sem_t * os_sem;
 #elif ( defined( POSIX_SEMAPHORES ) )

@@ -40,7 +40,7 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <signal.h>
-#if ( ( OS_TYPE == OS_LINUX ) || ( OS_TYPE == OS_MACOSX ) )
+#if ( ( OS_TYPE == OS_LINUX ) || ( OS_TYPE == OS_OSX ) )
 #include <net/if.h>
 #include <ifaddrs.h>
 #endif
@@ -1574,7 +1574,7 @@ u32 CosmNetMyIP( cosm_NET_ADDR * addr, u32 count )
     }
   }
   CosmMemFree( adapter );
-#elif ( ( OS_TYPE == OS_LINUX ) || ( OS_TYPE == OS_MACOSX ) )
+#elif ( ( OS_TYPE == OS_LINUX ) || ( OS_TYPE == OS_OSX ) )
   /* platforms with getifaddrs */
   struct ifaddrs * head, * current;
 
@@ -2247,10 +2247,9 @@ s32 Cosm_TestOSNet( void )
     return -32;
   }
 
-#if ( ( OS_TYPE != OS_WIN32 ) && ( OS_TYPE != OS_WIN64 ) && \
-  ( OS_TYPE != OS_FREEBSD ) && \
-  ( ( OS_TYPE != OS_MACOSX ) || ( CPU_TYPE != CPU_X86 ) ) && \
-  ( ( OS_TYPE != OS_MACOSX ) || ( CPU_TYPE != CPU_X64 ) ) )
+#if ( ( OS_TYPE != OS_WIN32 ) && ( OS_TYPE != OS_WIN64 ) \
+  && ( OS_TYPE != OS_FREEBSD ) && ( OS_TYPE != OS_OSX ) \
+  && ( OS_TYPE != OS_IOS ) )
   /* this one is tricky, it should fail on the second call, NOT coredump */
   if ( ( CosmNetSend( &netclient2, &bytes, buf1, 10 ) == COSM_PASS )
     && ( CosmNetSend( &netclient2, &bytes, buf1, 10 ) == COSM_PASS ) )

@@ -30,7 +30,7 @@ u32 win32_signals_init = 0;
 HANDLE win32_sigint_handle = NULL;
 HANDLE win32_sigterm_handle = NULL;
 void Cosm_SignalWaitThread( void * arg );
-#elif ( OS_TYPE == OS_MACOSX )
+#elif ( ( OS_TYPE == OS_OSX ) || ( OS_TYPE == OS_IOS ) )
 #include <sched.h>
 #include <signal.h>
 #include <sys/param.h>
@@ -255,8 +255,8 @@ s32 CosmCPUCount( u32 * count )
 
   GetSystemInfo( &info );
   *count = info.dwNumberOfProcessors;
-#elif ( ( OS_TYPE == OS_MACOSX ) || ( OS_TYPE == OS_FREEBSD ) \
-  || ( OS_TYPE == OS_OPENBSD ) )
+#elif ( ( OS_TYPE == OS_OSX ) || ( OS_TYPE == OS_IOS ) \
+  || ( OS_TYPE == OS_FREEBSD ) || ( OS_TYPE == OS_OPENBSD ) )
   int mib[2], cpu;
   size_t len;
 
@@ -437,7 +437,7 @@ s32 CosmThreadBegin( u64 * thread_id, void (*start)(void *),
 
   pthread_attr_init( &attr );
 
-#if ( OS_TYPE == OS_MACOSX )
+#if ( ( OS_TYPE == OS_OSX ) || ( OS_TYPE == OS_IOS ) )
   pthread_attr_setstacksize( &attr, (size_t) stack_size );
 #elif ( OS_TYPE == OS_SOLARIS )
   /* system-wide contention */
@@ -629,8 +629,9 @@ void CosmThreadEnd( void )
 s32 CosmMutexInit( cosm_MUTEX * mutex )
 {
 #if ( defined( _POSIX_THREADS ) )
-#if ( ( OS_TYPE == OS_LINUX ) || ( OS_TYPE == OS_NETBSD ) \
-  || ( OS_TYPE == OS_MACOSX ) || ( OS_TYPE == OS_ANDROID ) )
+#if ( ( OS_TYPE == OS_LINUX ) || ( OS_TYPE == OS_ANDROID ) \
+  || ( OS_TYPE == OS_OSX ) || ( OS_TYPE == OS_IOS ) \
+  || ( OS_TYPE == OS_NETBSD ) )
   pthread_mutex_t tmp_mutex = PTHREAD_MUTEX_INITIALIZER;
 #else /* standard POSIX case */
   pthread_mutexattr_t attr;
@@ -771,7 +772,7 @@ void CosmMutexFree( cosm_MUTEX * mutex )
 
 s32 CosmSemaphoreInit( cosm_SEMAPHORE * sem, u32 initial_count )
 {
-#if ( OS_TYPE == OS_MACOSX )
+#if ( ( OS_TYPE == OS_OSX ) || ( OS_TYPE == OS_IOS ) )
   u64 key;
 #endif
 
@@ -786,7 +787,7 @@ s32 CosmSemaphoreInit( cosm_SEMAPHORE * sem, u32 initial_count )
   {
     return COSM_FAIL;
   }
-#elif ( OS_TYPE == OS_MACOSX )
+#elif ( ( OS_TYPE == OS_OSX ) || ( OS_TYPE == OS_IOS ) )
   key = (unsigned long) sem;
   key = CosmProcessID() ^ ( ( key << 32 ) & ( key >> 32 ) ); 
   while ( 1 )
@@ -852,7 +853,7 @@ s32 CosmSemaphoreDown( cosm_SEMAPHORE * sem, u32 wait )
       /* non-fatal */
       return COSM_FAIL;
     }
-#elif ( OS_TYPE == OS_MACOSX )
+#elif ( ( OS_TYPE == OS_OSX ) || ( OS_TYPE == OS_IOS ) )
     wait_on_posix_sem:
     if ( sem_wait( sem->os_sem ) == -1 )
     {
@@ -899,7 +900,7 @@ s32 CosmSemaphoreDown( cosm_SEMAPHORE * sem, u32 wait )
       /* proabably just a timeout, non-fatal */
       return COSM_FAIL;
     }
-#elif ( OS_TYPE == OS_MACOSX )
+#elif ( ( OS_TYPE == OS_OSX ) || ( OS_TYPE == OS_IOS ) )
     if ( -1 == sem_trywait( sem->os_sem ) )
     {
       /* failures and already locked are both failures */
@@ -935,7 +936,7 @@ s32 CosmSemaphoreUp( cosm_SEMAPHORE * sem )
   {
     return COSM_FAIL;
   }
-#elif ( OS_TYPE == OS_MACOSX )
+#elif ( ( OS_TYPE == OS_OSX ) || ( OS_TYPE == OS_IOS ) )
   if ( sem_post( sem->os_sem ) == -1 )
   {
     return COSM_FAIL;
@@ -961,7 +962,7 @@ void CosmSemaphoreFree( cosm_SEMAPHORE * sem )
 
 #if ( defined( WINDOWS_SEMAPHORES ) )
   CloseHandle( sem->os_sem );
-#elif ( OS_TYPE == OS_MACOSX )
+#elif ( ( OS_TYPE == OS_OSX ) || ( OS_TYPE == OS_IOS ) )
   sem_close( sem->os_sem );
   sem_unlink( sem->name );
 #elif ( defined( POSIX_SEMAPHORES ) )

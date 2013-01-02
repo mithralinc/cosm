@@ -321,7 +321,7 @@ s32 Cosm_BufferGrow( cosm_BUFFER * buffer, u64 length )
   /* grow memory memory if we need to */
   if ( ( amount > buffer->mem_length ) )
   {
-    if ( ( buffer->grow_size == 0 ) )
+    if ( buffer->grow_size == 0 )
     {
       return COSM_BUFFER_ERROR_FULL;
     }

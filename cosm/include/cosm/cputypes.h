@@ -42,10 +42,31 @@
   "x86", "x64", "ARM", "ARM64", "MIPS", "MIPS64", "PPC", "PPC64", \
   NULL }
 
-/* CPU_TYPE must be defined by now */
-#if ( !defined( CPU_TYPE ) || ( CPU_TYPE == CPU_INVALID ) \
+#if ( !defined( CPU_TYPE ) )
+#  if ( defined( __x86_64__ ) || defined( _M_X64 ) )
+#    define CPU_TYPE CPU_X64
+#  elif ( defined( __i386__ ) || defined( __i486__ ) || defined( __i586__ ) \
+     || defined( __i686 ) || defined( _M_IX86 ) )
+#    define CPU_TYPE CPU_X86
+#  elif ( defined( __aarch64__ ) )
+#    define CPU_TYPE CPU_ARM64
+#  elif ( defined( __arm__ ) || defined( _M_ARM ) )
+#    define CPU_TYPE CPU_ARM
+#  elif ( defined( __mips64__ ) )
+#    define CPU_TYPE CPU_MIPS64
+#  elif ( defined( __mips__ ) )
+#    define CPU_TYPE CPU_MIPS
+#  elif ( defined( __ppc__ ) || defined( _M_PPC ) )
+#    defined CPU_TYPE CPU_PPC
+#  elif ( defined( __ppc64__ ) )
+#    defined CPU_TYPE CPU_PPC64
+#  endif
+#endif
+
+/* CPU_TYPE must be valid */
+#if ( !defined( CPU_TYPE ) || ( CPU_TYPE <= CPU_INVALID ) \
   || ( CPU_TYPE > CPU_TYPE_MAX ) )
-#error "Properly define CPU_TYPE - see cputypes.h"
+#  error "Improperly defined or undetected CPU_TYPE - see cputypes.h"
 #endif
 
 #define OS_INVALID    0  /** Invalid OS */
@@ -53,7 +74,7 @@
 #define OS_WIN64      2  /** Win64 - 64bit XP, 2003+, Vista and up */
 #define OS_LINUX      3  /** Linux */
 #define OS_ANDROID    4  /** Android */
-#define OS_MACOSX     5  /** Apple MacOS X */
+#define OS_OSX        5  /** Apple OS X */
 #define OS_IOS        6  /** Apple iOS */
 #define OS_SOLARIS    7  /** Solaris */
 #define OS_FREEBSD    8  /** FreeBSD */
@@ -65,34 +86,63 @@
   "Win32", "Win64", "Linux", "Android", "OSX", "iOS", "Solaris", \
   "FreeBSD", "OpenBSD", "NetBSD", NULL }
 
-/* OS_TYPE must be defined by now */
-#if ( !defined( OS_TYPE ) || ( OS_TYPE == OS_INVALID ) \
+#if ( !defined( OS_TYPE ) )
+#  if ( defined( _WIN64 ) )
+#    define OS_TYPE OS_WIN64
+#  elif ( defined( _WIN32 ) )
+#    defined OS_TYPE OS_WIN32
+#  elif ( defined( __ANDROID__ ) )
+#    defined OS_TYPE OS_ANDROID
+#  elif ( defined( __linux__ ) )
+#    defined OS_TYPE OS_LINUX
+#  elif ( defined( __APPLE__ ) )
+#    include "TargetConditionals.h"
+#    if TARGET_OS_IPHONE
+#      define OS_TYPE OS_IOS
+#    else
+#      define OS_TYPE OS_OSX
+#    endif
+#  endif
+#endif
+
+/* OS_TYPE must be valid */
+#if ( !defined( OS_TYPE ) || ( OS_TYPE <= OS_INVALID ) \
   || ( OS_TYPE > OS_TYPE_MAX ) )
-#error "Define OS_TYPE - see cputypes.h"
+#  error "Improperly defined or undetected OS_TYPE - see cputypes.h"
 #endif
 
 /* Endian settings for big endian or little endian */
-#undef  COSM_ENDIAN
 #define COSM_ENDIAN_BIG     4321
 #define COSM_ENDIAN_LITTLE  1234
 
-#if ( ( CPU_TYPE == CPU_X86 ) || ( CPU_TYPE == CPU_X64 ) \
-  || ( CPU_TYPE == CPU_ARM ) || ( CPU_TYPE == CPU_ARM64 ) )
-#define COSM_ENDIAN COSM_ENDIAN_LITTLE
-#else
-#define COSM_ENDIAN COSM_ENDIAN_BIG
+#if ( !defined( COSM_ENDIAN ) )
+#  if ( ( CPU_TYPE == CPU_X86 ) || ( CPU_TYPE == CPU_X64 ) \
+     || ( CPU_TYPE == CPU_ARM ) || ( CPU_TYPE == CPU_ARM64 ) \
+     || ( CPU_TYPE == CPU_MIPS ) || ( CPU_TYPE == CPU_ARM64 ) \
+     || ( CPU_TYPE == CPU_PPC ) || ( CPU_TYPE == CPU_PPC64 ) )
+#    define COSM_ENDIAN COSM_ENDIAN_LITTLE
+#  else
+#    define COSM_ENDIAN COSM_ENDIAN_BIG
+#  endif
 #endif
+
+/* COSM_ENDIAN must be valid */
+#if ( !defined( COSM_ENDIAN ) || ( ( COSM_ENDIAN != COSM_ENDIAN_LITTLE ) \
+  && ( COSM_ENDIAN != COSM_ENDIAN_BIG ) ) )
+#  error "A COSM_ENDIAN must be specified - see cputypes.h"
+#endif
+
 
 #if ( ( CPU_TYPE == CPU_X86 ) || ( CPU_TYPE == CPU_ARM ) \
   || ( CPU_TYPE == CPU_MIPS ) || ( CPU_TYPE == CPU_PPC ) )
-#define CPU_32BIT
-#undef CPU_64BIT
+#  define CPU_32BIT
+#  undef CPU_64BIT
 #elif ( ( CPU_TYPE == CPU_X64 ) || ( CPU_TYPE == CPU_ARM64 ) \
   || ( CPU_TYPE == CPU_MIPS64 ) || ( CPU_TYPE == CPU_PPC64 ) )
-#define CPU_64BIT
-#undef CPU_32BIT
+#  define CPU_64BIT
+#  undef CPU_32BIT
 #else
-#error "CPU_TYPE missing CPU_64BIT/CPU_32BIT - see cputypes.h"
+#  error "CPU_TYPE missing CPU_64BIT/CPU_32BIT - see cputypes.h"
 #endif
 
 /** 8-bit unsigned integer. */
@@ -100,7 +150,7 @@ typedef unsigned char u8;
 /** 8-bit signed integer. */
 typedef signed char s8;
 #if ( UCHAR_MAX != 0xFF )
-#error "char is not 8 bits - serious problem - see cputypes.h"
+#  error "char is not 8 bits - serious problem - see cputypes.h"
 #endif
 
 /** 16-bit unsigned integer. */
@@ -108,7 +158,7 @@ typedef unsigned short u16;
 /** 16-bit signed integer. */
 typedef signed short s16;
 #if ( USHRT_MAX != 0xFFFF )
-#error "Cannot find a 16-bit type - see cputypes.h"
+#  error "Cannot find a 16-bit type - see cputypes.h"
 #endif
 
 #if ( UINT_MAX == 0xFFFFFFFF )
@@ -120,7 +170,7 @@ typedef signed int s32;
 typedef unsigned long u32;
 typedef signed long s32;
 #else
-#error "Cannot find a 32-bit type - see cputypes.h"
+#  error "Cannot find a 32-bit type - see cputypes.h"
 #endif
 
 /* On a CPU_32BIT this type is being implemented by the compiler. */
@@ -130,13 +180,13 @@ typedef unsigned long long u64;
 /** 64-bit signed integer. */
 typedef signed long long s64;
 #else /* 32 bit CPU */
-#if ( ( OS_TYPE == OS_WIN32 ) || ( OS_TYPE == OS_WIN64 ) )
+#  if ( ( OS_TYPE == OS_WIN32 ) || ( OS_TYPE == OS_WIN64 ) )
 typedef unsigned __int64 u64;
 typedef signed __int64 s64;
-#else /* not win32 */
+#  else /* not win32 */
 typedef unsigned long long u64;
 typedef signed long long s64;
-#endif /* OS */
+#  endif /* OS */
 #endif /* 64 or 32 bit ? */
 
 /* All systems have software 128bit integers */
@@ -221,13 +271,13 @@ Begin packed memory structure definition.
 End packed structure definitions.
 */
 #if defined( __GNUC__ )
-#define PACKED_STRUCT_BEGIN _Pragma( "pack(push,1)" )
-#define PACKED_STRUCT_END _Pragma( "pack(pop)" )
+#  define PACKED_STRUCT_BEGIN _Pragma( "pack(push,1)" )
+#  define PACKED_STRUCT_END _Pragma( "pack(pop)" )
 #elif defined( _MSC_VER )
-#define PACKED_STRUCT_BEGIN __pragma( pack(push,1) )
-#define PACKED_STRUCT_END __pragma( pack(pop) )
+#  define PACKED_STRUCT_BEGIN __pragma( pack(push,1) )
+#  define PACKED_STRUCT_END __pragma( pack(pop) )
 #else
-#error "need correct struct packing macro, see cputypes.h"
+#  error "need correct struct packing macro, see cputypes.h"
 #endif
 
 /* Vector types, up to 512 bits */
@@ -368,17 +418,17 @@ enum vector_type
 /* Make sure that NULL defined to standard. */
 #undef  NULL
 #ifdef __cplusplus
-#define NULL 0
+#  define NULL 0
 #else
-#define NULL ((void *) 0)
+#  define NULL ((void *) 0)
 #endif
 
 /* Dynamic Library export */
 #if defined( USE_EXPORTS ) \
   && ( ( OS_TYPE == OS_WIN32 ) || ( OS_TYPE == OS_WIN64 ) )
-#define EXPORT __declspec( dllexport )
+#  define EXPORT __declspec( dllexport )
 #else
-#define EXPORT
+#  define EXPORT
 #endif
 
 /* universal pass/fail */
