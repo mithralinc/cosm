@@ -472,7 +472,7 @@ s32 CosmFileEOF( cosm_FILE * file )
   }
 
   /* We compare file size and current position to know if we are at EOF */
-  if ( ( current == real ) )
+  if ( current == real )
   {
     return COSM_FILE_ERROR_EOF;
   }
@@ -586,8 +586,7 @@ s32 CosmFileInfo( cosm_FILE_INFO * info, const ascii * filename )
 #if ( ( OS_TYPE == OS_WIN32 ) || ( OS_TYPE == OS_WIN64 ) )
   struct __stat64 buf;
 #else
-#if ( ( OS_TYPE == OS_MACOSX ) && defined( __DARWIN_64_BIT_INO_T ) ) \
-  || ( ( OS_TYPE == OS_LINUX ) && defined( __USE_LARGEFILE64 ) )
+#if ( ( OS_TYPE == OS_LINUX ) && defined( __USE_LARGEFILE64 ) )
 #define _STAT stat64
 #else
 #define _STAT stat
@@ -1004,7 +1003,7 @@ s32 CosmDirOpen( cosm_DIR * dir, const ascii * dirname, u32 mode )
             This means that we reached the end of the list.
             This should not happend.
           */
-          if ( ( i == size ) )
+          if ( i == size )
           {
             return COSM_DIR_ERROR_CREATE;
           }
@@ -1186,7 +1185,7 @@ s32 CosmDirRead( cosm_FILENAME * buffer, u64 * names_read, u64 length,
       (*names_read)++;
       dir->offset++;
 
-      if ( ( length == *names_read ) )
+      if ( length == *names_read )
       {
         /* done for now */
         ok_to_exit = 1;

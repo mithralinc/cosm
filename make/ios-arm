@@ -1,0 +1,30 @@
+## OS        : iOS
+## CPU       : ARM
+## Compiler  : GNU
+
+DEVROOT = /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer
+
+CC      = $(DEVROOT)/usr/bin/gcc
+CXX     = $(DEVROOT)/usr/bin/g++
+LD      = $(CC) -arch armv7 -o 
+DYLIB   = $(CC) -dynamiclib -arch armv7 -o 
+AR      = ar rc 
+RM      = rm -f
+RNLIB   = ranlib
+STRIP   = strip
+INSTALL = install
+OBJ     = o
+
+CCFLAGS  = -O2 -Wall -pedantic -Wno-long-long \
+  -isysroot $(DEVROOT)/SDKs/iPhoneOS6.0.sdk $(EXTRA_FLAGS)
+LDFLAGS = -miphoneos-version-min=5.0 \
+  -Wl,-syslibroot $(DEVROOT)/SDKs/iPhoneOS6.0.sdk
+LDLIBS  = $(EXTRA_LIBS)
+
+.c.$(OBJ):
+	@echo "Compiling $<"
+	@$(CC) $(CC_FLAGS) -arch armv7 -o $@ -c $<
+
+.cpp.$(OBJ):
+	@echo "Compiling $<"
+	@$(CXX) $(CC_FLAGS) -arch armv7 -o $@ -c $<

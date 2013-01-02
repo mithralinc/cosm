@@ -19,14 +19,11 @@ FCFLAGS  = -O2 -no-common -Wall -pedantic -Wno-long-long $(EXTRA_FLAGS)
 LDFLAGS = -mmacosx-version-min=10.4
 LDLIBS  = $(EXTRA_LIBS)
 
-# Cosm Defines
-COSM_DEFS = -DOS_TYPE=OS_MACOSX -DCPU_TYPE=CPU_X86
-
 .c.$(OBJ):
 	@echo "Compiling $<"
-	@$(CC) $(CC_FLAGS) $(COSM_DEFS) -arch i386 -o $@ -c $<
+	@$(CC) $(CC_FLAGS) -arch i386 -o $@ -c $<
 
 .cpp.$(OBJ):
 	@echo "Compiling $<"
-	@$(CXX) $(CC_FLAGS) $(COSM_DEFS) -arch i386 -o $@ -c $<
+	@$(CXX) $(CC_FLAGS) -arch i386 -o $@ -c $<
 

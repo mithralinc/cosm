@@ -30,7 +30,7 @@
       <strong>Build Setup, Porting, and Debugging Tools</strong>
     </p>
     <ul>
-      <li><a href="#Defines">Required Defines</a>
+      <li><a href="#Detected">Detected Defines</a>
       <li><a href="#Optional">Optional Defines</a>
     </ul>
     <p>
@@ -56,15 +56,15 @@
 
     <hr>
 
-    <a name="Defines"></a>
+    <a name="Detected"></a>
     <h3>
-      Required Defines
+      Detrected Defines
     </h3>
 
     <p>
-      The required defines are: CPU bits, CPU type, and OS type.
-      You will find a TEMPLATE file in the make/ directory of
-      the source. Unless you are porting the libraries to a new platform,
+      The detected defines are: CPU_32BIT/CPU_64BIT (mutially exclusive),
+      CPU_TYPE, OS_TYPE, and COSM_ENDIAN.
+      Unless you are porting the libraries to a new platform,
       these will already be set and usable with the `build` script.
     </p>
 
@@ -73,7 +73,7 @@
     </p>
     <p>
       The CPU type is set by defining <em>CPU_TYPE</em> to be one of the
-      following. Note that valid values of <em>CPU_TYPE</em> are from 0 to
+      following. Note that valid values of <em>CPU_TYPE</em> are from 1 to
       CPU_TYPE_MAX inclusive. The array COSM_CPU_TYPES of CPU names will
       also be of use to programmers, see <a href="#Strings">below</a>.
     </p>
@@ -94,7 +94,7 @@
     </p>
     <p>
       The OS is set by defining <em>OS_TYPE</em> to be one of the following.
-      Note that valid values of <em>OS_TYPE</em> are from 0 to
+      Note that valid values of <em>OS_TYPE</em> are from 1 to
       OS_TYPE_MAX inclusive. The array COSM_OS_TYPES of OS names will
       also be of use to programmers, see <a href="#Strings">below</a>.
     </p>
@@ -102,8 +102,10 @@
       <li>OS_INVALID
       <li>OS_WIN32
       <li>OS_WIN64
-      <li>OS_MACOSX
+      <li>OS_OSX
+      <li>OS_IOS
       <li>OS_LINUX
+      <li>OS_ANDROID
       <li>OS_SOLARIS
       <li>OS_NETBSD
       <li>OS_FREEBSD

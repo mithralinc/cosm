@@ -1087,62 +1087,6 @@ s32 Cosm_TestOSMath( void )
     return -55;
   }
 
-  /* u64 Eq */
-  u_64a = 0x0123456789ABCDEFLL;
-  u_64b = 0xFEDC89AB76543210LL;
-  if ( u_64a != u_64a )
-  {
-    return -56;
-  }
-  if ( u_64b != u_64b )
-  {
-    return -57;
-  }
-  if ( ( u_64a == u_64b ) )
-  {
-    return -58;
-  }
-  if ( ( u_64b == u_64a ) )
-  {
-    return -59;
-  }
-
-  /* u64 Gt */
-  if ( ( u_64a > u_64a ) )
-  {
-    return -60;
-  }
-  if ( ( u_64b > u_64b ) )
-  {
-    return -61;
-  }
-  if ( ( u_64a > u_64b ) )
-  {
-    return -62;
-  }
-  if ( !( u_64b > u_64a ) )
-  {
-    return -63;
-  }
-
-  /* u64 Lt */
-  if ( ( u_64a < u_64a ) )
-  {
-    return -64;
-  }
-  if ( ( u_64b < u_64b ) )
-  {
-    return -65;
-  }
-  if ( !( u_64a < u_64b ) )
-  {
-    return -66;
-  }
-  if ( ( u_64b < u_64a ) )
-  {
-    return -67;
-  }
-
   /* s64 functions ====================================================== */
 
   /* s64 Add */
@@ -1282,63 +1226,6 @@ s32 Cosm_TestOSMath( void )
   if ( s_64r != 0xFFFFFFFFFFFFFFFELL )
   {
     return -87;
-  }
-
-  /* s64 Eq */
-  s_64a = 0x0123456789ABCDEFLL;
-  s_64b = 0xFEDC89AB76543210LL;
-
-  if ( s_64a != s_64a )
-  {
-    return -88;
-  }
-  if ( s_64b != s_64b )
-  {
-    return -89;
-  }
-  if ( ( s_64a == s_64b ) )
-  {
-    return -90;
-  }
-  if ( ( s_64b == s_64a ) )
-  {
-    return -91;
-  }
-
-  /* s64 Gt */
-  if ( ( s_64a > s_64a ) )
-  {
-    return -92;
-  }
-  if ( ( s_64b > s_64b ) )
-  {
-    return -93;
-  }
-  if ( !( s_64a > s_64b ) )
-  {
-    return -94;
-  }
-  if ( ( s_64b > s_64a ) )
-  {
-    return -95;
-  }
-
-  /* s64 Lt */
-  if ( ( s_64a < s_64a ) )
-  {
-    return -96;
-  }
-  if ( ( s_64b < s_64b ) )
-  {
-    return -97;
-  }
-  if ( ( s_64a < s_64b ) )
-  {
-    return -98;
-  }
-  if ( !( s_64b < s_64a ) )
-  {
-    return -99;
   }
 
   /* u128 functions ===================================================== */

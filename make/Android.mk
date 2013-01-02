@@ -1,20 +1,9 @@
 # Expects to be included from the jni/Android.mk file.
-# Defines COSM_CFLAGS and COSM_C_INCLUDES based on the current path and ABI.
+# Defines COSM_C_INCLUDES based on the current path and ABI.
 
 include $(CLEAR_VARS)
 COSM_C_INCLUDES := $(LOCAL_PATH)/cosm/include
 LOCAL_MODULE := CosmUtil
-ifeq ($(TARGET_ARCH_ABI),armeabi)
-COSM_CFLAGS := -DOS_TYPE=OS_ANDROID -DCPU_TYPE=CPU_ARM
-else ifeq ($(TARGET_ARCH_ABI),armeabi-v7a)
-COSM_CFLAGS := -DOS_TYPE=OS_ANDROID -DCPU_TYPE=CPU_ARM
-else ifeq ($(TARGET_ARCH_ABI),mips)
-COSM_CFLAGS := -DOS_TYPE=OS_ANDROID -DCPU_TYPE=CPU_MIPS
-else ifeq ($(TARGET_ARCH_ABI),x86)
-COSM_CFLAGS := -DOS_TYPE=OS_ANDROID -DCPU_TYPE=CPU_X86
-else
-$(error Unsupported Android ABI)
-endif
 LOCAL_CFLAGS := $(COSM_CFLAGS)
 LOCAL_C_INCLUDES := $(LOCAL_PATH)/cosm/include
 LOCAL_SRC_FILES := cosm/src/bignum.c \

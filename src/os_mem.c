@@ -26,8 +26,8 @@
 
 #if ( ( OS_TYPE == OS_LINUX ) || ( OS_TYPE == OS_ANDROID ) )
 #include <sys/sysinfo.h>
-#elif ( ( OS_TYPE == OS_MACOSX ) || ( OS_TYPE == OS_OPENBSD ) \
-  || ( OS_TYPE == OS_NETBSD ) )
+#elif ( ( OS_TYPE == OS_OSX ) || ( OS_TYPE == OS_IOS ) \
+  || ( OS_TYPE == OS_OPENBSD ) || ( OS_TYPE == OS_NETBSD ) )
 #include <sys/param.h>
 #include <sys/sysctl.h>
 #endif
@@ -206,7 +206,7 @@ s32 CosmMemSystem( u64 * amount )
     }
     return COSM_PASS;
   }
-#elif ( OS_TYPE == OS_MACOSX )
+#elif ( ( OS_TYPE == OS_OSX ) || ( OS_TYPE == OS_IOS ) )
 #ifndef HW_MEMSIZE
 #define HW_MEMSIZE 24
 #endif

@@ -168,7 +168,7 @@ System specific #ifdef are only allowed in CPU/OS level libraries. The only
 #ifdefs in the utility layer of code should be those provided by the CPU/OS
 layer for endian, 64biness, etc. When doing any test for CPU/OS type, use
 globally defined OS_TYPE and CPU_TYPE to switch off of e.g.
-#if ( OS_TYPE == OS_MACOSX ) - this is more readable to people not familiar
+#if ( OS_TYPE == OS_OSX ) - this is more readable to people not familiar
 with each compiler/os/cpu combination, and is less likely to lead to
 confusion. Also, preprocessore '#'s go in column 1, and never get indented
 due to some compilers being picky about the standard.
