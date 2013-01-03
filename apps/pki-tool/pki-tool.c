@@ -41,14 +41,14 @@ const COMMAND commands[] =
 void Notice( void )
 {
   CosmPrint(
-    "Cosm(R) PKI Tool.\n"
-    "Copyright Mithral Communications & Design, Inc. 1995-2010.\n" );
+    "Cosm(R) RSA Tool.\n"
+    "Copyright Mithral Communications & Design, Inc. 1995-2012.\n" );
 }
 
 void Usage( void )
 {
   CosmPrint(
-    "\npki-tool usage: pki-tool <command> [arguments]\n"
+    "\nrsa-tool usage: pki-tool <command> [arguments]\n"
     "keygen <base-filename> <bits> <hex-ID> <alias> <days-expire>\n"
     "  Generate a bits-bit key with id and the up-to 15 character alias.\n"
     "  put the pub and private keys into filename.pub and filename.pri.\n"
@@ -179,7 +179,7 @@ s32 HashFile( cosm_HASH * hash, const ascii * filename )
 s32 CommandKeygen( s32 argc, utf8 * argv[] )
 {
   /* keygen <base-filename> <bits> <id> <alias> <days-expire> */
-  cosm_PKI_KEY pub, pri;
+  cosm_RSA_KEY pub, pri;
   cosm_HASH pass_hash;
   cosm_PRNG rnd;
   cosm_FILE file;
@@ -264,7 +264,7 @@ s32 CommandKeygen( s32 argc, utf8 * argv[] )
   /* generate the keys */
   CosmMemSet( &pub, sizeof( pub ), 0 );
   CosmMemSet( &pri, sizeof( pri ), 0 );
-  if ( ( error = CosmPKIKeyGen( &pub, &pri, bits, rnd_bits, id, alias,
+  if ( ( error = CosmRSAKeyGen( &pub, &pri, bits, rnd_bits, id, alias,
     create, expire, my_progress, NULL ) ) != COSM_PASS )
   {
     CosmPrint( "Key generation failed.\n" );
@@ -282,7 +282,7 @@ s32 CommandKeygen( s32 argc, utf8 * argv[] )
   }
 
   /* save the public key */
-  if ( CosmPKIKeySave( save_buf, &len, &pub, bits * 2, NULL, NULL )
+  if ( CosmRSAKeySave( save_buf, &len, &pub, bits * 2, NULL, NULL )
     != COSM_PASS )
   {
     CosmPrint( "Saving error.\n" );
@@ -341,7 +341,7 @@ s32 CommandKeygen( s32 argc, utf8 * argv[] )
   CosmSystemClock( &now );
   CosmPRNG( &rnd, rnd_bits, 16, &now, sizeof( now ) );
 
-  if ( CosmPKIKeySave( save_buf, &len, &pri, bits * 2,
+  if ( CosmRSAKeySave( save_buf, &len, &pri, bits * 2,
     rnd_bits, &pass_hash ) != COSM_PASS )
   {
     CosmPrint( "Saving error.\n" );
@@ -379,8 +379,8 @@ s32 CommandKeygen( s32 argc, utf8 * argv[] )
 s32 CommandSign( s32 argc, utf8 * argv[] )
 {
   /* sign <sigfile> <file> <private-keyfile> */
-  cosm_PKI_KEY pri;
-  cosm_PKI_SIG sig;
+  cosm_RSA_KEY pri;
+  cosm_RSA_SIG sig;
   cosm_HASH pass_hash, data_hash;
   cosm_FILE file;
   cosm_FILE_INFO info;
@@ -431,7 +431,7 @@ s32 CommandSign( s32 argc, utf8 * argv[] )
   CosmFileClose( &file );
 
   CosmMemSet( &pri, sizeof( pri ), 0 );
-  if ( CosmPKIKeyLoad( &pri, &len, buf, info.length, &pass_hash )
+  if ( CosmRSAKeyLoad( &pri, &len, buf, info.length, &pass_hash )
     != COSM_PASS )
   {
     CosmPrint( "Invalid Keyfile or passphrase.\n" );
@@ -443,21 +443,21 @@ s32 CommandSign( s32 argc, utf8 * argv[] )
   /* now sign */
   CosmSystemClock( &now );
   CosmMemSet( &sig, sizeof( sig ), 0 );
-  if ( CosmPKIEncode( &sig, &data_hash, now, COSM_PKI_SIG_SIGN,
-    COSM_PKI_SHARED_YES, &pri ) != COSM_PASS )
+  if ( CosmRSAEncode( &sig, &data_hash, now, COSM_RSA_SIG_SIGN,
+    COSM_RSA_SHARED_YES, &pri ) != COSM_PASS )
   {
     CosmPrint( "Can't sign.\n" );
     return COSM_FAIL;
   }
-  CosmPKIKeyFree( &pri );
+  CosmRSAKeyFree( &pri );
 
   /* buf is always large enough to save the sig into */
-  if ( CosmPKISigSave( buf, &len, &sig, info.length ) != COSM_PASS )
+  if ( CosmRSASigSave( buf, &len, &sig, info.length ) != COSM_PASS )
   {
     CosmPrint( "Cant save signature.\n" );
     return COSM_FAIL;
   }
-  CosmPKISigFree( &sig );
+  CosmRSASigFree( &sig );
 
   /* append .sig */
   if ( CosmStrCopy( filename, argv[2], sizeof( filename ) - 4 ) != COSM_PASS )
@@ -491,8 +491,8 @@ s32 CommandSign( s32 argc, utf8 * argv[] )
 s32 CommandVerify( s32 argc, utf8 * argv[] )
 {
   /* verify <file> <sigfile> <public-keyfile> */
-  cosm_PKI_KEY pub;
-  cosm_PKI_SIG sig;
+  cosm_RSA_KEY pub;
+  cosm_RSA_SIG sig;
   cosm_HASH data_hash, sig_hash;
   cosm_FILE file;
   cosm_FILE_INFO info;
@@ -543,7 +543,7 @@ s32 CommandVerify( s32 argc, utf8 * argv[] )
   CosmFileClose( &file );
 
   CosmMemSet( &pub, sizeof( pub ), 0 );
-  if ( CosmPKIKeyLoad( &pub, &len, buf, info.length, NULL ) != COSM_PASS )
+  if ( CosmRSAKeyLoad( &pub, &len, buf, info.length, NULL ) != COSM_PASS )
   {
     CosmPrint( "Invalid Keyfile.\n" );
     CosmMemFree( buf );
@@ -584,7 +584,7 @@ s32 CommandVerify( s32 argc, utf8 * argv[] )
   CosmFileClose( &file );
 
   CosmMemSet( &sig, sizeof( sig ), 0 );
-  if ( CosmPKISigLoad( &sig, &len, buf, info.length ) != COSM_PASS )
+  if ( CosmRSASigLoad( &sig, &len, buf, info.length ) != COSM_PASS )
   {
     CosmPrint( "Invalid signature file.\n" );
     CosmMemFree( buf );
@@ -592,7 +592,7 @@ s32 CommandVerify( s32 argc, utf8 * argv[] )
   }
   CosmMemFree( buf );
 
-  if ( CosmPKIDecode( &sig_hash, &sig_time, &type, &share, &sig, &pub )
+  if ( CosmRSADecode( &sig_hash, &sig_time, &type, &share, &sig, &pub )
     != COSM_PASS )
   {
     CosmPrint( "Can't decode signature.\n" );
@@ -601,7 +601,7 @@ s32 CommandVerify( s32 argc, utf8 * argv[] )
 
   /* print out match and types */
   if ( !CosmHashEq( &data_hash, &sig_hash )
-    || ( type != COSM_PKI_SIG_SIGN ) || ( share != COSM_PKI_SHARED_YES ) )
+    || ( type != COSM_RSA_SIG_SIGN ) || ( share != COSM_RSA_SHARED_YES ) )
   {
     CosmPrint( "Signature is _NOT_ valid for file.\n" );
     return COSM_FAIL;
@@ -621,8 +621,8 @@ s32 CommandVerify( s32 argc, utf8 * argv[] )
     days[myunits.wday], months[myunits.month], myunits.day + 1,
     myunits.year, myunits.hour, myunits.min, myunits.sec );
 
-  CosmPKIKeyFree( &pub );
-  CosmPKISigFree( &sig );
+  CosmRSAKeyFree( &pub );
+  CosmRSASigFree( &sig );
 
   return COSM_PASS;
 }

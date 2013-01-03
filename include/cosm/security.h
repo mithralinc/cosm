@@ -78,7 +78,7 @@ s32 CosmEntropy( u8 * data, u64 length );
 
 /* A key is identified by the bits, id, and create time */
 
-typedef struct cosm_PKI_KEY
+typedef struct cosm_RSA_KEY
 {
   u16 pkt_type;   /* DO NOT CHANGE ANY OF THIS! */
   u16 pkt_version;
@@ -96,9 +96,9 @@ typedef struct cosm_PKI_KEY
   cosm_BN iqmp;   /* bits/2, inverse of q mod p */
   u8 iv[16];      /* 128 bits of IV for AES, [size*9+64] */
   u8 checksum[4]; /* CRC32 to see if we properly decrypted, [size*9+80] */
-} cosm_PKI_KEY; /* total = size*9+84 on disk */
+} cosm_RSA_KEY; /* total = size*9+84 on disk */
 
-typedef struct cosm_PKI_SIG
+typedef struct cosm_RSA_SIG
 {
   u16 pkt_type;
   u16 pkt_version;
@@ -109,35 +109,34 @@ typedef struct cosm_PKI_SIG
   u8 type;
   u8 shared;
   cosm_BN sig;
-} cosm_PKI_SIG; /* 34 + bits/8 bytes on disk */
+} cosm_RSA_SIG; /* 34 + bits/8 bytes on disk */
 
-#define COSM_PKI_VERSION  1
+#define COSM_RSA_VERSION  1
 
-#define COSM_PKI_ERROR_PARAM       -1 /* A paramerter was invalid */
-#define COSM_PKI_ERROR_MEMORY      -2 /* Memory problem */
-#define COSM_PKI_ERROR_FORMAT      -3 /* Key/Sig isn't right, size wrong */
-#define COSM_PKI_ERROR_EXPIRED     -4 /* Key expired */
-#define COSM_PKI_ERROR_PASSPHRASE  -5 /* Wrong passphrase */
-#define COSM_PKI_ERROR_NO_CRYPTO   -6 /* Compiled with -DNO_CRYPTO */
+#define COSM_RSA_ERROR_PARAM       -1 /* A paramerter was invalid */
+#define COSM_RSA_ERROR_MEMORY      -2 /* Memory problem */
+#define COSM_RSA_ERROR_FORMAT      -3 /* Key/Sig isn't right, size wrong */
+#define COSM_RSA_ERROR_EXPIRED     -4 /* Key expired */
+#define COSM_RSA_ERROR_PASSPHRASE  -5 /* Wrong passphrase */
 
-#define COSM_PKI_PUBLIC       0x0005 /* Public key */
-#define COSM_PKI_PRIVATE      0x000A /* Private key (pub + private) */
-#define COSM_PKI_SIGNATURE    0x0050 /* Signature */
+#define COSM_RSA_PUBLIC       0x0005 /* Public key */
+#define COSM_RSA_PRIVATE      0x000A /* Private key (pub + private) */
+#define COSM_RSA_SIGNATURE    0x0050 /* Signature */
 
-#define COSM_PKI_SHARED_NO      0x33 /* Signatere is valid to signer only */
-#define COSM_PKI_SHARED_YES     0xCC /* Signatere is valid for any reader */
+#define COSM_RSA_SHARED_NO      0x33 /* Signatere is valid to signer only */
+#define COSM_RSA_SHARED_YES     0xCC /* Signatere is valid for any reader */
 
-#define COSM_PKI_SIG_MESSAGE    0x00 /* Sending data to the key owner */
-#define COSM_PKI_SIG_SIGN       0x05 /* Signer signs data */
-#define COSM_PKI_SIG_KNOWN      0x06 /* Signer untrusted but known data */
-#define COSM_PKI_SIG_WEAK       0x09 /* Signer weakly trusts the data */
-#define COSM_PKI_SIG_STRONG     0x0A /* Signer strongly trusts the data */
-#define COSM_PKI_SIG_TIMESTAMP  0x0F /* Signer says data existed only */
-#define COSM_PKI_SIG_REVOKE     0xFF /* Signer revokes matching signature */
+#define COSM_RSA_SIG_MESSAGE    0x00 /* Sending data to the key owner */
+#define COSM_RSA_SIG_SIGN       0x05 /* Signer signs data */
+#define COSM_RSA_SIG_KNOWN      0x06 /* Signer untrusted but known data */
+#define COSM_RSA_SIG_WEAK       0x09 /* Signer weakly trusts the data */
+#define COSM_RSA_SIG_STRONG     0x0A /* Signer strongly trusts the data */
+#define COSM_RSA_SIG_TIMESTAMP  0x0F /* Signer says data existed only */
+#define COSM_RSA_SIG_REVOKE     0xFF /* Signer revokes matching signature */
 
 /* keys */
 
-s32 CosmPKIKeyGen( cosm_PKI_KEY * public_key, cosm_PKI_KEY * private_key,
+s32 CosmRSAKeyGen( cosm_RSA_KEY * public_key, cosm_RSA_KEY * private_key,
   u32 bits, const u8 * rnd_bits, u64 id, const utf8 * alias,
   cosmtime create, cosmtime expire, void (*callback)( s32, s32, void * ),
   void * callback_param );
@@ -173,7 +172,7 @@ s32 CosmPKIKeyGen( cosm_PKI_KEY * public_key, cosm_PKI_KEY * private_key,
 
     create is the time of key creation and should always
     be the current time. expire is the expiration time
-    of the keys. CosmPKIEncode() will not be allowed with an
+    of the keys. CosmRSAEncode() will not be allowed with an
     expired key. Most keys should have a lifetime of 1 year.
 
     A key is uniquely identified by the bits,
@@ -197,7 +196,7 @@ s32 CosmPKIKeyGen( cosm_PKI_KEY * public_key, cosm_PKI_KEY * private_key,
     Returns: COSM_PASS on success, or an error code on failure.
   */
 
-s32 CosmPKIKeyLoad( cosm_PKI_KEY * key, u64 * bytes_read,
+s32 CosmRSAKeyLoad( cosm_RSA_KEY * key, u64 * bytes_read,
   const u8 * buffer, u64 max_bytes, const cosm_HASH * pass_hash );
   /*
     Load the key from the buffer into key, reading at most
@@ -209,7 +208,7 @@ s32 CosmPKIKeyLoad( cosm_PKI_KEY * key, u64 * bytes_read,
     Returns: COSM_PASS on success, or an error code on failure.
   */
 
-s32 CosmPKIKeySave( u8 * buffer, u64 * length, const cosm_PKI_KEY * key,
+s32 CosmRSAKeySave( u8 * buffer, u64 * length, const cosm_RSA_KEY * key,
   const u64 max_bytes, const u8 * rnd_bytes,
   const cosm_HASH * pass_hash );
   /*
@@ -222,7 +221,7 @@ s32 CosmPKIKeySave( u8 * buffer, u64 * length, const cosm_PKI_KEY * key,
     Returns: COSM_PASS on success, or an error code on failure.
   */
 
-void CosmPKIKeyFree( cosm_PKI_KEY * key );
+void CosmRSAKeyFree( cosm_RSA_KEY * key );
   /*
     Free all internal key data, and zero the key structure.
     Returns: nothing.
@@ -230,7 +229,7 @@ void CosmPKIKeyFree( cosm_PKI_KEY * key );
 
 /* signatures */
 
-s32 CosmPKISigLoad( cosm_PKI_SIG * sig, u64 * bytes_read,
+s32 CosmRSASigLoad( cosm_RSA_SIG * sig, u64 * bytes_read,
   const u8 * buffer, u64 max_bytes );
   /*
     Load the signature from the buffer into sig, reading at most
@@ -239,7 +238,7 @@ s32 CosmPKISigLoad( cosm_PKI_SIG * sig, u64 * bytes_read,
     Returns: COSM_PASS on success, or an error code on failure.
   */
 
-s32 CosmPKISigSave( u8 * buffer, u64 * length, const cosm_PKI_SIG * sig,
+s32 CosmRSASigSave( u8 * buffer, u64 * length, const cosm_RSA_SIG * sig,
   u64 max_bytes );
   /*
     Save the signature sig into the buffer, writing at most max_bytes bytes.
@@ -247,7 +246,7 @@ s32 CosmPKISigSave( u8 * buffer, u64 * length, const cosm_PKI_SIG * sig,
     Returns: COSM_PASS on success, or an error code on failure.
   */
 
-void CosmPKISigFree( cosm_PKI_SIG * sig );
+void CosmRSASigFree( cosm_RSA_SIG * sig );
   /*
     Free all internal data, and zero the signature structure.
     Returns: nothing.
@@ -255,25 +254,25 @@ void CosmPKISigFree( cosm_PKI_SIG * sig );
 
 /* signing */
 
-s32 CosmPKIEncode( cosm_PKI_SIG * sig, const cosm_HASH * hash,
-  cosmtime timestamp, u8 type, u8 shared, const cosm_PKI_KEY * key );
+s32 CosmRSAEncode( cosm_RSA_SIG * sig, const cosm_HASH * hash,
+  cosmtime timestamp, u8 type, u8 shared, const cosm_RSA_KEY * key );
   /*
     Use the key to encode the hash data, timestamp (in seconds), type, and
     shared flag into the signature sig. A signature of type
-    COSM_PKI_SIG_MESSAGE needs a public key, all other types need a private
+    COSM_RSA_SIG_MESSAGE needs a public key, all other types need a private
     key to encode. You should always use COSM_HASH_SHA256 to generate the
     hash for signatures. Care should be taken in chosing the type and
     shared flag you use.
     Returns: COSM_PASS on success, or an error code on failure.
   */
 
-s32 CosmPKIDecode( cosm_HASH * hash, cosmtime * timestamp, u8 * type,
-  u8 * shared, const cosm_PKI_SIG * sig, const cosm_PKI_KEY * key );
+s32 CosmRSADecode( cosm_HASH * hash, cosmtime * timestamp, u8 * type,
+  u8 * shared, const cosm_RSA_SIG * sig, const cosm_RSA_KEY * key );
   /*
     Extract the hash, timestamp, type and shared flags from the signature
     sig using the key. A COSM_PASS from this function does NOT mean the
     signature is valid, only that it was decoded correctly. A signature
-    of type COSM_PKI_SIG_MESSAGE needs a private key, all other types need
+    of type COSM_RSA_SIG_MESSAGE needs a private key, all other types need
     a public key to decode.
     It is important to understand that the undecoded parameters of a
     signature (sig.timestamp, sig.type, sig.shared) are MEANINGLESS,
@@ -384,11 +383,9 @@ s32 Cosm_SHA256End( cosm_TRANSFORM * transform );
 
 #define COSM_HASH_SHA256 Cosm_SHA256Init, Cosm_SHA256, Cosm_SHA256End
 
-#if ( !defined( NO_CRYPTO ) )
+/* low level AES/Rijndael API */
 
-/* low level Rijndael API */
-
-s32 Cosm_RijndaelInit( cosm_TRANSFORM * transform, va_list params );
+s32 Cosm_AESInit( cosm_TRANSFORM * transform, va_list params );
   /*
     Allocate the temporary data and initialize the encryptor.
     params = !!!
@@ -396,31 +393,21 @@ s32 Cosm_RijndaelInit( cosm_TRANSFORM * transform, va_list params );
     Returns: COSM_PASS on success, or a transform error code on failure.
   */
 
-s32 Cosm_Rijndael( cosm_TRANSFORM * transform, const void * const data,
+s32 Cosm_AES( cosm_TRANSFORM * transform, const void * const data,
   u64 length );
   /*
     Feed data to the encryption engine, write any results to the buffer..
     Returns: COSM_PASS on success, or a transform error code on failure.
   */
 
-s32 Cosm_RijndaelEnd( cosm_TRANSFORM * transform );
+s32 Cosm_AESEnd( cosm_TRANSFORM * transform );
   /*
     Flush any remaining data and free the temporary data.
     Returns: COSM_PASS on success, or a transform error code on failure.
   */
 
-/* Rijndael is implemented to AES specs */
-#define COSM_CRYPTO_AES \
-  Cosm_RijndaelInit, Cosm_Rijndael, Cosm_RijndaelEnd
-
-s32 Cosm_TestCrypto( void );
-  /*
-    Test functions in crypto.c.
-    Returns: COSM_PASS on success, or a negative number corresponding to the
-      test that failed.
-  */
-
-#endif /* NO_CRYPTO */
+/* Rijndael as implemented to AES specs */
+#define COSM_CRYPTO_AES Cosm_AESInit, Cosm_AES, Cosm_AESEnd
 
 /* testing */
 

@@ -52,9 +52,6 @@
     <ClCompile Include="..\..\src\config.c">
       <Filter>Source Files\Utility Layer</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\crypto.c">
-      <Filter>Source Files\Utility Layer</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\email.c">
       <Filter>Source Files\Utility Layer</Filter>
     </ClCompile>
