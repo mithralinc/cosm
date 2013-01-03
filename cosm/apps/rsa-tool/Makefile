@@ -4,15 +4,15 @@ CC_FLAGS = $(CCFLAGS) -I$(COSM)/include -L.
 LD_FLAGS = $(LDFLAGS) -L$(COSM)/lib -L.
 LD_LIBS =  $(LDLIBS) -lCosmUtil
 
-SOURCES = pki-tool.c
+SOURCES = rsa-tool.c
 HEADERS = 
-OBJECTS = pki-tool.$(OBJ)
+OBJECTS = rsa-tool.$(OBJ)
 
-BINARIES = pki-tool.exe
+BINARIES = rsa-tool.exe
 
 all: $(BINARIES)
 
-pki-tool.exe: pki-tool.$(OBJ)
+rsa-tool.exe: rsa-tool.$(OBJ)
 	@echo Linking $@
 	@$(LD)$@ $(LD_FLAGS) $(OBJECTS) $(LD_LIBS)
 	@echo Striping $@
@@ -22,4 +22,4 @@ clean:
 	@echo Cleaning...
 	-@$(RM) $(BINARIES) $(OBJECTS)
 
-pki-tool.$(OBJ): pki-tool.c
+rsa-tool.$(OBJ): rsa-tool.c

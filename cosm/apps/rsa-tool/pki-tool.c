@@ -48,7 +48,7 @@ void Notice( void )
 void Usage( void )
 {
   CosmPrint(
-    "\nrsa-tool usage: pki-tool <command> [arguments]\n"
+    "\nrsa-tool usage: rsa-tool <command> [arguments]\n"
     "keygen <base-filename> <bits> <hex-ID> <alias> <days-expire>\n"
     "  Generate a bits-bit key with id and the up-to 15 character alias.\n"
     "  put the pub and private keys into filename.pub and filename.pri.\n"
