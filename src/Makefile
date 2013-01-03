@@ -151,7 +151,7 @@ security.o: security.c ../include/cosm/security.h \
   ../include/cosm/os_math.h ../include/cosm/buffer.h \
   ../include/cosm/transform.h ../include/cosm/bignum.h \
   ../include/cosm/os_mem.h ../include/cosm/os_file.h \
-  ../include/cosm/time.h ../include/cosm/os_io.h crypto.c
+  ../include/cosm/time.h ../include/cosm/os_io.h
 time.o: time.c ../include/cosm/os_math.h ../include/cosm/cputypes.h \
   ../include/cosm/time.h ../include/cosm/os_task.h \
   ../include/cosm/os_file.h ../include/cosm/os_net.h
