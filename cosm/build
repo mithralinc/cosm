@@ -16,7 +16,6 @@ If your combination is missing, start with make/TEMPLATE, and contribute.
 General <make-options> (see also: cputypes.html in documentation)
 -DNO_NETWORKING     : Do not add support for network functions.
 -DNO_FLOATING_POINT : Compile for systems without floating point support.
--DNO_CRYPTO         : Do not compile in crypto functions. (i.e. no crypto.c)
 -DALLOW_UNSAFE_C    : Allow the use of non-portable and DANGEROUS C functions.
 -DMEM_LEAK_FIND     : Enable memory tracking, see CosmMemDumpLeaks().
 -DNET_LOG_PACKETS   : Enable packet logging.

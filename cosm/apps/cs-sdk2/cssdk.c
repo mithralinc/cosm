@@ -88,8 +88,8 @@ s32 UpdateFile( const ascii * path, const ascii * filename,
   cosm_FILE_INFO info;
   cosm_HASH data_hash, sig_hash;
   cosm_TRANSFORM transform;
-  cosm_PKI_KEY pub;
-  cosm_PKI_SIG sig;
+  cosm_RSA_KEY pub;
+  cosm_RSA_SIG sig;
   cosmtime sig_time;
   u8 type, share;
   
@@ -179,7 +179,7 @@ s32 UpdateFile( const ascii * path, const ascii * filename,
 
   /* load up dylib key */
   CosmMemSet( &pub, sizeof( pub ), 0 );
-  if ( CosmPKIKeyLoad( &pub, &bytes64, dylib_signing_key,
+  if ( CosmRSAKeyLoad( &pub, &bytes64, dylib_signing_key,
     sizeof( dylib_signing_key ), NULL ) != COSM_PASS )
   {
     CosmLog( log, 0, COSM_LOG_ECHO,
@@ -218,7 +218,7 @@ s32 UpdateFile( const ascii * path, const ascii * filename,
 
   /* read sig, compare with signed one */
   CosmMemSet( &sig, sizeof( sig ), 0 );
-  if ( CosmPKISigLoad( &sig, &bytes64, &buffer[info.length - SIG_BYTES],
+  if ( CosmRSASigLoad( &sig, &bytes64, &buffer[info.length - SIG_BYTES],
     SIG_BYTES ) != COSM_PASS )
   {
     CosmLog( log, 0, COSM_LOG_ECHO,
@@ -227,7 +227,7 @@ s32 UpdateFile( const ascii * path, const ascii * filename,
     return COSM_FAIL;
   }
 
-  if ( CosmPKIDecode( &sig_hash, &sig_time, &type, &share, &sig, &pub )
+  if ( CosmRSADecode( &sig_hash, &sig_time, &type, &share, &sig, &pub )
     != COSM_PASS )
   {
     CosmLog( log, 0, COSM_LOG_ECHO,
@@ -237,7 +237,7 @@ s32 UpdateFile( const ascii * path, const ascii * filename,
   }
 
   if ( !CosmHashEq( &data_hash, &sig_hash )
-    || ( type != COSM_PKI_SIG_SIGN ) || ( share != COSM_PKI_SHARED_YES ) )
+    || ( type != COSM_RSA_SIG_SIGN ) || ( share != COSM_RSA_SHARED_YES ) )
   {
     CosmLog( log, 0, COSM_LOG_ECHO,
       "%.32sSignature is not valid for file.\n", Now() );

@@ -181,13 +181,6 @@ src/buffer
 src/config
   code audit
 
-src/crypto
-  Move to AES, SHA3-256, ECC P-256.
-  Fix RSA signing padding - http://tools.ietf.org/html/rfc3447
-  Use montgomery math - setup when loading keys, so batch operations are fast
-  code audit
-  more tests for correctness and speed - pki-app/testlib
-
 src/email
   This needs looking over, it's many years old.
   Change to CosmSMTPSend, fix parameters to ascii hostname, assume port 25
@@ -217,10 +210,14 @@ src/log
   test audit
 
 src/security
+  Move to AES, SHA3-256, ECC P-256. Remove others.
   CosmPRNG - replace with Mersenne Twister.
-  CosmPKIPassCheck() - checks that passphrase is enterable ascii only.
+  CosmRSAPassCheck() - checks that passphrase is enterable ascii only.
   CosmEntropy, Cosm_SystemEntropy (in os_task)
   Need all operations to be constant time
+  Fix RSA signing padding - http://tools.ietf.org/html/rfc3447
+  Use montgomery math - setup when loading keys, so batch operations are fast
+  more tests for correctness and speed - rsa-tool/testlib
   format audit
   code audit
 
