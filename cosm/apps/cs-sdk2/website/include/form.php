@@ -9,7 +9,7 @@
  * Written by: Jpmaster77 a.k.a. The Grandmaster of C++ (GMC)
  * Last Updated: August 19, 2004
  */
- 
+
 class Form
 {
    var $values = array();  //Holds submitted form field values
@@ -81,5 +81,5 @@ class Form
       return $this->errors;
    }
 };
- 
+
 ?>

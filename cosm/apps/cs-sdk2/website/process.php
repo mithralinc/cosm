@@ -1,7 +1,7 @@
 <?php
 /**
  * Process.php
- * 
+ *
  * The Process class is meant to simplify the task of processing
  * user submitted forms, redirecting the user to the correct
  * pages if errors are found, or if form is successful, either
@@ -59,7 +59,7 @@ class Process
       global $session, $form;
       /* Login attempt */
       $retval = $session->login($_POST['user'], $_POST['pass'], isset($_POST['remember']));
-      
+
       /* Login successful */
       if($retval){
          header("Location: ".$session->referrer);
@@ -71,7 +71,7 @@ class Process
          header("Location: ".$session->referrer);
       }
    }
-   
+
    /**
     * procLogout - Simply attempts to log the user out of the system
     * given that there is no logout form to process.
@@ -81,7 +81,7 @@ class Process
       $retval = $session->logout();
       header("Location: index.php");
    }
-   
+
    /**
     * procRegister - Processes the user submitted registration form,
     * if errors are found, the user is redirected to correct the
@@ -97,7 +97,7 @@ class Process
       }
       /* Registration attempt */
       $retval = $session->register($_POST['user'], $_POST['pass'], $_POST['email']);
-      
+
       /* Registration Successful */
       if($retval == 0){
          $_SESSION['reguname'] = $_POST['user'];
@@ -117,7 +117,7 @@ class Process
          header("Location: ".$session->referrer);
       }
    }
-   
+
    /**
     * procForgotPass - Validates the given username then if
     * everything is fine, a new password is generated and
@@ -140,7 +140,7 @@ class Process
             $form->setError($field, "* Username does not exist<br>");
          }
       }
-      
+
       /* Errors exist, have user correct them */
       if($form->num_errors > 0){
          $_SESSION['value_array'] = $_POST;
@@ -150,11 +150,11 @@ class Process
       else{
          /* Generate new password */
          $newpass = $session->generateRandStr(8);
-         
+
          /* Get email of user */
          $usrinf = $database->getUserInfo($subuser);
          $email  = $usrinf['email'];
-         
+
          /* Attempt to send the email with new password */
          if($mailer->sendNewPass($subuser,$email,$newpass)){
             /* Email sent, update database */
@@ -166,10 +166,10 @@ class Process
             $_SESSION['forgotpass'] = false;
          }
       }
-      
+
       header("Location: ".$session->referrer);
    }
-   
+
    /**
     * procEditAccount - Attempts to edit the user's account
     * information, including the password, which must be verified

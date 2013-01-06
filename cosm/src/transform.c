@@ -549,7 +549,7 @@ s32 Cosm_TransformToNet( cosm_TRANSFORM * transform,
 
   while ( length > 0 )
   {
-    chunk = ( length > 0x10000000 ) ? 0x10000000 : (u32) length; 
+    chunk = ( length > 0x10000000 ) ? 0x10000000 : (u32) length;
     if ( ( CosmNetSend( net, &sent, data, chunk ) != COSM_PASS )
       || ( sent != chunk ) )
     {
@@ -557,7 +557,7 @@ s32 Cosm_TransformToNet( cosm_TRANSFORM * transform,
     }
     length -= chunk;
   }
-  
+
   if ( transform->next_transform != NULL )
   {
     if ( ( result = CosmTransform( transform->next_transform, data, length ) )

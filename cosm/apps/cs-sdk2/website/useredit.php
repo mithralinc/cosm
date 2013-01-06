@@ -20,7 +20,7 @@ PrintHead( "User Edit" );
  */
 if(isset($_SESSION['useredit'])){
    unset($_SESSION['useredit']);
-   
+
    echo "<h1>User Account Edit Success!</h1>";
    echo "<p><b>$session->username</b>, your account has been successfully updated. "
        ."<a href=\"index.php\">Main</a>.</p>";

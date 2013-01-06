@@ -275,7 +275,7 @@ void * Cosm_MemAlloc( u64 bytes )
     if ( request < align )
     {
       return NULL;
-    }  
+    }
   }
 
 #if ( defined( CPU_64BIT ) )
@@ -408,9 +408,9 @@ void * Cosm_MemAllocLeak( u64 bytes, const ascii * file, u32 line )
 void * Cosm_MemAllocSecureLeak( u64 bytes, const ascii * file, u32 line )
 {
   /* see Cosm_MemAllocSecure for info */
-  
+
   /* !!! */
-  return Cosm_MemAllocLeak( bytes, file, line );  
+  return Cosm_MemAllocLeak( bytes, file, line );
 }
 
 void * Cosm_MemReallocLeak( void * memory, u64 bytes,
@@ -524,7 +524,7 @@ void Cosm_MemFreeLeak( void * memory, const ascii * file, u32 line )
         mem = memory_leaks[i].real_memory;
         if ( ( COSM_LEAK_SENTINEL != *((u64 *) &mem[0]) )
           || ( COSM_LEAK_SENTINEL != *((u64 *) &mem[8]) )
-          || ( COSM_LEAK_SENTINEL != 
+          || ( COSM_LEAK_SENTINEL !=
           *((u64 *) &mem[COSM_LEAK_PADDING + memory_leaks[i].size]) )
           || ( COSM_LEAK_SENTINEL !=
           *((u64 *) &mem[COSM_LEAK_PADDING + memory_leaks[i].size + 8]) ) )
@@ -538,7 +538,7 @@ void Cosm_MemFreeLeak( void * memory, const ascii * file, u32 line )
         }
 
         Cosm_MemFree( memory_leaks[i].real_memory );
-        
+
         CosmMemCopy( &memory_leaks[i], &memory_leaks[--memory_leak_count],
           sizeof( cosm_MEMORY_LEAK ) );
 
@@ -546,7 +546,7 @@ void Cosm_MemFreeLeak( void * memory, const ascii * file, u32 line )
       }
     }
 
-    CosmMutexUnlock( &memory_leak_mutex );    
+    CosmMutexUnlock( &memory_leak_mutex );
   }
 }
 
@@ -601,7 +601,7 @@ s32 Cosm_MemDumpLeaks( const ascii * filename, const ascii * file, u32 line )
     mem = memory_leaks[i].real_memory;
     if ( ( COSM_LEAK_SENTINEL != *((u64 *) &mem[0]) )
       || ( COSM_LEAK_SENTINEL != *((u64 *) &mem[8]) )
-      || ( COSM_LEAK_SENTINEL != 
+      || ( COSM_LEAK_SENTINEL !=
       *((u64 *) &mem[COSM_LEAK_PADDING + memory_leaks[i].size]) )
       || ( COSM_LEAK_SENTINEL !=
       *((u64 *) &mem[COSM_LEAK_PADDING + memory_leaks[i].size + 8]) ) )
@@ -611,7 +611,7 @@ s32 Cosm_MemDumpLeaks( const ascii * filename, const ascii * file, u32 line )
     }
     else
     {
-      CosmPrintFile( &outfile, "  - memory sentinels intact\n" );    
+      CosmPrintFile( &outfile, "  - memory sentinels intact\n" );
     }
   }
 

@@ -20,7 +20,6 @@
 #include "cosm/os_mem.h"
 #include "cosm/os_io.h"
 
-#if ( !defined( NO_NETWORKING ) )
 #if ( ( OS_TYPE == OS_WIN32 ) || ( OS_TYPE == OS_WIN64 ) )
 #include <winsock2.h>
 #include <ws2tcpip.h>
@@ -40,12 +39,14 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <signal.h>
-#if ( ( OS_TYPE == OS_LINUX ) || ( OS_TYPE == OS_OSX ) )
+#if ( ( OS_TYPE == OS_LINUX ) || \
+  ( OS_TYPE == OS_OSX ) || ( OS_TYPE == OS_IOS ) )
 #include <net/if.h>
 #include <ifaddrs.h>
+#elif ( OS_TYPE == OS_ANDROID )
+#include <linux/rtnetlink.h>
 #endif
 #endif /* OS */
-#endif /* NO_NETWORKING */
 
 /* global networking initialization and mutex if no IPv6 */
 u32 __cosm_net_global_init = 0;
@@ -53,9 +54,6 @@ u32 __cosm_net_global_init = 0;
 s32 CosmNetOpen( cosm_NET * net, cosm_NET_ADDR * my_addr,
   const cosm_NET_ADDR * addr, u32 mode )
 {
-#if ( defined( NO_NETWORKING ) )
-  return COSM_NET_ERROR_NO_NET;
-#else
   int socket_descriptor, option;
   unsigned int local_addr_length, remote_addr_length;
   struct sockaddr_in local_addr4, remote_addr4;
@@ -104,7 +102,7 @@ s32 CosmNetOpen( cosm_NET * net, cosm_NET_ADDR * my_addr,
   {
     return COSM_NET_ERROR_ADDRTYPE;
   }
-  
+
   if ( -1 == socket_descriptor )
   {
     /* unable to open the socket */
@@ -172,7 +170,7 @@ s32 CosmNetOpen( cosm_NET * net, cosm_NET_ADDR * my_addr,
         /* unable to bind to the socket */
         Cosm_NetClose( net );
         return COSM_NET_ERROR_MYADDRESS;
-      }    
+      }
     }
     else
     {
@@ -263,15 +261,11 @@ s32 CosmNetOpen( cosm_NET * net, cosm_NET_ADDR * my_addr,
   net->mode = mode;
   net->status = COSM_NET_STATUS_OPEN;
   return COSM_PASS;
-#endif /* NO_NETWORKING */
 }
 
 s32 CosmNetOpenSocks( cosm_NET * net, const cosm_NET_ADDR * host,
   const cosm_NET_ADDR * firehost, const ascii * firepass )
 {
-#if ( defined( NO_NETWORKING ) )
-  return COSM_NET_ERROR_NO_NET;
-#else
   ascii receive_buffer[32], send_buffer[74];
   ascii username[COSM_NET_PASS_LENGTH], password[COSM_NET_PASS_LENGTH];
   u8 send_buffer_length;
@@ -545,16 +539,11 @@ s32 CosmNetOpenSocks( cosm_NET * net, const cosm_NET_ADDR * host,
   net->mode = COSM_NET_MODE_TCP;
   net->status = COSM_NET_STATUS_OPEN;
   return COSM_PASS;
-#endif /* NO_NETWORKING */
 }
 
 s32 CosmNetSend( cosm_NET * net, u32 * bytes_sent, const void * data,
   u32 length )
 {
-#if ( defined( NO_NETWORKING ) )
-  *bytes_sent = 0;
-  return COSM_NET_ERROR_NO_NET;
-#else
   SOCKET socket_descriptor;
   int result;
 
@@ -597,16 +586,11 @@ s32 CosmNetSend( cosm_NET * net, u32 * bytes_sent, const void * data,
 
   /* Complete buffer sent */
   return COSM_PASS;
-#endif /* NO_NETWORKING */
 }
 
 s32 CosmNetRecv( void * buffer, u32 * bytes_received, cosm_NET * net,
   u32 length, u32 wait_ms )
 {
-#if ( defined( NO_NETWORKING ) )
-  *bytes_received = 0;
-  return COSM_NET_ERROR_NO_NET;
-#else
   SOCKET socket_descriptor;
   int flags, result;
   struct timeval select_time;
@@ -723,15 +707,11 @@ s32 CosmNetRecv( void * buffer, u32 * bytes_received, cosm_NET * net,
 
   /* Received full buffer */
   return COSM_PASS;
-#endif /* NO_NETWORKING */
 }
 
 s32 CosmNetSendUDP( cosm_NET * net, const cosm_NET_ADDR * addr,
   const void * data, u32 length )
 {
-#if ( defined( NO_NETWORKING ) )
-  return COSM_NET_ERROR_NO_NET;
-#else
   SOCKET socket_descriptor;
   int result;
   int addr_length;
@@ -819,15 +799,11 @@ s32 CosmNetSendUDP( cosm_NET * net, const cosm_NET_ADDR * addr,
 #endif
 
   return COSM_PASS;
-#endif
 }
 
 s32 CosmNetRecvUDP( void * buffer, u32 * bytes_read, cosm_NET_ADDR * from,
   cosm_NET * net, u32 length, cosm_NET_ACL * acl, u32 wait_ms )
 {
-#if ( defined( NO_NETWORKING ) )
-  return COSM_NET_ERROR_NO_NET;
-#else
   SOCKET socket_descriptor;
   int received;
   s32 result;
@@ -948,7 +924,7 @@ s32 CosmNetRecvUDP( void * buffer, u32 * bytes_read, cosm_NET_ADDR * from,
     from->type = COSM_NET_IPV4;
     from->port = ntohs( client_addr.sin_port );
     from->ip.v4 = ntohl( client_addr.sin_addr.s_addr );
-    
+
     /* only accept this data if host passes acl masks, otherwise discard */
     if ( CosmNetACLCheck( acl, from ) != COSM_NET_ALLOW )
     {
@@ -962,15 +938,11 @@ s32 CosmNetRecvUDP( void * buffer, u32 * bytes_read, cosm_NET_ADDR * from,
   *bytes_read = received;
 
   return COSM_PASS;
-#endif
 }
 
 s32 CosmNetListen( cosm_NET * net, const cosm_NET_ADDR * addr, u32 mode,
   u32 queue )
 {
-#if ( defined( NO_NETWORKING ) )
-  return COSM_NET_ERROR_NO_NET;
-#else
   int socket_descriptor;
   unsigned int addr_length;
   struct sockaddr_in addr4;
@@ -1116,15 +1088,11 @@ s32 CosmNetListen( cosm_NET * net, const cosm_NET_ADDR * addr, u32 mode,
   net->status = COSM_NET_STATUS_LISTEN;
 
   return COSM_PASS;
-#endif /* NO_NETWORKING */
 }
 
 s32 CosmNetAccept( cosm_NET * new_connection, cosm_NET * net,
   cosm_NET_ACL * acl, u32 wait )
 {
-#if ( defined( NO_NETWORKING ) )
-  return COSM_NET_ERROR_NO_NET;
-#else
   SOCKET socket_descriptor, new_socket_descriptor;
   struct sockaddr_in client_address, local_address;
   unsigned int client_address_length, local_address_length;
@@ -1334,14 +1302,10 @@ s32 CosmNetAccept( cosm_NET * new_connection, cosm_NET * net,
 
   new_connection->status = COSM_NET_STATUS_OPEN;
   return COSM_PASS;
-#endif /* NO_NETWORKING */
 }
 
 s32 CosmNetClose( cosm_NET * net )
 {
-#if ( defined( NO_NETWORKING ) )
-  return COSM_NET_ERROR_NO_NET;
-#else
   s32 error;
 
   if ( net == NULL )
@@ -1358,14 +1322,10 @@ s32 CosmNetClose( cosm_NET * net )
   error = Cosm_NetClose( net );
 
   return error;
-#endif /* NO_NETWORKING */
 }
 
 u32 CosmNetDNS( cosm_NET_ADDR * addr, u32 count, ascii * name )
 {
-#if ( defined( NO_NETWORKING ) )
-  return 0;
-#else
   struct addrinfo hint, * entry, * addr_list;
   u32 found;
 
@@ -1424,14 +1384,10 @@ u32 CosmNetDNS( cosm_NET_ADDR * addr, u32 count, ascii * name )
   freeaddrinfo( addr_list );
 
   return found;
-#endif /* NO_NETWORKING */
 }
 
 s32 CosmNetRevDNS( cosm_NET_HOSTNAME * name, const cosm_NET_ADDR * addr )
 {
-#if ( defined( NO_NETWORKING ) )
-  return COSM_FAIL;
-#else
   struct sockaddr_in addr4;
   struct sockaddr_in6 addr6;
   int addr_length;
@@ -1480,16 +1436,13 @@ s32 CosmNetRevDNS( cosm_NET_HOSTNAME * name, const cosm_NET_ADDR * addr )
   }
 
   return COSM_PASS;
-#endif /* NO_NETWORKING */
 }
 
 u32 CosmNetMyIP( cosm_NET_ADDR * addr, u32 count )
 {
   u32 found = 0;
 
-#if ( defined( NO_NETWORKING ) )
-  return 0;
-#elif ( ( OS_TYPE == OS_WIN32 ) || ( OS_TYPE == OS_WIN64 ) )
+#if ( ( OS_TYPE == OS_WIN32 ) || ( OS_TYPE == OS_WIN64 ) )
   IP_ADAPTER_ADDRESSES * adapter, * current_addr;
   IP_ADAPTER_UNICAST_ADDRESS * unicast;
   u32 length;
@@ -1507,7 +1460,7 @@ u32 CosmNetMyIP( cosm_NET_ADDR * addr, u32 count )
     adapter = CosmMemAlloc( length );
     error = ERROR_SUCCESS;
   }
-  
+
   if ( ERROR_SUCCESS == error )
   {
     /* get addresses */
@@ -1526,7 +1479,7 @@ u32 CosmNetMyIP( cosm_NET_ADDR * addr, u32 count )
           CosmU32Load( &addr[found].ip.v4, &( ( (struct sockaddr_in *)
             unicast->Address.lpSockaddr)->sin_addr ) );
           found++;
-        
+
           unicast = unicast->Next;
         }
         current_addr = current_addr->Next;
@@ -1566,7 +1519,7 @@ u32 CosmNetMyIP( cosm_NET_ADDR * addr, u32 count )
           CosmU128Load( &addr[found].ip.v6, &( ( (struct sockaddr_in6 *)
             unicast->Address.lpSockaddr)->sin6_addr ) );
           found++;
-        
+
           unicast = unicast->Next;
         }
         current_addr = current_addr->Next;
@@ -1574,7 +1527,8 @@ u32 CosmNetMyIP( cosm_NET_ADDR * addr, u32 count )
     }
   }
   CosmMemFree( adapter );
-#elif ( ( OS_TYPE == OS_LINUX ) || ( OS_TYPE == OS_OSX ) )
+#elif ( ( OS_TYPE == OS_LINUX ) \
+  || ( OS_TYPE == OS_OSX ) || ( OS_TYPE == OS_IOS ) )
   /* platforms with getifaddrs */
   struct ifaddrs * head, * current;
 
@@ -1613,8 +1567,95 @@ u32 CosmNetMyIP( cosm_NET_ADDR * addr, u32 count )
     }
     current = current->ifa_next;
   }
-  
+
   freeifaddrs( head );
+#elif ( OS_TYPE == OS_ANDROID )
+  /* Use netlink interface supported in Linux 2.2+ */
+  int sock;
+  int length;
+  struct nl_req
+  {
+    struct nlmsghdr header;
+    struct ifaddrmsg msg;
+  } request;
+  struct nlmsghdr * header;
+  struct ifaddrmsg * address_msg;
+  struct rtattr * rt_addr;
+  int rt_addr_length;
+  u8 buffer[32 * 1024];
+
+  CosmMemSet( &request, sizeof(request), 0 );
+  /* Request address information */
+  request.header.nlmsg_len = NLMSG_ALIGN(
+    NLMSG_LENGTH( sizeof(request) ) );
+  request.header.nlmsg_flags = NLM_F_REQUEST | NLM_F_ROOT | NLM_F_MATCH;
+  request.header.nlmsg_type = RTM_GETADDR;
+  request.header.nlmsg_pid = getpid();
+  /* IPv4 and IPv6 addresses for all interfaces */
+  request.msg.ifa_family = AF_UNSPEC;
+  request.msg.ifa_index = 0;
+
+  if ( ( sock = socket( PF_NETLINK, SOCK_DGRAM, NETLINK_ROUTE ) ) == -1 )
+  {
+    return 0;
+  }
+
+  if ( send( sock, &request, request.header.nlmsg_len, 0 ) == -1 )
+  {
+    close( sock );
+    return 0;
+  }
+
+  while ( ( length = recv( sock, buffer, sizeof( buffer ), 0 ) ) > 0 )
+  {
+    header = (struct nlmsghdr *) buffer;
+    while ( NLMSG_OK( header, length ) )
+    {
+      switch ( header->nlmsg_type )
+      {
+        case RTM_NEWADDR:
+          address_msg = (struct ifaddrmsg *) NLMSG_DATA( header );
+          if ( address_msg->ifa_family == AF_INET )
+          {
+            addr[found].type = COSM_NET_IPV4;
+          }
+          else if ( address_msg->ifa_family == AF_INET6 )
+          {
+            addr[found].type = COSM_NET_IPV6;
+          }
+          else
+          {
+            break;
+          }
+          addr[found].port = 0;
+          rt_addr = (struct rtattr *) IFA_RTA( address_msg );
+          rt_addr_length = IFA_PAYLOAD( header );
+          while ( RTA_OK( rt_addr, rt_addr_length ) )
+          {
+            if ( rt_addr->rta_type == IFA_ADDRESS )
+            {
+              if ( addr[found].type == COSM_NET_IPV4 )
+              {
+                CosmU32Load( &addr[found].ip.v4, RTA_DATA( rt_addr ) );
+              }
+              else
+              {
+                CosmU128Load( &addr[found].ip.v6, RTA_DATA( rt_addr ) );
+              }
+              found++;
+            }
+            rt_addr = RTA_NEXT( rt_addr, rt_addr_length );
+          }
+          break;
+        case NLMSG_DONE:
+        case NLMSG_ERROR:
+          close( sock );
+          return found;
+      }
+      header = NLMSG_NEXT( header, length );
+    }
+  }
+  close( sock );
 #else /* no getifaddrs or ipv6 */
   cosm_NET_HOSTNAME my_name;
 
@@ -1829,9 +1870,6 @@ void CosmNetACLFree( cosm_NET_ACL * acl )
 
 s32 Cosm_NetGlobalInit( void )
 {
-#if ( defined( NO_NETWORKING ) )
-  return COSM_FAIL;
-#else
 #if ( ( OS_TYPE == OS_WIN32 ) || ( OS_TYPE == OS_WIN64 ) )
   static WSADATA net_wsadata;
 
@@ -1855,15 +1893,10 @@ s32 Cosm_NetGlobalInit( void )
 
   __cosm_net_global_init = 1;
   return COSM_PASS;
-
-#endif /* NO_NETWORKING */
 }
 
 s32 Cosm_NetClose( cosm_NET * net )
 {
-#if ( defined( NO_NETWORKING ) )
-  return COSM_NET_ERROR_NO_NET;
-#else
   SOCKET socket_descriptor;
   s32 error;
 
@@ -1890,7 +1923,6 @@ s32 Cosm_NetClose( cosm_NET * net )
   net->status = COSM_NET_STATUS_CLOSED;
 
   return error;
-#endif
 }
 
 #if ( defined( NET_LOG_PACKETS ) )
@@ -1966,9 +1998,6 @@ Cosm_NetLogPacket( const cosm_NET_ADDR * addr, ascii * tag,
 
 s32 Cosm_TestOSNet( void )
 {
-#if ( defined( NO_NETWORKING ) )
-  return COSM_PASS;
-#else
   cosm_NET netsrv, netsrv1, netsrv2, netclient1, netclient2;
   cosm_NET_ADDR my_addr, addr;
   cosm_NET_ACL net_acl;
@@ -2297,5 +2326,4 @@ s32 Cosm_TestOSNet( void )
   */
 
   return COSM_PASS;
-#endif /* NO_NETWORKING */
 }

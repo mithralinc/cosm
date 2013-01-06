@@ -9,7 +9,7 @@
  * Written by: Jpmaster77 a.k.a. The Grandmaster of C++ (GMC)
  * Last Updated: August 19, 2004
  */
- 
+
 /**
  * Special Names and Level Constants - the admin
  * page will only be accessible to the user with

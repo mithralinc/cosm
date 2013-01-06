@@ -214,7 +214,7 @@ void Assign( cosm_NET * net, cosm_HTTPD_REQUEST * http_req, u32 use_http )
 
   /* read the rest of the request, assign the work from the unassigned work */
   length = (u32) ( sizeof( PACKET_REQUEST ) - sizeof( request.type ) );
-  
+
   if ( use_http )
   {
     if ( ( CosmHTTPDRecv( &request.pad, &bytes, http_req, length,
@@ -382,7 +382,7 @@ int main( int argc, char * argv[] )
   s32 err, err2;
   u32 bytes;
   cosm_NET_ADDR addr;
-   
+
   /* run system tests */
   CosmPrint( "Running system tests... " );
   if ( CosmTest( &err, &err2, 0 ) != COSM_PASS )

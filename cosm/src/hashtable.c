@@ -468,12 +468,12 @@ void Cosm_HashTableGrow( cosm_HASH_TABLE * hashtable )
 s32 Cosm_TestHashTable( void )
 {
   cosm_HASH_TABLE ht;
-  
+
   CosmMemSet( &ht, sizeof( ht ), 0 );
-  
+
   /*
   CosmHashTableInit( &ht, 4, NULL, NULL, NULL, NULL );
   */
-  
+
   return COSM_PASS;
 }

@@ -231,7 +231,7 @@ int CSSDKMain( int argc, char * argv[] )
       CosmLogClose( &log );
       return -7;
     }
-    
+
     /* Call the engine, and release it */
     result = (*engine)( id, time_expire, &__shutdown_flag, &log, &net );
     CosmDynamicLibFree( &dylib );
@@ -248,7 +248,7 @@ int CSSDKMain( int argc, char * argv[] )
       case CSSDK_ENGINE_NETWORK:
         break;
     }
-    
+
   }
 
   return COSM_PASS;
@@ -280,7 +280,7 @@ void ServiceInstall( int argc, char * argv[] )
     CosmPrint( "Cannot install service (%i)\n", GetLastError() );
     return;
   }
-  
+
   error = COSM_PASS;
   error += CosmStrCopy( command, "\"", 2 );
   error += CosmStrAppend( command, path, MAX_PATH );
@@ -294,7 +294,7 @@ void ServiceInstall( int argc, char * argv[] )
   if ( error != COSM_PASS )
   {
     CosmPrint( "Paths were too long for Windows.\n" );
-    return;    
+    return;
   }
 
   if ( ( hManager = OpenSCManager( NULL, NULL, SC_MANAGER_ALL_ACCESS ) )
@@ -358,7 +358,7 @@ void ServiceUninstall( int argc, char * argv[] )
     CloseServiceHandle( hManager );
     return;
   }
-  
+
   if ( ( DeleteService( hService ) == 0 )
     && ( GetLastError() != ERROR_SERVICE_MARKED_FOR_DELETE ) )
   {
@@ -381,7 +381,7 @@ void ServiceHandler( DWORD dwControl, DWORD dwEventType,
     case SERVICE_CONTROL_SHUTDOWN:
       ServiceStatus.dwCurrentState = SERVICE_STOP_PENDING;
       __shutdown_flag = 1;
-      break;    
+      break;
   }
 
   ServiceStatus.dwCheckPoint++;
@@ -404,7 +404,7 @@ void ServiceMain( int argc, char * argv[] )
   {
     return;
   }
-  
+
   /* we're running */
   ServiceStatus.dwCurrentState = SERVICE_RUNNING;
   SetServiceStatus( hStatus, &ServiceStatus );
@@ -432,7 +432,7 @@ int main( int argc, char * argv[] )
   };
 
   Notice();
-  
+
   if ( argc < 2 )
   {
     Usage();

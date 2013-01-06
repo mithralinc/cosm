@@ -795,7 +795,7 @@ s32 CosmHTTPDSendInit( cosm_HTTPD_REQUEST * request, u32 status_code,
   u32 sent;
   u32 bytes;
   ascii * header;
-  
+
   if ( ( request == NULL ) || ( status_code < 100 ) || ( status_code > 999 )
     || ( mime_type == NULL ) || ( mime_type == NULL ) )
   {
@@ -817,7 +817,7 @@ s32 CosmHTTPDSendInit( cosm_HTTPD_REQUEST * request, u32 status_code,
   /*
     HTTP/1.x <status_code> <status_string>\r\n
     Content-Type: <mime_type>\r\n
-    
+
     length = 9 + 3 + 1 + status_string + 2
       + 14 + mime_type + 2 ( + 1 for the \0 )
   */

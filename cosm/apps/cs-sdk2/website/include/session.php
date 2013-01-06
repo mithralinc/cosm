@@ -1,7 +1,7 @@
 <?php
 /**
  * Session.php
- * 
+ *
  * The Session class is meant to simplify the task of keeping
  * track of logged in users and also guests.
  *
@@ -35,9 +35,9 @@ class Session
    }
 
    /**
-    * startSession - Performs all the actions necessary to 
+    * startSession - Performs all the actions necessary to
     * initialize this session object. Tries to determine if the
-    * the user has logged in already, and sets the variables 
+    * the user has logged in already, and sets the variables
     * accordingly. Also takes advantage of this page load to
     * update the active visitors tables.
     */
@@ -75,7 +75,7 @@ class Session
     * checkLogin - Checks if the user has already previously
     * logged in, and a session with the user has already been
     * established. Also checks to see if user has been remembered.
-    * If so, the database is queried to make sure of the user's 
+    * If so, the database is queried to make sure of the user's
     * authenticity. Returns true if the user has logged in.
     */
    function checkLogin(){
@@ -136,7 +136,7 @@ class Session
       if(!$subpass){
          $form->setError($field, "* Password not entered");
       }
-      
+
       /* Return if form errors exist */
       if($form->num_errors > 0){
          return false;
@@ -155,7 +155,7 @@ class Session
          $field = "pass";
          $form->setError($field, "* Invalid password");
       }
-      
+
       /* Return if form errors exist */
       if($form->num_errors > 0){
          return false;
@@ -166,7 +166,7 @@ class Session
       $this->username  = $_SESSION['username'] = $this->userinfo['username'];
       $this->php_cookie    = $_SESSION['php_cookie']   = $this->generateRandID();
       $this->userlevel = GUEST_LEVEL; #$this->userinfo['userlevel'];
-      
+
       /* Insert php_cookie into database and update active users table */
       $database->updateUserField($this->username, "php_cookie", $this->php_cookie);
       //$database->addActiveUser($this->username, $this->time);
@@ -212,14 +212,14 @@ class Session
 
       /* Reflect fact that user has logged out */
       $this->logged_in = false;
-      
+
       /**
        * Remove from active users table and add to
        * active guests tables.
        */
       //$database->removeActiveUser($this->username);
       //$database->addActiveGuest($_SERVER['REMOTE_ADDR'], $this->time);
-      
+
       /* Set user level to guest */
       $this->username  = GUEST_NAME;
       $this->userlevel = GUEST_LEVEL;
@@ -234,7 +234,7 @@ class Session
     */
    function register($subuser, $subpass, $subemail){
       global $database, $form, $mailer;  //The database, form and mailer object
-      
+
       /* Username error checking */
       $field = "user";  //Use field name for username
       if(!$subuser || strlen($subuser = trim($subuser)) == 0){
@@ -292,7 +292,7 @@ class Session
           * kind of stupid to report "password too short".
           */
       }
-      
+
       /* Email error checking */
       $field = "email";  //Use field name for email
       if(!$subemail || strlen($subemail = trim($subemail)) == 0){
@@ -325,7 +325,7 @@ class Session
          }
       }
    }
-   
+
    /**
     * editAccount - Attempts to edit the user's account information
     * including the password, which it first makes sure is correct
@@ -354,7 +354,7 @@ class Session
                $form->setError($field, "* Current Password incorrect");
             }
          }
-         
+
          /* New Password error checking */
          $field = "newpass";  //Use field name for new password
          /* Spruce up password and check length*/
@@ -373,7 +373,7 @@ class Session
          $field = "newpass";  //Use field name for new password
          $form->setError($field, "* New Password not entered");
       }
-      
+
       /* Email error checking */
       $field = "email";  //Use field name for email
       if($subemail && strlen($subemail = trim($subemail)) > 0){
@@ -386,26 +386,26 @@ class Session
          }
          $subemail = stripslashes($subemail);
       }
-      
+
       /* Errors exist, have user correct them */
       if($form->num_errors > 0){
          return false;  //Errors with form
       }
-      
+
       /* Update password since there were no errors */
       if($subcurpass && $subnewpass){
          $database->updateUserField($this->username,"password",md5($subnewpass));
       }
-      
+
       /* Change Email */
       if($subemail){
          $database->updateUserField($this->username,"email",$subemail);
       }
-      
+
       /* Success! */
       return true;
    }
-   
+
    /**
     * isAdmin - Returns true if currently logged in user is
     * an administrator, false otherwise.
@@ -414,7 +414,7 @@ class Session
       return ($this->userlevel == ADMIN_LEVEL ||
               $this->username  == ADMIN_NAME);
    }
-   
+
    /**
     * generateRandID - Generates a string made up of randomized
     * letters (lower and upper case) and digits and returns
@@ -423,7 +423,7 @@ class Session
    function generateRandID(){
       return md5($this->generateRandStr(16));
    }
-   
+
    /**
     * generateRandStr - Generates a string made up of randomized
     * letters (lower and upper case) and digits, the length

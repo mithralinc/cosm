@@ -168,15 +168,15 @@ void Tracker( void * arg )
         /* bad packet */
         continue;
       }
-      
+
       if ( ( pkt.ver_major < CSSDK_VER_MAJOR )
         || ( pkt.ver_minor_min < CSSDK_VER_MINOR_MIN ) )
       {
         /* out of data client, let them know what's current */
-        /* !!! send a version only packet */        
+        /* !!! send a version only packet */
         continue;
       }
-      
+
       switch ( pkt.type )
       {
         case TYPE_PONG:
@@ -194,7 +194,7 @@ void Tracker( void * arg )
               "%.32sDatabase error 1\n", Now() );
             goto bailout;
           }
-          
+
           CosmLog( &__server_log, 3, COSM_LOG_ECHO,
             "%.32spong:%08X ip:%u.%u.%u.%u seq:%u ms:%j\n",
             Now(), pkt.id,
@@ -234,7 +234,7 @@ void Tracker( void * arg )
           break;
 
         default:
-          break;          
+          break;
       }
     }
   }
@@ -312,9 +312,9 @@ void Pinger( void * arg )
       ping.seq = __seq++;
       CosmSystemClock( &ping.timestamp );
       ping.type = TYPE_PING;
-      
+
       PacketEncode( &ping );
-      
+
       to.type = COSM_NET_IPV4;
       to.ip.v4 = addr;
       to.port = CSSDK_PORT_CLIENT;
@@ -353,7 +353,7 @@ int main( int argc, char *argv[] )
   if ( CosmU32Str( &log_lvl, NULL, argv[1], 10 ) != COSM_PASS )
   {
     Usage();
-    CosmProcessEnd( -2 );  
+    CosmProcessEnd( -2 );
   }
 
   if ( ( CosmSignalRegister( COSM_SIGNAL_INT, CatchINT ) != COSM_PASS ) ||

@@ -18,7 +18,7 @@
 
 /* 2048 bit keys */
 #define SIG_BYTES ( 34 + 256 )
-static u8 dylib_signing_key[] = 
+static u8 dylib_signing_key[] =
 {
   0x00
 };
@@ -31,11 +31,11 @@ ascii * Now( void )
 
   CosmSystemClock( &mytime );
   CosmTimeUnitsGregorian( &myunits, mytime );
-  
+
   CosmPrintStr( str, 128, "%04j-%02u-%02u %02u:%02u:%02u ",
     myunits.year, myunits.month + 1, myunits.day + 1,
     myunits.hour, myunits.min, myunits.sec );
-  
+
   return str;
 }
 
@@ -92,7 +92,7 @@ s32 UpdateFile( const ascii * path, const ascii * filename,
   cosm_RSA_SIG sig;
   cosmtime sig_time;
   u8 type, share;
-  
+
   /*
     Fetch the version from filename.ver
     Compare to existing version.
@@ -124,7 +124,7 @@ s32 UpdateFile( const ascii * path, const ascii * filename,
 
   /* clear HTTP state since we didn't loop */
   CosmHTTPRecv( version_str, &bytes32, &http, 8, 10 );
-  
+
   /* names for our files */
   CosmPrintStr( fullpath, sizeof( fullpath ), "%.*s%.*s",
     sizeof( fullpath ), path, sizeof( fullpath ), filename );
@@ -197,7 +197,7 @@ s32 UpdateFile( const ascii * path, const ascii * filename,
     COSM_FILE_LOCK_READ );
   CosmFileRead( buffer, &bytes64, &file, info.length );
   CosmFileClose( &file );
-  
+
   /* hash all but the signature, and check it */
   CosmMemSet( &data_hash, sizeof( data_hash ), 0 );
   CosmMemSet( &transform, sizeof( transform ), 0 );
@@ -244,7 +244,7 @@ s32 UpdateFile( const ascii * path, const ascii * filename,
     CosmMemFree( buffer );
     return COSM_FAIL;
   }
-  
+
   /* write out the file */
   if ( ( CosmFileOpen( &file, fullpath,
     COSM_FILE_MODE_WRITE | COSM_FILE_MODE_CREATE | COSM_FILE_MODE_TRUNCATE,
@@ -255,7 +255,7 @@ s32 UpdateFile( const ascii * path, const ascii * filename,
     || ( CosmFileClose( &file ) != COSM_PASS ) )
   {
     CosmMemFree( buffer );
-    return COSM_FAIL;  
+    return COSM_FAIL;
   }
   CosmMemFree( buffer );
 

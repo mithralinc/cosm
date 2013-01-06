@@ -2,7 +2,7 @@
 
 /**
  * Register.php
- * 
+ *
  * Displays the registration form if the user needs to sign-up,
  * or lets the user know, if he's already logged in, that he
  * can't register another name.

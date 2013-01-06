@@ -193,7 +193,7 @@ typedef signed long long s64;
 
 /** 128-bit unsigned integer. */
 typedef struct u128
-{ 
+{
   u64 hi; /**< High order 64 bits. */
   u64 lo; /**< Low order 64 bits. */
 } u128;
@@ -227,7 +227,7 @@ typedef struct s128
 
 /**
   Compare a 128-bit value by parts to 64-bit numbers.
-  @param value Value to compare to. 
+  @param value Value to compare to.
   @param a High order 64 bits.
   @param b Low order 64 bits.
   @code
@@ -407,7 +407,7 @@ enum vector_type
   VECTOR_U64X8  = 0x030808  /**< u64x8 */
 };
 
-/** 
+/**
   Macro to calculate the number of bytes in a vector_type.
   @param type vector_type to determine the byte length of.
   @see vector_type.

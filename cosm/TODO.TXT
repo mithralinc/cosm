@@ -81,7 +81,7 @@ src/os_file
   CosmFileTruncate and all lock tests need to be added
   format and code audit (tests memory leak, not always freed)
   Figure out __USE_LARGEFILE64 and other flags for linux 64-bit files
-  
+
 src/os_io
   Fix -2147483648, prints and scans
   %-n. not working for strings
@@ -120,7 +120,6 @@ src/os_net
   Fix ACL functions
     add an init, locking, need way to save/load ACLs
     add support for IPv6 addresses
-    should work reguardless of NO_NETWORKING
   Muticast sockets
   IPv6 ( c = code, "-" = none needed )
       c CosmNetOpen
@@ -255,7 +254,7 @@ doc/
   talk about using static functions to hide them.
   EXPORT
   Document stuctures as needed
-  
+
 doc/html2man.pl
   Make this more general, for libraries, etc
 

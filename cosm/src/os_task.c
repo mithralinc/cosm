@@ -789,7 +789,7 @@ s32 CosmSemaphoreInit( cosm_SEMAPHORE * sem, u32 initial_count )
   }
 #elif ( ( OS_TYPE == OS_OSX ) || ( OS_TYPE == OS_IOS ) )
   key = (unsigned long) sem;
-  key = CosmProcessID() ^ ( ( key << 32 ) & ( key >> 32 ) ); 
+  key = CosmProcessID() ^ ( ( key << 32 ) & ( key >> 32 ) );
   while ( 1 )
   {
     CosmPrintStr( sem->name, sizeof( sem->name ), "/sem%Y", key );
@@ -1233,7 +1233,7 @@ void * CosmDynamicLibGet( cosm_DYNAMIC_LIB * dylib, const ascii * symbol )
 #endif
 
   if ( ( NULL == dylib ) || ( NULL == symbol )
-    || ( NULL == dylib->os_lib ) ) 
+    || ( NULL == dylib->os_lib ) )
   {
     return NULL;
   }
@@ -1263,7 +1263,7 @@ void CosmDynamicLibFree( cosm_DYNAMIC_LIB * dylib )
   {
     return;
   }
-  
+
 #if ( ( OS_TYPE == OS_WIN32 ) || ( OS_TYPE == OS_WIN64 ) )
   FreeLibrary( dylib->os_lib );
 #else /* OS */
