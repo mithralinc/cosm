@@ -73,13 +73,13 @@ function PrintTime( $time )
 # takes in the 9-line format, returns ( cosmid, key[512] ) strings
 function parse_key( $field )
 {
-  
+
   $lines = preg_split( '/\r\n/', $field );
-  
+
   # line one... "Cosmid:id"
   if ( sscanf( $lines[0], "CosmID:%s", $id ) != 1 )
     return NULL;
-  
+
   # line 2-9, "8-chars * 8 "
   $key = "";
   for ( $i = 1 ; $i < 10 ; $i++ )
@@ -88,7 +88,7 @@ function parse_key( $field )
   }
   if ( strlen( $key ) != 512 )
     return NULL;
-  
+
   return array( $id, $key );
 }
 

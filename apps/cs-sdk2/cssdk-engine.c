@@ -209,7 +209,7 @@ static void Pinger( void * arg )
   ascii * now_str;
 
   net = (cosm_NET *) arg;
-   
+
   /* server's address */
   if ( CosmNetDNS( &server, 1, CSSDK_SERVER ) < 1 )
   {
@@ -268,7 +268,7 @@ static void Pinger( void * arg )
         Now(), pkt.id, __machine_id );
       continue;
     }
-    
+
     address = pkt.address;
 
     /* reply ASAP, only to server */
@@ -312,7 +312,7 @@ EXPORT s32 CSSDKEngine( u32 machine_id, cosmtime expire, u32 * shutdown_flag,
 
   CosmSystemClock( &time_now );
   __startup = time_now.hi;
-  
+
   ReadLastShutdown();
   /* if we don't write the proper time, it's a crash */
   WriteLastShutdown( -1 );
@@ -339,7 +339,7 @@ EXPORT s32 CSSDKEngine( u32 machine_id, cosmtime expire, u32 * shutdown_flag,
   /* successful shutdown */
   CosmSystemClock( &time_now );
   WriteLastShutdown( time_now.hi );
-  
+
   if ( __expired_client )
   {
     return CSSDK_ENGINE_EXPIRED_CLIENT;

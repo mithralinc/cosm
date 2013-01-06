@@ -263,7 +263,7 @@ void * CosmFileMap( cosm_FILE_MEMORY_MAP * map, cosm_FILE * file,
     so the file must be opened in mode with COSM_FILE_MODE_READ alone or with
     COSM_FILE_MODE_WRITE. Writing to a read-only mapping result in segfaults.
     Executable code is not allowed to be mapped - for that see the
-    CosmDynamicLib functions. 
+    CosmDynamicLib functions.
     You can create multiple mappings to different regions of the same file,
     but all must be unmapped before the file is closed.
     Note that the space availbale for memory mapped files varies not only by

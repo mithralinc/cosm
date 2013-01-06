@@ -586,7 +586,8 @@ s32 CosmFileInfo( cosm_FILE_INFO * info, const ascii * filename )
 #if ( ( OS_TYPE == OS_WIN32 ) || ( OS_TYPE == OS_WIN64 ) )
   struct __stat64 buf;
 #else
-#if ( ( OS_TYPE == OS_LINUX ) && defined( __USE_LARGEFILE64 ) )
+#if ( ( ( OS_TYPE == OS_LINUX ) || ( OS_TYPE == OS_ANDROID ) ) \
+  && defined( __USE_LARGEFILE64 ) )
 #define _STAT stat64
 #else
 #define _STAT stat
@@ -720,7 +721,7 @@ u64 CosmFileMapPageSize( void )
 {
 #if ( ( OS_TYPE == OS_WIN32 ) || ( OS_TYPE == OS_WIN64 ) )
   SYSTEM_INFO info;
-  
+
   GetSystemInfo( &info );
   return (u64) info.dwPageSize;
 #else
@@ -736,7 +737,7 @@ void * CosmFileMap( cosm_FILE_MEMORY_MAP * map, cosm_FILE * file,
 #if ( ( OS_TYPE == OS_WIN32 ) || ( OS_TYPE == OS_WIN64 ) )
   int map_mode;
 #endif
- 
+
   if ( ( NULL == map ) || ( NULL == file ) || ( 0 == length ) )
   {
     return NULL;
@@ -777,7 +778,7 @@ void * CosmFileMap( cosm_FILE_MEMORY_MAP * map, cosm_FILE * file,
   access = ( ( file->mode & COSM_FILE_LOCK_READ ) ? PROT_READ : 0 )
     | ( ( file->mode & COSM_FILE_LOCK_WRITE ) ? PROT_WRITE : 0 )
     | ( ( file->mode & COSM_FILE_MODE_APPEND ) ? PROT_WRITE : 0 );
-  
+
   if ( NULL == ( addr = mmap( NULL, length, access, MAP_SHARED,
     file->handle, offset ) ) )
   {
@@ -1769,7 +1770,7 @@ s32 Cosm_FileTruncate( cosm_FILE * file, u64 length )
 
 s32 Cosm_FileLock( cosm_FILE * file, u32 lock )
 {
-#if ( OS_TYPE == OS_LINUX )
+#if ( OS_TYPE == OS_LINUX ) || ( OS_TYPE == OS_ANDROID )
   if ( lock == COSM_FILE_LOCK_READ )
   {
 #if ( defined( COSM_FILE64 ) )
@@ -1847,7 +1848,7 @@ s32 Cosm_FileLock( cosm_FILE * file, u32 lock )
 
 s32 Cosm_FileUnLock( cosm_FILE * file )
 {
-#if ( OS_TYPE == OS_LINUX )
+#if ( OS_TYPE == OS_LINUX ) || ( OS_TYPE == OS_ANDROID )
 #if ( defined( COSM_FILE64 ) )
   if ( flock( (int) file->handle, LOCK_UN ) == -1 )
 #else

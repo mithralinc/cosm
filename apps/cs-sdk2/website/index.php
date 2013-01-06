@@ -9,7 +9,7 @@ if($session->logged_in)
   $user_id = sprintf( "%08X", $session->userinfo['user_id'] );
   echo "<h3>Host Management</h3>";
   echo "<p>Welcome <b>$session->username</b></p>";
-  
+
   echo "<h3>Your Hosts</h3>";
   $result = $database->query( "SELECT * FROM hosts WHERE user_id = '". $session->userinfo['user_id'] . "';" );
   echo "Count: " . pg_numrows( $result ) . " of 1<br>\n";
@@ -42,8 +42,8 @@ if($session->logged_in)
   }
   echo "</table>\n";
   echo "<a href=\"hostadd.php\">Add new Host ID</a>";
-  
-  
+
+
   echo "<br><br>[<a href=\"useredit.php\">Edit Account</a>] &nbsp;&nbsp;";
   echo "[<a href=\"process.php\">Logout</a>]";
 }

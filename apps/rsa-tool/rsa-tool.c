@@ -89,7 +89,7 @@ s32 GetHashPhrase( cosm_HASH * hash )
   u32 len;
 
   CosmMemSet( hash, sizeof( cosm_HASH ), 0 );
-  
+
   CosmPrint( "Enter your secret passphase (24+ chars):\n" );
   len = 0;
   while ( len < 24 )
@@ -124,7 +124,7 @@ s32 GetHashPhrase( cosm_HASH * hash )
   CosmMemSet( &transform, sizeof( transform ), 0 );
   CosmMemSet( &input, sizeof( input ), 0 );
   len = 0;
-  
+
   return COSM_PASS;
 }
 
@@ -165,7 +165,7 @@ s32 HashFile( cosm_HASH * hash, const ascii * filename )
   }
   CosmMemSet( buffer, sizeof( buffer ), 0 );
   CosmFileClose( &file );
-  
+
   if ( CosmTransformEnd( &transform ) != COSM_PASS )
   {
     CosmMemSet( &transform, sizeof( transform ), 0 );
@@ -334,7 +334,7 @@ s32 CommandKeygen( s32 argc, utf8 * argv[] )
   if ( GetHashPhrase( &pass_hash ) != COSM_PASS )
   {
     CosmPrint( "Passphrase enry error.\n" );
-    return COSM_FAIL;  
+    return COSM_FAIL;
   }
 
   /* save the private key file */
@@ -400,7 +400,7 @@ s32 CommandSign( s32 argc, utf8 * argv[] )
   if ( GetHashPhrase( &pass_hash ) != COSM_PASS )
   {
     CosmPrint( "Passphrase enry error.\n" );
-    return COSM_FAIL;  
+    return COSM_FAIL;
   }
 
   /* load key file */
@@ -503,7 +503,7 @@ s32 CommandVerify( s32 argc, utf8 * argv[] )
   u8 type, share;
   static const ascii * months[12] = COSM_TIME_MONTHS;
   static const ascii * days[7] = COSM_TIME_DAYS;
-  
+
   /* hash the file */
   if ( HashFile( &data_hash, argv[3] ) != COSM_PASS )
   {

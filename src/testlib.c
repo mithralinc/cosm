@@ -76,16 +76,16 @@ void Child( void )
 
   /*
     semaphores
-    shared memory    
+    shared memory
   */
-  
+
   CosmProcessEnd( 0 );
 }
 
 void Parent( char * self )
 {
   u64 child_id;
-  
+
   CosmPrint( "Spawning - %.256s -child\n", self );
   if ( CosmProcessSpawn( &child_id, self, "-child", NULL ) != COSM_PASS )
   {
@@ -99,7 +99,7 @@ void Parent( char * self )
   /*
     semaphores
     shared memory
-    
+
   */
 
   /* signal tests */
@@ -365,7 +365,7 @@ int main( int argc, char * argv[] )
     }
     CosmDynamicLibFree( &dylib );
   }
-  
+
   CosmPrint( "\nRun ANSI color test? [y/N] " );
   CosmInput( buffer, 4, COSM_IO_ECHO );
   if ( ( buffer[0] == 'y' ) || ( buffer[0] == 'Y' ) )

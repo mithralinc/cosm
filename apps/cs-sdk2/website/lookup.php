@@ -33,9 +33,9 @@ if ( strlen( $host_id ) == 8 )
     die;
   }
   $row = pg_fetch_assoc( $result );
-  
+
   echo "<h3>Host ID: " . $host_id . "</h3>\n";
-  
+
   echo "<p><b>Status: ";
   if ( $row['online'] == -1 )
   {
@@ -54,7 +54,7 @@ if ( strlen( $host_id ) == 8 )
     echo '<font color="#CC0000">Checked in, but never ponged - check your port fowarding and firewalls.</font>';
   }
   echo '</b></p>';
-  
+
   echo "<table border=1 cellpadding=3 cellspacing=0>\n";
   echo "<tr><td>" . "OS" . "</td><td>" . $os_types[$row['os_type']] . "</td></tr>";
   echo "<tr><td>" . "CPU" . "</td><td>" . $cpu_types[$row['cpu_type']] . "</td></tr>";
@@ -64,12 +64,12 @@ if ( strlen( $host_id ) == 8 )
   echo "<tr><td>" . "Last Pong" . "</td><td>" . PrintTime( $row['last_pong'] ) . "</td></tr>";
   echo "<tr><td>" . "Online?" . "</td><td>" . $row['online'] . "</td></tr>";
   echo "</table>\n";
-  
+
   $query = "SELECT * FROM pongs WHERE host_id = x'" . $host_id
     . "'::int ORDER BY pong_time DESC LIMIT 12;";
   $result = $database->query($query);
-  
-  echo "<h3>Last ~1 hour of Pongs</h3>\n";  
+
+  echo "<h3>Last ~1 hour of Pongs</h3>\n";
   echo "<table border=1 cellpadding=3 cellspacing=0>\n";
   echo "<tr><th>Time<th>Address<th>Latency (ms)</tr>\n";
   while ( $row = pg_fetch_assoc( $result ) )
@@ -81,7 +81,7 @@ if ( strlen( $host_id ) == 8 )
     echo "</tr>";
   }
   echo "</table>\n";
-  
+
   $url = $cssdk2_base_url . $script . '?host_id=' . $host_id;
   echo '<p>Bookmark: <a href="' . $url . ' ">' . $url . '</a></p>';
   echo '<p>Do not reveal your Host ID to others.</p>';

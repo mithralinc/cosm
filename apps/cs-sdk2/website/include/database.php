@@ -1,7 +1,7 @@
 <?php
 /**
  * Database.php
- * 
+ *
  * The Database class is meant to simplify the task of accessing
  * information from the website's database.
  *
@@ -10,7 +10,7 @@
  */
 include("constants.php");
 include("cosm.php");
-      
+
 class MyPostgreSQL
 {
    var $connection;         //The MySQL database connection
@@ -60,7 +60,7 @@ class MyPostgreSQL
          return 2; //Indicates password failure
       }
    }
-   
+
    /**
     * confirmUserID - Checks whether or not the given
     * username is in the database, if so it checks if the
@@ -95,7 +95,7 @@ class MyPostgreSQL
          return 2; //Indicates php_cookie invalid
       }
    }
-   
+
    /**
     * usernameTaken - Returns true if the username has
     * been taken by another user, false otherwise.
@@ -108,7 +108,7 @@ class MyPostgreSQL
       $result = pg_query($this->connection, $q);
       return (pg_numrows($result) > 0);
    }
-   
+
    /**
     * usernameBanned - Returns true if the username has
     * been banned by the administrator.
@@ -121,7 +121,7 @@ class MyPostgreSQL
       $result = pg_query($this->connection, $q);
       return (pg_numrows($result) > 0);
    }
-   
+
    /**
     * addNewUser - Inserts the given (username, password, email)
     * info into the database. Appropriate user level is set.
@@ -165,7 +165,7 @@ class MyPostgreSQL
       }
    }
 
-   
+
    /**
     * updateUserField - Updates a field, specified by the field
     * parameter, in the user's row of the database.
@@ -174,7 +174,7 @@ class MyPostgreSQL
       $q = "UPDATE users SET ".$field." = '$value' WHERE username = '$username'";
       return pg_query($this->connection, $q);
    }
-   
+
    /**
     * getUserInfo - Returns the result array from a mysql
     * query asking for all information stored regarding
@@ -191,7 +191,7 @@ class MyPostgreSQL
       $dbarray = pg_fetch_array($result);
       return $dbarray;
    }
-   
+
    /**
     * query - Performs the given query on the database and
     * returns the result, which may be false, true or a

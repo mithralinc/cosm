@@ -38,7 +38,7 @@ s32 PostgreSQL_Connect( DATABASE * database )
 s32 PostgreSQL_Exec( DATABASE * database, utf8 * query )
 {
   ExecStatusType error;
-  
+
   if ( database->state == POSTGRESQL_STATE_RESULT )
   {
     PQclear( database->result );

@@ -66,7 +66,7 @@ typedef enum packet_type
   TYPE_SHUTDOWN = 'S',
 
   TYPE_PING     = 'I',
-  TYPE_PONG     = 'O'  
+  TYPE_PONG     = 'O'
 } packet_type;
 
 PACKED_STRUCT_BEGIN
