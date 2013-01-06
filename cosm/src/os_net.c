@@ -21,32 +21,32 @@
 #include "cosm/os_io.h"
 
 #if ( ( OS_TYPE == OS_WIN32 ) || ( OS_TYPE == OS_WIN64 ) )
-#include <winsock2.h>
-#include <ws2tcpip.h>
-#include <wspiapi.h>
-#include <iphlpapi.h>
-#define close closesocket
+#  include <winsock2.h>
+#  include <ws2tcpip.h>
+#  include <wspiapi.h>
+#  include <iphlpapi.h>
+#  define close closesocket
 #else
-#define SOCKET int
-#include <errno.h>
-#include <unistd.h>
-#include <fcntl.h>
-#include <netdb.h>
-#include <sys/param.h>
-#include <sys/time.h>
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
-#include <signal.h>
-#if ( ( OS_TYPE == OS_LINUX ) || \
-  ( OS_TYPE == OS_OSX ) || ( OS_TYPE == OS_IOS ) )
-#include <net/if.h>
-#include <ifaddrs.h>
-#elif ( OS_TYPE == OS_ANDROID )
-#include <linux/rtnetlink.h>
+#  define SOCKET int
+#  include <errno.h>
+#  include <unistd.h>
+#  include <fcntl.h>
+#  include <netdb.h>
+#  include <sys/param.h>
+#  include <sys/time.h>
+#  include <sys/types.h>
+#  include <sys/socket.h>
+#  include <netinet/in.h>
+#  include <arpa/inet.h>
+#  include <signal.h>
 #endif
-#endif /* OS */
+
+#if ( ( OS_TYPE == OS_OSX ) || ( OS_TYPE == OS_IOS ) )
+#  include <net/if.h>
+#  include <ifaddrs.h>
+#elif ( ( OS_TYPE == OS_LINUX ) || ( OS_TYPE == OS_ANDROID ) )
+#  include <linux/rtnetlink.h>
+#endif
 
 /* global networking initialization and mutex if no IPv6 */
 u32 __cosm_net_global_init = 0;
@@ -1527,8 +1527,7 @@ u32 CosmNetMyIP( cosm_NET_ADDR * addr, u32 count )
     }
   }
   CosmMemFree( adapter );
-#elif ( ( OS_TYPE == OS_LINUX ) \
-  || ( OS_TYPE == OS_OSX ) || ( OS_TYPE == OS_IOS ) )
+#elif ( ( OS_TYPE == OS_OSX ) || ( OS_TYPE == OS_IOS ) )
   /* platforms with getifaddrs */
   struct ifaddrs * head, * current;
 
@@ -1569,7 +1568,7 @@ u32 CosmNetMyIP( cosm_NET_ADDR * addr, u32 count )
   }
 
   freeifaddrs( head );
-#elif ( OS_TYPE == OS_ANDROID )
+#elif ( ( OS_TYPE == OS_LINUX ) || ( OS_TYPE == OS_ANDROID ) )
   /* Use netlink interface supported in Linux 2.2+ */
   int sock;
   int length;
