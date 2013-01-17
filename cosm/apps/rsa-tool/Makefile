@@ -2,7 +2,7 @@ COSM = ../..
 include $(COSM)/include/cosm/Makefile.cosm
 CC_FLAGS = $(CCFLAGS) -I$(COSM)/include -L.
 LD_FLAGS = $(LDFLAGS) -L$(COSM)/lib -L.
-LD_LIBS =  $(LDLIBS) -lCosmUtil
+LD_LIBS =  $(LDLIBS) -lCosm
 
 SOURCES = rsa-tool.c
 HEADERS = 

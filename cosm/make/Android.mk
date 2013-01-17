@@ -3,7 +3,7 @@
 
 include $(CLEAR_VARS)
 COSM_C_INCLUDES := $(LOCAL_PATH)/cosm/include
-LOCAL_MODULE := CosmUtil
+LOCAL_MODULE := Cosm
 LOCAL_C_INCLUDES := $(LOCAL_PATH)/cosm/include
 LOCAL_SRC_FILES := cosm/src/bignum.c \
   cosm/src/buffer.c \

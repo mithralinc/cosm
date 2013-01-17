@@ -2,7 +2,7 @@ COSM = ../..
 include $(COSM)/include/cosm/Makefile.cosm
 CC_FLAGS = $(CCFLAGS) -I$(COSM)/include -I.
 LD_FLAGS = $(LDFLAGS) -L$(COSM)/lib -L.
-LD_LIBS =  $(LDLIBS) -lCosmUtil
+LD_LIBS =  $(LDLIBS) -lCosm
 
 SOURCES = cssdk-engine.c cssdk-client.c cssdk-server.c cssdk.c PostgreSQL.c
 HEADERS = cssdk.h PostgreSQL.h
