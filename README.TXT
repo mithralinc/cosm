@@ -69,5 +69,5 @@ Win32:
   cygwin tools. You also have to manually do what build does for now,
   `copy make\win32-x86-msvc Makefile.cosm` and the install to \usr\local\*.
   The sub-makefiles also need to have the "-L" changed to "/LIBPATH:" and
-  the "-lCosmUtil" to "libCosmUtil.a". We'll have a perl script for that
+  the "-lCosm" to "libCosm.a". We'll have a perl script for that
   change soon.

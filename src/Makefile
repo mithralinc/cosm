@@ -2,7 +2,7 @@ include ../include/cosm/Makefile.cosm
 CC_FLAGS = -I../include $(CCFLAGS)
 FC_FLAGS = -I../include $(FCFLAGS)
 LD_FLAGS = -L../lib $(LDFLAGS)
-LD_LIBS = -lCosmUtil $(LDLIBS)
+LD_LIBS = -lCosm $(LDLIBS)
 
 SRC_CPUOS = os_file.c os_io.c os_math.c os_mem.c os_net.c os_task.c
 HEAD_CPUOS = ../include/cosm/cosm.h ../include/cosm/cputypes.h \
@@ -31,13 +31,13 @@ OBJECTS = $(OBJ_CPUOS) $(OBJ_UTIL) test_dl.$(OBJ)
 SUBDIRS = bzip2
 SUBDEPS = $(SUBDIRS:%=%/*.c) $(SUBDIRS:%=%/*.h)
 
-LIBRARIES = ../lib/libCosmUtil.a
+LIBRARIES = ../lib/libCosm.a
 
 BINARIES = testlib.exe test_dl.dylib
 
 all: $(LIBRARIES) $(BINARIES)
 
-../lib/libCosmUtil.a: $(OBJECTS) sub-dirs
+../lib/libCosm.a: $(OBJECTS) sub-dirs
 	@echo Creating library $@
 	@$(RM) $@
 	@$(AR)$@ $(OBJECTS)
