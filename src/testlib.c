@@ -259,33 +259,20 @@ int main( int argc, char * argv[] )
   if ( ( sizeof( u8 ) != 1 ) || ( sizeof( u16 ) != 2 )
     || ( sizeof( u32 ) != 4 ) || ( sizeof( u64 ) != 8 )
     || ( sizeof( u128 ) != 16 )
-#if ( !defined( NO_FLOATING_POINT ) )
-    || ( sizeof( f32 ) != 4 ) || ( sizeof( f64 ) != 8 )
-#endif
-    )
+    || ( sizeof( f32 ) != 4 ) || ( sizeof( f64 ) != 8 ) )
   {
     CosmPrint(
      "The data type sizes wrong! %u/1 %u/2 %u/4 %u/8 %u/16 %u/4 %u/8\n",
       sizeof( u8 ), sizeof( u16 ), sizeof( u32 ), sizeof( u64 ),
-      sizeof( u128 ),
-#if ( !defined( NO_FLOATING_POINT ) )
-      sizeof( f32 ), sizeof( f64 )
-#else
-      4, 8
-#endif
-       );
+      sizeof( u128 ), sizeof( f32 ), sizeof( f64 ) );
     CosmProcessEnd( -1 );
   }
 
-#if ( !defined( NO_FLOATING_POINT ) )
   CosmPrint( "Floating point support enabled.\n" );
   CosmPrint( "f32  %.20f (~7 significant digits)\n",
     (f32) 0.1234567890123456789012345678901234567890 );
   CosmPrint( "f64  %.20f (~16 significant digits)\n",
     (f64) 0.1234567890123456789012345678901234567890 );
-#else
-  CosmPrint( "Floating point support disabled.\n" );
-#endif
 
   if ( CosmMemSystem( &memory ) == COSM_PASS )
   {

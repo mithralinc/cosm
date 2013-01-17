@@ -22,9 +22,7 @@
 #include "cosm/cputypes.h"
 
 /* include the ANSI math function headers */
-#if ( !defined( NO_FLOATING_POINT ) )
 #include <math.h>
-#endif
 
 /* Make sure that PI is defined */
 #if ( !defined( M_PI ) )
@@ -110,7 +108,6 @@ u32 CosmS128Lt( s128 a, s128 b );    /* a < b ? 1 : 0; */
 
 /* floating point NaN and Inf testing */
 
-#if ( !defined( NO_FLOATING_POINT ) )
 s32 CosmFloatNaN( f64 number );
   /*
     Test if number is NAN.
@@ -122,7 +119,6 @@ s32 CosmFloatInf( f64 number );
     Test if number is +/- Inf.
     Returns: 1 if number is +Inf, -1 if -Inf, 0 otherwise.
   */
-#endif
 
 /* testing */
 

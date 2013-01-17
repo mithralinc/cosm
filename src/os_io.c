@@ -35,13 +35,11 @@
 #endif
 
 /* some systems aren't ISO compliant */
-#if ( !defined( NO_FLOATING_POINT ) )
 #if ( !defined( floorl ) )
 #define floorl floor
 #endif
 #if ( !defined( fmodl ) )
 #define fmodl fmod
-#endif
 #endif
 
 /* states for the print state machine */
@@ -953,7 +951,6 @@ s32 Cosm_ParseInt( void * number, utf8 ** end, const utf8 * string,
   return COSM_PASS;
 }
 
-#if ( !defined( NO_FLOATING_POINT ) )
 s32 Cosm_ParseFloat( void * number, utf8 ** end, const utf8 * string,
   u8 number_width )
 {
@@ -1108,7 +1105,6 @@ s32 Cosm_ParseFloat( void * number, utf8 ** end, const utf8 * string,
 
   return pass;
 }
-#endif
 
 #undef _COSM_IO_FETCHCHAR
 
@@ -1456,11 +1452,9 @@ u32 Cosm_Print( cosm_FILE * file, void * string, u32 max_bytes,
   s64  tmp_s64;
   u128 tmp_u128;
   s128 tmp_s128;
-#if ( !defined( NO_FLOATING_POINT ) )
   f64  tmp_f64;
   f64  whole_f64;
   f64  tmp_whole_f64;
-#endif
 
   ascii * ptr_ascii;
   utf8 * ptr_utf8;
@@ -1592,14 +1586,12 @@ u32 Cosm_Print( cosm_FILE * file, void * string, u32 max_bytes,
               case 'w':
                 state = COSM_IO_U128_DEC;
                 break;
-#if ( !defined( NO_FLOATING_POINT ) )
               case 'f':
                 state = COSM_IO_F64;
                 break;
               case 'F':
                 state = COSM_IO_F64_SCI;
                 break;
-#endif
               case 'X':
                 state = COSM_IO_U32_HEX;
                 break;
@@ -1923,7 +1915,6 @@ u32 Cosm_Print( cosm_FILE * file, void * string, u32 max_bytes,
         *ptr_ascii++ = 0;
         state = COSM_IO_TMP_STRING;
         break;
-#if ( !defined( NO_FLOATING_POINT ) )
       case COSM_IO_F64:
         tmp_f64 = (f64) va_arg( args, f64 );
 
@@ -2146,7 +2137,6 @@ u32 Cosm_Print( cosm_FILE * file, void * string, u32 max_bytes,
         *ptr_ascii++ = 0;
         state = COSM_IO_TMP_STRING;
         break;
-#endif
       case COSM_IO_POINTER:
         switch ( sizeof( void * ) )
         {
@@ -2243,7 +2233,6 @@ s32 Cosm_PrintChar( u32 * bytes, cosm_FILE * file, void * string, u32 max_bytes,
 /* testing */
 
 #if 0 /* unused */
-#if ( !defined( NO_FLOATING_POINT ) )
 typedef struct cosm_FLOAT_TEST
 {
   f64 data;
@@ -2259,7 +2248,6 @@ static cosm_FLOAT_TEST float_tests[] =
   { (f64) -1.0, "%.1f", "-1.0" },
   { (f64) 0.0, NULL, NULL }
 };
-#endif
 
 typedef struct cosm_SU32_TEST
 {
@@ -2300,12 +2288,10 @@ s32 Cosm_TestOSIO( void )
 /*
   utf8 uniNum[6] = { 0x1680, '0', 'x', 0x0396, 0x05D5 , 0 };
 */
-#if ( !defined( NO_FLOATING_POINT ) )
 #ifdef F64TESTS
   f64 tmpf64;
 #endif
   f32 tmpf32;
-#endif
   s32 status;
   utf8 * pos;
 
@@ -2504,7 +2490,6 @@ s32 Cosm_TestOSIO( void )
     !!! These tests might be platform dependant.
     !!! Checking floats for equality is dangerous.
   */
-#if ( !defined( NO_FLOATING_POINT ) )
   status = Cosmf32Str( &tmpf32, NULL, "1" );
   if ( ( status != COSM_PASS ) ||
        ( tmpf32 < 0.999 ) ||
@@ -2638,8 +2623,6 @@ s32 Cosm_TestOSIO( void )
     return -42;
   }
 */
-
-#endif
 
   /* Test CosmStrAppendA */
 

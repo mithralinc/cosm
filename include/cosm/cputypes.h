@@ -241,13 +241,10 @@ typedef struct s128
 #define _COSM_EQ128( value, a, b ) \
   ( ( value.hi == _COSM_CAT64( a ) ) && ( value.lo == _COSM_CAT64( b ) ) )
 
-/* Not every CPU has a floating point unit. */
-#if ( !defined( NO_FLOATING_POINT ) )
 /** 32-bit floating point value. */
 typedef float f32;
 /** 64-bit floating point value. */
 typedef double f64;
-#endif
 
 /** String of ASCII 7-bit text. */
 typedef char ascii;
