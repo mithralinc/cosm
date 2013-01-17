@@ -186,7 +186,6 @@ utf8 * CosmStrStr( const utf8 * string, const utf8 * substring,
       result to 0 and returns COSM_FAIL on failure.
   */
 
-#if ( !defined( NO_FLOATING_POINT ) )
 #define Cosmf32Str( result, end, string ) \
   Cosm_ParseFloat( (void *) result, end, string, 4 )
 #define Cosmf64Str( result, end, string ) \
@@ -202,7 +201,6 @@ utf8 * CosmStrStr( const utf8 * string, const utf8 * substring,
       sets result to +/-HUGE_VAL if the number was too large or 0 if the
       string wasn't a number and returns COSM_FAIL on failure.
   */
-#endif
 
 /*
   Output functions. printf
@@ -288,7 +286,6 @@ s32 Cosm_ParseInt( void * number, utf8 ** end, const utf8 * string,
     Returns: COSM_PASS on success, or COSM_FAIL on failure.
   */
 
-#if ( !defined( NO_FLOATING_POINT ) )
 s32 Cosm_ParseFloat( void * number, utf8 ** end, const utf8 * string,
   u8 number_width );
   /*
@@ -296,7 +293,6 @@ s32 Cosm_ParseFloat( void * number, utf8 ** end, const utf8 * string,
     into number, when number_width is the bytes in the expected value (4, 8).
     Returns: COSM_PASS on success, or COSM_FAIL on failure.
   */
-#endif
 
 s32 Cosm_GetCharType( utf8char ch );
   /*

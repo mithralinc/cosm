@@ -642,7 +642,6 @@ u32 CosmS128Lt( s128 a, s128 b )
   return 0;
 }
 
-#if ( !defined( NO_FLOATING_POINT ) )
 s32 CosmFloatNaN( f64 number )
 {
   u32 * n;
@@ -682,7 +681,6 @@ s32 CosmFloatInf( f64 number )
   return ~( n[0] >> 31 ) & ( n[1] >> 30 );
 #endif
 }
-#endif
 
 /* testing */
 
