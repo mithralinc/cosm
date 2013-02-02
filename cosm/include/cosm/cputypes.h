@@ -76,14 +76,15 @@
 #define OS_ANDROID    4  /** Android */
 #define OS_OSX        5  /** Apple OS X */
 #define OS_IOS        6  /** Apple iOS */
-#define OS_SOLARIS    7  /** Solaris */
-#define OS_FREEBSD    8  /** FreeBSD */
-#define OS_OPENBSD    9  /** OpenBSD */
-#define OS_NETBSD     10 /** NetBSD */
-#define OS_TYPE_MAX   10
+#define OS_QNX        7  /** QNX - QNX and BlackBerry 10 */
+#define OS_SOLARIS    8  /** Solaris */
+#define OS_FREEBSD    9  /** FreeBSD */
+#define OS_OPENBSD    10 /** OpenBSD */
+#define OS_NETBSD     11 /** NetBSD */
+#define OS_TYPE_MAX   11
 
 #define COSM_OS_TYPES { "INVALID", \
-  "Win32", "Win64", "Linux", "Android", "OSX", "iOS", "Solaris", \
+  "Win32", "Win64", "Linux", "Android", "OSX", "iOS", "QNX", "Solaris", \
   "FreeBSD", "OpenBSD", "NetBSD", NULL }
 
 #if ( !defined( OS_TYPE ) )
@@ -102,6 +103,8 @@
 #    else
 #      define OS_TYPE OS_OSX
 #    endif
+#  elif ( defined( __QNX__ ) )
+#    define OS_TYPE OS_QNX
 #  endif
 #endif
 

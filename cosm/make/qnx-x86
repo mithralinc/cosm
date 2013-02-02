@@ -1,0 +1,31 @@
+## OS        : QNX
+## CPU       : x86
+## Compiler  : GNU
+
+CC      = gcc
+CXX     = g++
+FC      = g77
+LD      = gcc -o 
+DYLIB   = gcc -shared -o 
+AR      = ar rc 
+RM      = rm -f
+RNLIB   = ranlib
+STRIP   = strip
+INSTALL = install
+OBJ     = o
+
+CCFLAGS = -O2 -fPIC -Wall -pedantic -Wno-long-long -mtune=i686 -m32 \
+  -D_REENTRANT $(EXTRA_FLAGS)
+FCFLAGS = -O2 -fPIC -Wall -pedantic -Wno-long-long -mtune=i686 -m32 \
+  -D_REENTRANT $(EXTRA_FLAGS)
+LDFLAGS = -m32
+LDLIBS  = -lm -lsocket $(EXTRA_LIBS)
+
+.c.$(OBJ):
+	@echo "Compiling $<"
+	@$(CC) $(CC_FLAGS) -o $@ -c $<
+
+.cpp.$(OBJ):
+	@echo "Compiling $<"
+	@$(CXX) $(CC_FLAGS) -o $@ -c $<
+

@@ -772,7 +772,7 @@ s32 Cosm_TestBuffer( void )
     {
       return -50;
     }
-    if ( large_item2 != ( 20LL - i ) * 23000LL )
+    if ( large_item2 != ( 20ULL - i ) * 23000ULL )
     {
       return -51;
     }

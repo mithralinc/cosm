@@ -17,6 +17,7 @@
 /* CPU/OS Layer - CPU and OS specific code is allowed */
 
 #include "cosm/os_math.h"
+#include "cosm/os_mem.h"
 
 /* bigger */
 
@@ -644,9 +645,9 @@ u32 CosmS128Lt( s128 a, s128 b )
 
 s32 CosmFloatNaN( f64 number )
 {
-  u32 * n;
+  u32 n[2];
 
-  n = (void *) &number;
+  CosmMemCopy( &n[0], &number, sizeof( number ) );
 
   /*
     NaN: u = dont care, At least one x-bit/X-byte must be non-zero.
@@ -663,9 +664,9 @@ s32 CosmFloatNaN( f64 number )
 
 s32 CosmFloatInf( f64 number )
 {
-  s32 * n;
+  s32 n[2];
 
-  n = (void *) &number;
+  CosmMemCopy( &n[0], &number, sizeof( number ) );
 
   /*
     +/- INF: s = sign bit.

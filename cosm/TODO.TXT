@@ -375,6 +375,11 @@ Solaris/SunOS
 Unix
   echo in CosmInput* for other Unix (done for Linux, FreeBSD, IRIX, OSF)
 
+QNX
+  CosmMemSystem
+  CosmCPUCLock*
+
+
 ------------
 OPTIMIZATION
 ------------
