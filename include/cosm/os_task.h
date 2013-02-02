@@ -81,16 +81,11 @@ typedef struct cosm_MUTEX
 #undef WINDOWS_SEMAPHORES
 #undef POSIX_SEMAPHORES
 #if ( ( OS_TYPE == OS_WIN32 ) || ( OS_TYPE == OS_WIN64 ) )
-#define WINDOWS_SEMAPHORES
+#  define WINDOWS_SEMAPHORES
 /* if we have POSIX semaphores on UNIX we want to use them over Sys V */
-#elif ( ( OS_TYPE == OS_OSX ) || ( OS_TYPE == OS_IOS ) \
-  || ( OS_TYPE == OS_LINUX ) || ( OS_TYPE == OS_ANDROID ) \
-  || ( OS_TYPE == OS_SOLARIS ) || ( OS_TYPE == OS_FREEBSD ) \
-  || ( OS_TYPE == OS_OPENBSD ) || ( OS_TYPE == OS_NETBSD ) )
-#include <semaphore.h>
-#define POSIX_SEMAPHORES
 #else
-#error "Unknown semaphore types - see os_task.h"
+#  include <semaphore.h>
+#  define POSIX_SEMAPHORES
 #endif
 
 typedef struct cosm_SEMAPHORE

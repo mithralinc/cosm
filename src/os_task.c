@@ -82,6 +82,12 @@ void Cosm_SignalWaitThread( void * arg );
 #define PRIO_MIN  -20
 #endif
 
+/* QNX lacks PRIO_MAX and PRIO_MIN. */
+#if ( OS_TYPE == OS_QNX )
+#define PRIO_MAX 63
+#define PRIO_MIN 1
+#endif
+
 u64 CosmProcessID( void )
 {
 #if ( ( OS_TYPE == OS_WIN32 ) || ( OS_TYPE == OS_WIN64 ) )
@@ -208,6 +214,13 @@ s32 CosmProcessSpawn( u64 * process_id, const ascii * command,
   /* SIGCHLD has to be ignored or zombies remain and confuse kill() */
   signal( SIGCHLD, SIG_IGN );
 #endif
+#if ( OS_TYPE == OS_QNX )
+  new_pid = spawnvp( P_NOWAIT, (char *) arg_array[0], (char * *) arg_array );
+  if ( new_pid == -1 )
+  {
+    return COSM_FAIL;
+  }
+#else
   new_pid = fork();
   if ( new_pid == -1 ) /* check for failure */
   {
@@ -222,6 +235,7 @@ s32 CosmProcessSpawn( u64 * process_id, const ascii * command,
       exit( 0 );
     }
   }
+#endif
 #endif
 
   *process_id = (u64) new_pid;
@@ -631,7 +645,7 @@ s32 CosmMutexInit( cosm_MUTEX * mutex )
 #if ( defined( _POSIX_THREADS ) )
 #if ( ( OS_TYPE == OS_LINUX ) || ( OS_TYPE == OS_ANDROID ) \
   || ( OS_TYPE == OS_OSX ) || ( OS_TYPE == OS_IOS ) \
-  || ( OS_TYPE == OS_NETBSD ) )
+  || ( OS_TYPE == OS_NETBSD ) || ( OS_TYPE == OS_QNX ) )
   pthread_mutex_t tmp_mutex = PTHREAD_MUTEX_INITIALIZER;
 #else /* standard POSIX case */
   pthread_mutexattr_t attr;

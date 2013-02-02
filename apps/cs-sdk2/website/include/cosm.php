@@ -12,8 +12,8 @@ $cpu_types = array(
   "INVALID", "x86", "x64", "ARM", "ARM64", "MIPS", "MIPS64", "PPC", "PPC64" );
 
 $os_types = array(
-  "INVALID", "Win32", "Win64", "Linux", "Android", "OSX", "iOS", "Solaris",
-  "FreeBSD", "OpenBSD", "NetBSD" );
+  "INVALID", "Win32", "Win64", "Linux", "Android", "OSX", "iOS", "QNX",
+  "Solaris", "FreeBSD", "OpenBSD", "NetBSD" );
 
 function cosmtime()
 {

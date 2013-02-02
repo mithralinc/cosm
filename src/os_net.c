@@ -41,7 +41,8 @@
 #  include <signal.h>
 #endif
 
-#if ( ( OS_TYPE == OS_OSX ) || ( OS_TYPE == OS_IOS ) )
+#if ( ( OS_TYPE == OS_OSX ) || ( OS_TYPE == OS_IOS ) \
+  || ( OS_TYPE == OS_QNX ) )
 #  include <net/if.h>
 #  include <ifaddrs.h>
 #elif ( ( OS_TYPE == OS_LINUX ) || ( OS_TYPE == OS_ANDROID ) )
@@ -1527,7 +1528,8 @@ u32 CosmNetMyIP( cosm_NET_ADDR * addr, u32 count )
     }
   }
   CosmMemFree( adapter );
-#elif ( ( OS_TYPE == OS_OSX ) || ( OS_TYPE == OS_IOS ) )
+#elif ( ( OS_TYPE == OS_OSX ) || ( OS_TYPE == OS_IOS ) \
+  || ( OS_TYPE == OS_QNX ) )
   /* platforms with getifaddrs */
   struct ifaddrs * head, * current;
 

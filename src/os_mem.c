@@ -32,12 +32,6 @@
 #include <sys/sysctl.h>
 #endif
 
-#if ( defined( SYSV_SHARED_MEM ) )
-#include <errno.h>
-#include <sys/ipc.h>
-#include <sys/shm.h>
-#endif
-
 /* Memory leak related defines */
 #include "cosm/os_file.h"
 

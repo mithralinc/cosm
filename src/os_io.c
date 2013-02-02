@@ -21,25 +21,20 @@
 #include <stdio.h>
 
 #if ( ( OS_TYPE == OS_WIN32 ) || ( OS_TYPE == OS_WIN64 ) )
-#include <io.h>
-#include <conio.h>
+#  include <io.h>
+#  include <conio.h>
 #else
-#include <unistd.h>
-#if ( ( OS_TYPE == OS_LINUX ) || ( OS_TYPE == OS_ANDROID ) \
-  || ( OS_TYPE == OS_OSX ) || ( OS_TYPE == OS_IOS ) \
-  || ( OS_TYPE == OS_SOLARIS ) || ( OS_TYPE == OS_FREEBSD ) \
-  || ( OS_TYPE == OS_OPENBSD ) || ( OS_TYPE == OS_NETBSD ) )
-#define UNIX_NOECHO_METHOD
-#include <termios.h>
-#endif
+#  include <unistd.h>
+#  include <termios.h>
+#  define UNIX_NOECHO_METHOD
 #endif
 
 /* some systems aren't ISO compliant */
 #if ( !defined( floorl ) )
-#define floorl floor
+#  define floorl floor
 #endif
 #if ( !defined( fmodl ) )
-#define fmodl fmod
+#  define fmodl fmod
 #endif
 
 /* states for the print state machine */
