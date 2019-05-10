@@ -17,9 +17,9 @@ sub gen_symlinks;
 # Copyright notice to prepend to all man pages.
 
 my $COPYRIGHT
-       = ".\\\" Copyright 1995-2012 Mithral Communications & Design Inc.\n"
+       = ".\\\" Copyright 1995-2019 Mithral Inc.\n"
        . ".\\\" Mithral(R) and Cosm(R) are registered trademarks of\n"
-       . ".\\\" Mithral Communications & Design Inc.\n";
+       . ".\\\" Mithral Inc.\n";
 
 # Suffix of output files
 

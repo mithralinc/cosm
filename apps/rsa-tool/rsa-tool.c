@@ -1,5 +1,5 @@
 /*
-  Copyright 1995-2012 Mithral Communications & Design Inc.
+  Copyright 1995-2019 Mithral Inc.
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -42,7 +42,7 @@ void Notice( void )
 {
   CosmPrint(
     "Cosm(R) RSA Tool.\n"
-    "Copyright Mithral Communications & Design, Inc. 1995-2012.\n" );
+    "Copyright Mithral Communications & Design, Inc. 1995-2019.\n" );
 }
 
 void Usage( void )
